@@ -6,7 +6,6 @@ import com.ebook.basebook.mvp.model.ImportBookModel;
 import com.ebook.db.ObjectBoxManager;
 import com.ebook.db.entity.BookContent;
 import com.ebook.db.entity.BookInfo;
-import com.ebook.db.entity.BookInfo_;
 import com.ebook.db.entity.BookShelf;
 import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.ChapterList;
@@ -28,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.objectbox.Box;
+import io.objectbox.query.Query;
 import io.reactivex.Observable;
 
 
@@ -58,16 +58,16 @@ public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookMod
             in.close();
 
             String md5 = new BigInteger(1, md.digest()).toString(16);
-            Box<BookShelf> bookShelfBox = ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class);
-            Box<BookInfo> bookInfoBox = ObjectBoxManager.INSTANCE.getStore().boxFor(BookInfo.class);
-            Box<ChapterList> chapterListBox = ObjectBoxManager.INSTANCE.getStore().boxFor(ChapterList.class);
+            Box<BookShelf> bookShelfBox = ObjectBoxManager.INSTANCE.getBookShelfBox();
             BookShelf bookShelf;
-            List<BookShelf> temp = bookShelfBox.query(BookShelf_.noteUrl.equal(md5)).build().find();
+            List<BookShelf> temp;
+            try (Query<BookShelf> query = bookShelfBox.query(BookShelf_.noteUrl.equal(md5)).build()) {
+                temp = query.find();
+            }
             boolean isNew = true;
             if (!temp.isEmpty()) {
                 isNew = false;
                 bookShelf = temp.get(0);
-                bookShelf.bookInfo.setTarget(bookInfoBox.query(BookInfo_.noteUrl.equal(bookShelf.noteUrl)).build().find().get(0));
             } else {
                 bookShelf = new BookShelf();
                 bookShelf.finalDate = System.currentTimeMillis();
@@ -76,19 +76,27 @@ public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookMod
                 bookShelf.setTag(BookShelf.LOCAL_TAG);
                 bookShelf.noteUrl = md5;
 
-                bookShelf.getBookInfo().getTarget().setAuthor("佚名");
-                bookShelf.getBookInfo().getTarget().setName(book.getName().replace(".txt", "").replace(".TXT", ""));
-                bookShelf.getBookInfo().getTarget().finalRefreshData = System.currentTimeMillis();
-                bookShelf.getBookInfo().getTarget().setCoverUrl("");
-                bookShelf.getBookInfo().getTarget().setNoteUrl(md5);
-                bookShelf.getBookInfo().getTarget().setTag(BookShelf.LOCAL_TAG);
-
+                BookInfo bookInfo = new BookInfo();
+                bookInfo.setAuthor("佚名");
+                bookInfo.setName(book.getName().replace(".txt", "").replace(".TXT", ""));
+                bookInfo.finalRefreshData = System.currentTimeMillis();
+                bookInfo.setCoverUrl("");
+                bookInfo.setNoteUrl(md5);
+                bookInfo.setTag(BookShelf.LOCAL_TAG);
+                bookShelf.bookInfo.setTarget(bookInfo);
+                //保存章节
                 saveChapter(book, md5);
-                //todo insertOrReplace
-                bookInfoBox.put(bookShelf.getBookInfo().getTarget());
+                try (Query<ChapterList> query = ObjectBoxManager.INSTANCE
+                        .getChapterListBox()
+                        .query(ChapterList_.noteUrl.equal(bookShelf.noteUrl))
+                        .order(ChapterList_.durChapterIndex)
+                        .build()) {
+                    for (ChapterList chapterList : query.find()) {
+                        bookShelf.getBookInfo().getTarget().chapterlist.add(chapterList);
+                    }
+                }
                 bookShelfBox.put(bookShelf);
             }
-            bookShelf.getBookInfo().getTarget().chapterlist = chapterListBox.query(ChapterList_.noteUrl.equal(bookShelf.noteUrl)).order(ChapterList_.durChapterIndex).build().find();
             e.onNext(new LocBookShelf(isNew, bookShelf));
             e.onComplete();
         });
@@ -184,12 +192,13 @@ public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookMod
         chapterList.setTag(BookShelf.LOCAL_TAG);
         chapterList.setDurChapterUrl(md5 + "_" + chapterPageIndex);
         chapterList.setDurChapterName(name);
-        chapterList.getBookContent().getTarget().durChapterUrl = chapterList.getDurChapterUrl();
-        chapterList.getBookContent().getTarget().tag = BookShelf.LOCAL_TAG;
-        chapterList.getBookContent().getTarget().durChapterIndex = chapterList.durChapterIndex;
-        chapterList.getBookContent().getTarget().durChapterContent = content;
-        //todo insertOrReplace
-        ObjectBoxManager.INSTANCE.getStore().boxFor(BookContent.class).put(chapterList.bookContent.getTarget());
-        ObjectBoxManager.INSTANCE.getStore().boxFor(ChapterList.class).put(chapterList);
+
+        BookContent bookContent = new BookContent();
+        bookContent.durChapterUrl = chapterList.getDurChapterUrl();
+        bookContent.tag = BookShelf.LOCAL_TAG;
+        bookContent.durChapterIndex = chapterList.durChapterIndex;
+        bookContent.durChapterContent = content;
+        chapterList.bookContent.setTarget(bookContent);
+        ObjectBoxManager.INSTANCE.getChapterListBox().put(chapterList);
     }
 }

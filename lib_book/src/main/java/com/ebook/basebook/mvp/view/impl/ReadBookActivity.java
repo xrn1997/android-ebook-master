@@ -210,7 +210,7 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
                 checkAddShelfPop.dismiss();
             }
         });
-        chapterListView.setData(mPresenter.getBookShelf(), index -> csvBook.setInitData(index, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), DBCode.BookContentView.DURPAGEINDEXBEGIN));
+        chapterListView.setData(mPresenter.getBookShelf(), index -> csvBook.setInitData(index, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN));
 
         windowLightPop = new WindowLightPop(this);
         windowLightPop.initLight();
@@ -302,7 +302,7 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
                     realDur = 1;
                 }
                 if ((realDur - 1) != mPresenter.getBookShelf().durChapter) {
-                    csvBook.setInitData(realDur - 1, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), DBCode.BookContentView.DURPAGEINDEXBEGIN);
+                    csvBook.setInitData(realDur - 1, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN);
                 }
                 if (hpbReadProgress.getDurProgress() != realDur)
                     hpbReadProgress.setDurProgress(realDur);
@@ -372,11 +372,11 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
         tvPre.setOnClickListener(v -> csvBook.setInitData(
                 mPresenter.getBookShelf().durChapter - 1,
                 mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(),
-                DBCode.BookContentView.DURPAGEINDEXBEGIN));
+                DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN));
         tvNext.setOnClickListener(v -> csvBook.setInitData(
                 mPresenter.getBookShelf().durChapter + 1,
                 mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(),
-                DBCode.BookContentView.DURPAGEINDEXBEGIN));
+                DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN));
 
         llCatalog.setOnClickListener(v -> {
             llMenuTop.startAnimation(menuTopOut);

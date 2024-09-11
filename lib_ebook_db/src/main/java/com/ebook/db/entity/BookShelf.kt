@@ -26,7 +26,7 @@ data class BookShelf(
     @JvmField
     var durChapter: Int = 0,
     @JvmField
-    var durChapterPage: Int = DBCode.BookContentView.DURPAGEINDEXBEGIN,
+    var durChapterPage: Int = DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN,
     /**
      * 最后阅读时间
      */

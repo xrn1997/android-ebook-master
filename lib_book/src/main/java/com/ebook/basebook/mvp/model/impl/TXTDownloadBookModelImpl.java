@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.ebook.api.service.TXTDownloadBookService;
 import com.ebook.basebook.base.impl.MBaseModelImpl;
-import com.ebook.basebook.base.manager.ErrorAnalyContentManager;
+import com.ebook.basebook.base.manager.ErrorAnalyzeContentManager;
 import com.ebook.basebook.cache.ACache;
 import com.ebook.basebook.constant.Url;
 import com.ebook.basebook.mvp.model.StationBookModel;
@@ -292,7 +292,9 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
         return Observable.create(e -> {
             bookShelf.setTag(TXTDownloadBookService.URL);
             WebChapter<List<ChapterList>> temp = analyzeChapterList(s, bookShelf.noteUrl);
-            bookShelf.getBookInfo().getTarget().chapterlist=temp.data;
+            for (ChapterList chapterList : temp.data) {
+                bookShelf.getBookInfo().getTarget().chapterlist.add(chapterList);
+            }
             e.onNext(new WebChapter<>(bookShelf, temp.next));
             e.onComplete();
         });
@@ -351,7 +353,7 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
             } catch (Exception ex) {
                 Log.e(TAG, "analyzeBookContent: ", ex);
 
-                ErrorAnalyContentManager.getInstance().writeNewErrorUrl(context,durChapterUrl);
+                ErrorAnalyzeContentManager.getInstance().writeNewErrorUrl(context, durChapterUrl);
                 bookContent.durChapterContent = durChapterUrl.substring(0, durChapterUrl.indexOf('/', 8)) + "站点暂时不支持解析";
                 bookContent.setRight(false);
             }

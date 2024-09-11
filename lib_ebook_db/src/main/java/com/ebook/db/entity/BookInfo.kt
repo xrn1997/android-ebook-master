@@ -1,8 +1,11 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
+import io.objectbox.annotation.Backlink
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import io.objectbox.relation.ToMany
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 
@@ -25,12 +28,6 @@ data class BookInfo(
      * 章节目录地址
      */
     var chapterUrl: String? = null,
-    /**
-     * 章节列表
-     */
-    @JvmField
-    @Transient
-    var chapterlist: List<ChapterList>? = ArrayList(),
     /**
      * 章节最后更新时间
      */
@@ -58,6 +55,14 @@ data class BookInfo(
     var status: String? = null,
     @Id var id: Long = 0
 ) : Parcelable {
+
+    /**
+     * 章节列表
+     */
+    @IgnoredOnParcel
+    @Transient
+    @Backlink(to = "bookInfo")
+    lateinit var chapterlist: ToMany<ChapterList>
 
     fun clone(): BookInfo {
         return this.copy()

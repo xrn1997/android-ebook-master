@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import io.objectbox.query.Query;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -52,7 +53,10 @@ public class SearchPresenterImpl extends BasePresenterImpl<ISearchView> implemen
 
     public SearchPresenterImpl() {
         Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build().find();
+                    List<BookShelf> temp;
+                    try (Query<BookShelf> query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build()) {
+                        temp = query.find();
+                    }
                     e.onNext(temp);
                     e.onComplete();
                 }).subscribeOn(Schedulers.io())

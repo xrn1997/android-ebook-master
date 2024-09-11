@@ -1,10 +1,12 @@
 package com.ebook.db
 
 import android.content.Context
+import com.ebook.db.ObjectBoxManager.getBox
 import com.ebook.db.entity.BookContent
 import com.ebook.db.entity.BookInfo
 import com.ebook.db.entity.BookShelf
 import com.ebook.db.entity.ChapterList
+import com.ebook.db.entity.DownloadChapter
 import com.ebook.db.entity.MyObjectBox
 import com.ebook.db.entity.SearchHistory
 import io.objectbox.Box
@@ -29,24 +31,17 @@ object ObjectBoxManager {
             .build()
     }
 
-    fun getBookShelfBox(): Box<BookShelf> {
-        return store.boxFor(BookShelf::class.java)
+    /**
+     * 泛型方法获取 Box 实例
+     */
+    inline fun <reified T> getBox(): Box<T> {
+        return store.boxFor(T::class.java)
     }
 
-    fun getBookContentBox(): Box<BookContent> {
-        return store.boxFor(BookContent::class.java)
-    }
-
-    fun getBookInfoBox(): Box<BookInfo> {
-        return store.boxFor(BookInfo::class.java)
-    }
-
-    fun getChapterListBox(): Box<ChapterList> {
-        return store.boxFor(ChapterList::class.java)
-    }
-
-    fun getSearchHistoryBox(): Box<SearchHistory> {
-        return store.boxFor(SearchHistory::class.java)
-    }
-
+    val bookShelfBox get() = getBox<BookShelf>()
+    val bookContentBox get() = getBox<BookContent>()
+    val bookInfoBox get() = getBox<BookInfo>()
+    val chapterListBox get() = getBox<ChapterList>()
+    val searchHistoryBox get() = getBox<SearchHistory>()
+    val downloadChapterBox get() = getBox<DownloadChapter>()
 }

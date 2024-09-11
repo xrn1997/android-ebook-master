@@ -38,11 +38,11 @@ data class BookContent(
     var tag: String? = null,
 
     @Transient
-    var right: Boolean? = true,
+    var right: Boolean = true,
 
     @JvmField
     @Transient
-    var lineContent: List<String>? = ArrayList(),
+    var lineContent: List<String> = ArrayList(),
 
     @JvmField
     @Transient

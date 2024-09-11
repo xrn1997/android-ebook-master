@@ -2,7 +2,7 @@ package com.ebook.db.event;
 
 public interface DBCode {
     interface BookContentView {
-        int DURPAGEINDEXBEGIN = -1;
-        int DURPAGEINDEXEND = -2;
+        int DUR_PAGE_INDEX_BEGIN = -1;
+        int DUR_PAGE_INDEX_END = -2;
     }
 }

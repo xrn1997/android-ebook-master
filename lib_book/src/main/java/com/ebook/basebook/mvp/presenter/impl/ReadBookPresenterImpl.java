@@ -179,9 +179,9 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                     //已有数据
                     int tempCount = (int) Math.ceil(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.size() * 1.0 / pageLineCount) - 1;
 
-                    if (pageIndex == DBCode.BookContentView.DURPAGEINDEXBEGIN) {
+                    if (pageIndex == DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN) {
                         pageIndex = 0;
-                    } else if (pageIndex == DBCode.BookContentView.DURPAGEINDEXEND) {
+                    } else if (pageIndex == DBCode.BookContentView.DUR_PAGE_INDEX_END) {
                         pageIndex = tempCount;
                     } else {
                         if (pageIndex >= tempCount) {

@@ -1,6 +1,7 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
+import io.objectbox.annotation.Backlink
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.relation.ToOne
@@ -32,7 +33,7 @@ data class ChapterList(
      */
     var durChapterName: String? = null,
     var tag: String? = null,
-    var hasCache: Boolean? = false,
+    var hasCache: Boolean = false,
     @Id var id: Long = 0
 ) : Parcelable {
     constructor(
@@ -50,6 +51,9 @@ data class ChapterList(
         this.tag = tag
         this.hasCache = hasCache
     }
+
+    @IgnoredOnParcel
+    lateinit var bookInfo: ToOne<BookInfo>
 
     @IgnoredOnParcel
     lateinit var bookContent: ToOne<BookContent>

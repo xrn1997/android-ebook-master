@@ -1,6 +1,7 @@
 package com.ebook.find.mvp.presenter.impl;
 
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -27,12 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.objectbox.query.Query;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class ChoiceBookPresenterImpl extends BasePresenterImpl<IChoiceBookView> implements IChoiceBookPresenter {
+    private static final String TAG = "ChoiceBookPresenterImpl";
     private final String url;
     private final String title;
 
@@ -44,7 +47,10 @@ public class ChoiceBookPresenterImpl extends BasePresenterImpl<IChoiceBookView> 
         url = intent.getStringExtra("url");
         title = intent.getStringExtra("title");
         Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build().find();
+                    List<BookShelf> temp;
+                    try (Query<BookShelf> query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build()) {
+                        temp = query.find();
+                    }
                     e.onNext(temp);
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -59,7 +65,7 @@ public class ChoiceBookPresenterImpl extends BasePresenterImpl<IChoiceBookView> 
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "onError: ", e);
                     }
                 });
     }
@@ -111,7 +117,7 @@ public class ChoiceBookPresenterImpl extends BasePresenterImpl<IChoiceBookView> 
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "onError: ", e);
                         mView.searchBookError();
                     }
                 });
