@@ -1,6 +1,7 @@
 buildscript {
     dependencies {
-        classpath libs.greendao.gradle.plugin // add plugin
+        //https://docs.objectbox.io/kotlin-support
+        classpath "io.objectbox:objectbox-gradle-plugin:4.0.2"
     }
 }
 plugins {

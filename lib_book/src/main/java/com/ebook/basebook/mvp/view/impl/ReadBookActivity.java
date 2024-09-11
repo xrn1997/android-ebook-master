@@ -198,7 +198,7 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
 
     @Override
     public void initPop() {
-        checkAddShelfPop = new CheckAddShelfPop(this, mPresenter.getBookShelf().getBookInfo().getName(), new CheckAddShelfPop.OnItemClickListener() {
+        checkAddShelfPop = new CheckAddShelfPop(this, mPresenter.getBookShelf().getBookInfo().getTarget().getName(), new CheckAddShelfPop.OnItemClickListener() {
             @Override
             public void clickExit() {
                 finish();
@@ -210,7 +210,7 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
                 checkAddShelfPop.dismiss();
             }
         });
-        chapterListView.setData(mPresenter.getBookShelf(), index -> csvBook.setInitData(index, mPresenter.getBookShelf().getBookInfo().getChapterlist().size(), DBCode.BookContentView.DURPAGEINDEXBEGIN));
+        chapterListView.setData(mPresenter.getBookShelf(), index -> csvBook.setInitData(index, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), DBCode.BookContentView.DURPAGEINDEXBEGIN));
 
         windowLightPop = new WindowLightPop(this);
         windowLightPop.initLight();
@@ -241,24 +241,24 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
                                 llMenuBottom.startAnimation(menuBottomOut);
                             }
                             //弹出离线下载界面
-                            int endIndex = mPresenter.getBookShelf().getDurChapter() + 50;
-                            if (endIndex >= mPresenter.getBookShelf().getBookInfo().getChapterlist().size()) {
-                                endIndex = mPresenter.getBookShelf().getBookInfo().getChapterlist().size() - 1;
+                            int endIndex = mPresenter.getBookShelf().durChapter + 50;
+                            if (endIndex >= mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size()) {
+                                endIndex = mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size() - 1;
                             }
-                            moProgressHUD.showDownloadList(mPresenter.getBookShelf().getDurChapter(), endIndex, mPresenter.getBookShelf().getBookInfo().getChapterlist().size(), (start, end) -> {
+                            moProgressHUD.showDownloadList(mPresenter.getBookShelf().durChapter, endIndex, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), (start, end) -> {
                                 moProgressHUD.dismiss();
                                 mPresenter.addToShelf(() -> {
 
                                     List<DownloadChapter> result = new ArrayList<>();
                                     for (int i = start; i <= end; i++) {
                                         DownloadChapter item = new DownloadChapter();
-                                        item.setNoteUrl(mPresenter.getBookShelf().getNoteUrl());
-                                        item.setDurChapterIndex(mPresenter.getBookShelf().getBookInfo().getChapterlist().get(i).getDurChapterIndex());
-                                        item.setDurChapterName(mPresenter.getBookShelf().getBookInfo().getChapterlist().get(i).getDurChapterName());
-                                        item.setDurChapterUrl(mPresenter.getBookShelf().getBookInfo().getChapterlist().get(i).getDurChapterUrl());
-                                        item.setTag(mPresenter.getBookShelf().getTag());
-                                        item.setBookName(mPresenter.getBookShelf().getBookInfo().getName());
-                                        item.setCoverUrl(mPresenter.getBookShelf().getBookInfo().getCoverUrl());
+                                        item.noteUrl = mPresenter.getBookShelf().noteUrl;
+                                        item.durChapterIndex = mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.get(i).durChapterIndex;
+                                        item.durChapterName = mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.get(i).getDurChapterName();
+                                        item.durChapterUrl = mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.get(i).getDurChapterUrl();
+                                        item.tag = mPresenter.getBookShelf().getTag();
+                                        item.bookName = mPresenter.getBookShelf().getBookInfo().getTarget().getName();
+                                        item.coverUrl = mPresenter.getBookShelf().getBookInfo().getTarget().getCoverUrl();
                                         result.add(item);
                                     }
                                     RxBus.get().post(RxBusTag.START_DOWNLOAD_SERVICE, new DownloadChapterList(result));
@@ -269,11 +269,11 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
         });
         readBookMenuMorePop.setOnClickComment(v -> {
             readBookMenuMorePop.dismiss();
-            ChapterList path = mPresenter.getBookShelf().getBookInfo().getChapterlist().get(mPresenter.getBookShelf().getDurChapter());
+            ChapterList path = mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.get(mPresenter.getBookShelf().durChapter);
             Bundle bundle = new Bundle();
             bundle.putString("chapterUrl", path.getDurChapterUrl());
             bundle.putString("chapterName", path.getDurChapterName());
-            bundle.putString("bookName", mPresenter.getBookShelf().getBookInfo().getName());
+            bundle.putString("bookName", mPresenter.getBookShelf().getBookInfo().getTarget().getName());
             TheRouter.build(KeyCode.Book.COMMENT_PATH)
                     .with(bundle)
                     .navigation(ReadBookActivity.this);
@@ -301,8 +301,8 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
                 if (realDur < 1) {
                     realDur = 1;
                 }
-                if ((realDur - 1) != mPresenter.getBookShelf().getDurChapter()) {
-                    csvBook.setInitData(realDur - 1, mPresenter.getBookShelf().getBookInfo().getChapterlist().size(), DBCode.BookContentView.DURPAGEINDEXBEGIN);
+                if ((realDur - 1) != mPresenter.getBookShelf().durChapter) {
+                    csvBook.setInitData(realDur - 1, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), DBCode.BookContentView.DURPAGEINDEXBEGIN);
                 }
                 if (hpbReadProgress.getDurProgress() != realDur)
                     hpbReadProgress.setDurProgress(realDur);
@@ -342,8 +342,8 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
             public void updateProgress(int chapterIndex, int pageIndex) {
                 mPresenter.updateProgress(chapterIndex, pageIndex);
 
-                if (!mPresenter.getBookShelf().getBookInfo().getChapterlist().isEmpty())
-                    atvTitle.setText(mPresenter.getBookShelf().getBookInfo().getChapterlist().get(mPresenter.getBookShelf().getDurChapter()).getDurChapterName());
+                if (!mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.isEmpty())
+                    atvTitle.setText(mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.get(mPresenter.getBookShelf().durChapter).getDurChapterName());
                 else
                     atvTitle.setText("无章节");
                 if (hpbReadProgress.getDurProgress() != chapterIndex + 1)
@@ -370,18 +370,18 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
         });
 
         tvPre.setOnClickListener(v -> csvBook.setInitData(
-                mPresenter.getBookShelf().getDurChapter() - 1,
-                mPresenter.getBookShelf().getBookInfo().getChapterlist().size(),
+                mPresenter.getBookShelf().durChapter - 1,
+                mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(),
                 DBCode.BookContentView.DURPAGEINDEXBEGIN));
         tvNext.setOnClickListener(v -> csvBook.setInitData(
-                mPresenter.getBookShelf().getDurChapter() + 1,
-                mPresenter.getBookShelf().getBookInfo().getChapterlist().size(),
+                mPresenter.getBookShelf().durChapter + 1,
+                mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(),
                 DBCode.BookContentView.DURPAGEINDEXBEGIN));
 
         llCatalog.setOnClickListener(v -> {
             llMenuTop.startAnimation(menuTopOut);
             llMenuBottom.startAnimation(menuBottomOut);
-            new Handler().postDelayed(() -> chapterListView.show(mPresenter.getBookShelf().getDurChapter()), menuTopOut.getDuration());
+            new Handler().postDelayed(() -> chapterListView.show(mPresenter.getBookShelf().durChapter), menuTopOut.getDuration());
         });
 
         llLight.setOnClickListener(v -> {

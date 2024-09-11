@@ -2,16 +2,17 @@ package com.ebook.book.mvvm.model;
 
 import android.app.Application;
 
-import com.ebook.db.GreenDaoManager;
+import com.ebook.db.ObjectBoxManager;
 import com.ebook.db.entity.BookInfo;
-import com.ebook.db.entity.BookInfoDao;
+import com.ebook.db.entity.BookInfo_;
 import com.ebook.db.entity.BookShelf;
-import com.ebook.db.entity.BookShelfDao;
-import com.ebook.db.entity.ChapterListDao;
+import com.ebook.db.entity.BookShelf_;
+import com.ebook.db.entity.ChapterList_;
 import com.xrn1997.common.mvvm.model.BaseModel;
 
 import java.util.List;
 
+import io.objectbox.query.QueryBuilder;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -24,15 +25,18 @@ public class BookListModel extends BaseModel {
 
     public Observable<List<BookShelf>> getBookShelfList() {
         return Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> bookShelves = GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().queryBuilder().orderDesc(BookShelfDao.Properties.FinalDate).list();
+                    List<BookShelf> bookShelves = ObjectBoxManager.INSTANCE.getBookShelfBox().query().order(BookShelf_.finalDate, QueryBuilder.DESCENDING).build().find();
                     for (int i = 0; i < bookShelves.size(); i++) {
-                        List<BookInfo> temp = GreenDaoManager.getInstance().getmDaoSession().getBookInfoDao().queryBuilder().where(BookInfoDao.Properties.NoteUrl.eq(bookShelves.get(i).getNoteUrl())).limit(1).build().list();
-                        if (temp != null && !temp.isEmpty()) {
+                        List<BookInfo> temp = ObjectBoxManager.INSTANCE.getBookInfoBox().query(BookInfo_.noteUrl.equal(bookShelves.get(i).noteUrl)).build().find(0, 1);
+                        if (!temp.isEmpty()) {
                             BookInfo bookInfo = temp.get(0);
-                            bookInfo.setChapterlist(GreenDaoManager.getInstance().getmDaoSession().getChapterListDao().queryBuilder().where(ChapterListDao.Properties.NoteUrl.eq(bookShelves.get(i).getNoteUrl())).orderAsc(ChapterListDao.Properties.DurChapterIndex).build().list());
-                            bookShelves.get(i).setBookInfo(bookInfo);
+                            bookInfo.chapterlist = ObjectBoxManager.INSTANCE.getChapterListBox()
+                                    .query(ChapterList_.noteUrl.equal(bookShelves.get(i).noteUrl))
+                                    .order(ChapterList_.durChapterIndex)
+                                    .build().find();
+                            bookShelves.get(i).bookInfo.setTarget(bookInfo);
                         } else {
-                            GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().delete(bookShelves.get(i));
+                            ObjectBoxManager.INSTANCE.getBookShelfBox().remove(bookShelves.get(i));
                             bookShelves.remove(i);
                             i--;
                         }

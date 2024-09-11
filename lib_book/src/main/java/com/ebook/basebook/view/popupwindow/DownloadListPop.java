@@ -17,18 +17,20 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ebook.basebook.R;
 import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.common.event.RxBusTag;
-import com.ebook.db.GreenDaoManager;
+import com.ebook.db.ObjectBoxManager;
 import com.ebook.db.entity.BookShelf;
-import com.ebook.db.entity.BookShelfDao;
+import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.DownloadChapter;
-import com.ebook.db.entity.DownloadChapterDao;
+import com.ebook.db.entity.DownloadChapter_;
 import com.hwangjr.rxbus.RxBus;
 import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
 
 import java.util.List;
+import java.util.Objects;
 
+import io.objectbox.query.QueryBuilder;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -89,12 +91,12 @@ public class DownloadListPop extends PopupWindow {
 
     private void initWait() {
         Observable.create((ObservableOnSubscribe<DownloadChapter>) e -> {
-                    List<BookShelf> bookShelfList = GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().queryBuilder().orderDesc(BookShelfDao.Properties.FinalDate).list();
-                    if (bookShelfList != null && !bookShelfList.isEmpty()) {
+                    List<BookShelf> bookShelfList = ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class).query().orderDesc(BookShelf_.finalDate).build().find();
+                    if (!bookShelfList.isEmpty()) {
                         for (BookShelf bookItem : bookShelfList) {
-                            if (!bookItem.getTag().equals(BookShelf.LOCAL_TAG)) {
-                                List<DownloadChapter> downloadChapterList = GreenDaoManager.getInstance().getmDaoSession().getDownloadChapterDao().queryBuilder().where(DownloadChapterDao.Properties.NoteUrl.eq(bookItem.getNoteUrl())).orderAsc(DownloadChapterDao.Properties.DurChapterIndex).limit(1).list();
-                                if (downloadChapterList != null && !downloadChapterList.isEmpty()) {
+                            if (!Objects.equals(bookItem.getTag(), BookShelf.LOCAL_TAG)) {
+                                List<DownloadChapter> downloadChapterList = ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex, QueryBuilder.DESCENDING).build().find(0, 1);
+                                if (!downloadChapterList.isEmpty()) {
                                     e.onNext(downloadChapterList.get(0));
                                     e.onComplete();
                                     return;
@@ -102,7 +104,7 @@ public class DownloadListPop extends PopupWindow {
                             }
                         }
                     }
-                    GreenDaoManager.getInstance().getmDaoSession().getDownloadChapterDao().deleteAll();
+                    ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).removeAll();
                     e.onNext(new DownloadChapter());
                     e.onComplete();
                 })
@@ -111,7 +113,7 @@ public class DownloadListPop extends PopupWindow {
                 .subscribe(new SimpleObserver<>() {
                     @Override
                     public void onNext(DownloadChapter value) {
-                        if (value.getNoteUrl() != null && !value.getNoteUrl().isEmpty()) {
+                        if (value.noteUrl != null && !value.noteUrl.isEmpty()) {
                             llDownload.setVisibility(View.GONE);
                             tvNone.setVisibility(View.GONE);
                             tvDownload.setText("开始下载");
@@ -161,9 +163,9 @@ public class DownloadListPop extends PopupWindow {
         tvNone.setVisibility(View.GONE);
         llDownload.setVisibility(View.VISIBLE);
         tvDownload.setText("暂停下载");
-        Glide.with(mContext).load(downloadChapter.getCoverUrl()).dontAnimate().diskCacheStrategy(DiskCacheStrategy.RESOURCE).centerCrop().placeholder(R.drawable.img_cover_default).into(ivCover);
-        tvName.setText(downloadChapter.getBookName());
-        tvChapterName.setText(downloadChapter.getDurChapterName());
+        Glide.with(mContext).load(downloadChapter.coverUrl).dontAnimate().diskCacheStrategy(DiskCacheStrategy.RESOURCE).centerCrop().placeholder(R.drawable.img_cover_default).into(ivCover);
+        tvName.setText(downloadChapter.bookName);
+        tvChapterName.setText(downloadChapter.durChapterName);
     }
 
 }

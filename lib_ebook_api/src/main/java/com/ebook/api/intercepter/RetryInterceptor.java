@@ -1,4 +1,4 @@
-package com.ebook.basebook.base.intercepter;
+package com.ebook.api.intercepter;
 
 import androidx.annotation.NonNull;
 

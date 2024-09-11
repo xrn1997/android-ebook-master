@@ -22,13 +22,13 @@ public class RetrofitManager {
     private volatile static RetrofitManager retrofitManager;
     private final Retrofit mRetrofit;
     public String TOKEN;
-    private OkHttpClient.Builder okHttpBuilder;
 
     private RetrofitManager() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okHttpBuilder = new OkHttpClient.Builder();
+        OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         okHttpBuilder.interceptors().add(logging);
+//        okHttpBuilder.addInterceptor(new EncodingInterceptor("UTF-8"));
         mRetrofit = new Retrofit.Builder()
                 .client(okHttpBuilder.build())
                 .baseUrl(API.URL_HOST_USER)

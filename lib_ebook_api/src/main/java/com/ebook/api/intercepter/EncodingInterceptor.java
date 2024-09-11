@@ -1,4 +1,4 @@
-package com.ebook.basebook.base.impl;
+package com.ebook.api.intercepter;
 
 
 import androidx.annotation.NonNull;
@@ -12,11 +12,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * <pre>
- *     time   : 2019/05/23
- *     desc   :
- *     version: 1.0
- * </pre>
+ * 编码拦截器
  */
 public class EncodingInterceptor implements Interceptor {
 

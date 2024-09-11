@@ -41,7 +41,7 @@ public class LibraryViewModel extends BaseRefreshViewModel<Library, LibraryModel
                         @Override
                         public void onNext(Library value) {
                             libraryKindBookLists.clear();
-                            libraryKindBookLists.addAll(value.getKindBooks());
+                            libraryKindBookLists.addAll(value.kindBooks);
                             //       Log.d(TAG, "refreshdata onNext: " + value.toString());
                             getLibraryNewData();
                         }
@@ -76,7 +76,7 @@ public class LibraryViewModel extends BaseRefreshViewModel<Library, LibraryModel
                     public void onNext(final Library value) {
                         //     Log.d(TAG, "refreshdata onNext: " + value.getKindBooks().get(0).getKindName());
                         libraryKindBookLists.clear();
-                        libraryKindBookLists.addAll(value.getKindBooks());
+                        libraryKindBookLists.addAll(value.kindBooks);
                         postStopRefreshEvent(true);
                         //   Log.d(TAG, "refreshdata onNext: finish");
                     }

@@ -16,8 +16,13 @@ import com.ebook.basebook.mvp.view.IBookDetailView;
 import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.common.BaseApplication;
 import com.ebook.common.event.RxBusTag;
-import com.ebook.db.GreenDaoManager;
+import com.ebook.db.ObjectBoxManager;
+import com.ebook.db.entity.BookContent;
+import com.ebook.db.entity.BookContent_;
+import com.ebook.db.entity.BookInfo;
+import com.ebook.db.entity.BookInfo_;
 import com.ebook.db.entity.BookShelf;
+import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.SearchBook;
 import com.ebook.db.entity.WebChapter;
 import com.hwangjr.rxbus.RxBus;
@@ -32,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.objectbox.Box;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
@@ -85,27 +91,25 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     @Override
     public void getBookShelfInfo() {
         Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> temp = GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().queryBuilder().list();
-                    if (temp == null)
-                        temp = new ArrayList<>();
+                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build().find();
                     e.onNext(temp);
                     e.onComplete();
                 }).flatMap((Function<List<BookShelf>, ObservableSource<BookShelf>>) bookShelf -> {
                     bookShelfList.addAll(bookShelf);
 
                     final BookShelf bookShelfResult = new BookShelf();
-                    bookShelfResult.setNoteUrl(searchBook.getNoteUrl());
-                    bookShelfResult.setFinalDate(System.currentTimeMillis());
-                    bookShelfResult.setDurChapter(0);
-                    bookShelfResult.setDurChapterPage(0);
-                    bookShelfResult.setTag(searchBook.getTag());
+                    bookShelfResult.noteUrl=searchBook.noteUrl;
+                    bookShelfResult.finalDate = System.currentTimeMillis();
+                    bookShelfResult.durChapter = 0;
+                    bookShelfResult.durChapterPage = 0;
+                    bookShelfResult.setTag(searchBook.tag);
                     return WebBookModelImpl.getInstance().getBookInfo(bookShelfResult);
                 }).map(bookShelf -> {
                     for (int i = 0; i < bookShelfList.size(); i++) {
-                        if (bookShelfList.get(i).getNoteUrl().equals(bookShelf.getNoteUrl())) {
+                        if (bookShelfList.get(i).noteUrl.equals(bookShelf.noteUrl)) {
                             inBookShelf = true;
-                            bookShelf.setDurChapter(bookShelfList.get(i).getDurChapter());
-                            bookShelf.setDurChapterPage(bookShelfList.get(i).getDurChapterPage());
+                            bookShelf.durChapter = bookShelfList.get(i).durChapter;
+                            bookShelf.durChapterPage = bookShelfList.get(i).durChapterPage;
                             break;
                         }
                     }
@@ -119,7 +123,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                         WebBookModelImpl.getInstance().getChapterList(value).subscribe(new SimpleObserver<>() {
                             @Override
                             public void onNext(WebChapter<BookShelf> bookShelfWebChapter) {
-                                mBookShelf = bookShelfWebChapter.getData();
+                                mBookShelf = bookShelfWebChapter.data;
                                 mView.updateView();
                             }
 
@@ -145,10 +149,11 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     public void addToBookShelf() {
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
-                        GreenDaoManager.getInstance().getmDaoSession().getChapterListDao().insertOrReplaceInTx(mBookShelf.getBookInfo().getChapterlist());
-                        GreenDaoManager.getInstance().getmDaoSession().getBookInfoDao().insertOrReplace(mBookShelf.getBookInfo());
+                        //todo insertOrReplaceInTx insertOrReplace
+                        ObjectBoxManager.INSTANCE.getChapterListBox().put(mBookShelf.getBookInfo().getTarget().chapterlist);
+                        ObjectBoxManager.INSTANCE.getBookInfoBox().put(mBookShelf.getBookInfo().getTarget());
                         //网络数据获取成功  存入BookShelf表数据库
-                        GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().insertOrReplace(mBookShelf);
+                        ObjectBoxManager.INSTANCE.getBookShelfBox().put(mBookShelf);
                         e.onNext(true);
                         e.onComplete();
                     }).subscribeOn(Schedulers.io())
@@ -177,21 +182,27 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     public void removeFromBookShelf() {
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
-                        GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().deleteByKey(mBookShelf.getNoteUrl());
-                        GreenDaoManager.getInstance().getmDaoSession().getBookInfoDao().deleteByKey(mBookShelf.getBookInfo().getNoteUrl());
+                        Box<BookShelf> bookShelfBox=ObjectBoxManager.INSTANCE.getBookShelfBox();
+                        List<BookShelf> bookShelves=bookShelfBox.query(BookShelf_.noteUrl.equal(mBookShelf.noteUrl)).build().find();
+                        bookShelfBox.remove(bookShelves);
+                        Box<BookInfo> bookInfoBox=ObjectBoxManager.INSTANCE.getBookInfoBox();
+                        List<BookInfo> bookInfos=bookInfoBox.query(BookInfo_.noteUrl.equal(mBookShelf.getBookInfo().getTarget().getNoteUrl())).build().find();
+                        bookInfoBox.remove(bookInfos);
                         List<String> keys = new ArrayList<>();
-                        if (mBookShelf.getBookInfo().getChapterlist().size() > 0) {
-                            for (int i = 0; i < mBookShelf.getBookInfo().getChapterlist().size(); i++) {
-                                keys.add(mBookShelf.getBookInfo().getChapterlist().get(i).getDurChapterUrl());
+                        if (!mBookShelf.getBookInfo().getTarget().chapterlist.isEmpty()) {
+                            for (int i = 0; i < mBookShelf.getBookInfo().getTarget().chapterlist.size(); i++) {
+                                ObjectBoxManager.INSTANCE.getChapterListBox().remove(mBookShelf.getBookInfo().getTarget().chapterlist);
+                                List<BookContent> bookContents=ObjectBoxManager.INSTANCE.getBookContentBox()
+                                        .query(BookContent_.durChapterUrl.equal(mBookShelf.getBookInfo().getTarget().chapterlist.get(i).getDurChapterUrl()))
+                                        .build().find();
+                                ObjectBoxManager.INSTANCE.getBookContentBox().remove(bookContents);
                             }
                         }
-                        GreenDaoManager.getInstance().getmDaoSession().getBookContentDao().deleteByKeyInTx(keys);
-                        GreenDaoManager.getInstance().getmDaoSession().getChapterListDao().deleteInTx(mBookShelf.getBookInfo().getChapterlist());
                         e.onNext(true);
                         e.onComplete();
                     }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .compose(((BaseActivity) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
+                    .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
                     .subscribe(new SimpleObserver<>() {
                         @Override
                         public void onNext(Boolean value) {
@@ -228,7 +239,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
             }
     )
     public void hadAddBook(BookShelf value) {
-        if ((null != mBookShelf && value.getNoteUrl().equals(mBookShelf.getNoteUrl())) || (null != searchBook && value.getNoteUrl().equals(searchBook.getNoteUrl()))) {
+        if ((null != mBookShelf && value.noteUrl.equals(mBookShelf.noteUrl)) || (null != searchBook && value.noteUrl.equals(searchBook.noteUrl))) {
             inBookShelf = true;
             if (null != searchBook) {
                 searchBook.setAdd(true);
@@ -244,12 +255,12 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     )
     public void hadRemoveBook(BookShelf value) {
         for (int i = 0; i < bookShelfList.size(); i++) {
-            if (bookShelfList.get(i).getNoteUrl().equals(value.getNoteUrl())) {
+            if (bookShelfList.get(i).noteUrl.equals(value.noteUrl)) {
                 bookShelfList.remove(i);
                 break;
             }
         }
-        if ((null != mBookShelf && value.getNoteUrl().equals(mBookShelf.getNoteUrl())) || (null != searchBook && value.getNoteUrl().equals(searchBook.getNoteUrl()))) {
+        if ((null != mBookShelf && value.noteUrl.equals(mBookShelf.noteUrl)) || (null != searchBook && value.noteUrl.equals(searchBook.noteUrl))) {
             inBookShelf = false;
             if (null != searchBook) {
                 searchBook.setAdd(false);
@@ -265,7 +276,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     )
     public void hadBook(BookShelf value) {
         bookShelfList.add(value);
-        if ((null != mBookShelf && value.getNoteUrl().equals(mBookShelf.getNoteUrl())) || (null != searchBook && value.getNoteUrl().equals(searchBook.getNoteUrl()))) {
+        if ((null != mBookShelf && value.noteUrl.equals(mBookShelf.noteUrl)) || (null != searchBook && value.noteUrl.equals(searchBook.noteUrl))) {
             inBookShelf = true;
             if (null != searchBook) {
                 searchBook.setAdd(true);

@@ -110,9 +110,6 @@ fastjson2 = { module = "com.alibaba.fastjson2:fastjson2", version.ref = "fastjso
 fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-transformations = { module = "jp.wasabeef:glide-transformations", version.ref = "glideTransformations" }
-greendao = { module = "org.greenrobot:greendao", version.ref = "greendao" }
-greendao-generator = { module = "org.greenrobot:greendao-generator", version.ref = "greendao" }
-greendao-gradle-plugin = { module = "org.greenrobot:greendao-gradle-plugin", version.ref = "greendaoGradlePluginVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 input = { module = "com.afollestad.material-dialogs:input", version.ref = "input" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }

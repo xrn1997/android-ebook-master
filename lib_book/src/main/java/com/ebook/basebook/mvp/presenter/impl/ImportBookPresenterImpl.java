@@ -103,7 +103,7 @@ public class ImportBookPresenterImpl extends BasePresenterImpl<IImportBookView> 
                     public void onNext(@NotNull LocBookShelf value) {
                         Log.e(TAG, "onNext: " + value.getNew());
                         if (value.getNew()) {
-                            RxBus.get().post(RxBusTag.HAD_ADD_BOOK, value.getBookShelf());
+                            RxBus.get().post(RxBusTag.HAD_ADD_BOOK, value.bookShelf);
                         }
                     }
 

@@ -1,7 +1,8 @@
 package com.ebook.basebook.base.manager;
 
+import android.content.Context;
+
 import com.ebook.basebook.observer.SimpleObserver;
-import com.ebook.db.GreenDaoManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,11 +33,11 @@ public class ErrorAnalyContentManager {
         return instance;
     }
 
-    public void writeNewErrorUrl(final String url) {
+    public void writeNewErrorUrl(Context context, final String url) {
         Observable.create(new ObservableOnSubscribe<Boolean>() {
                     @Override
                     public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                        String filePath = GreenDaoManager.mContext.getExternalFilesDir("").getPath();
+                        String filePath = context.getExternalFilesDir("").getPath();
                         File dir = new File(filePath);
                         if (!dir.exists()) {
                             dir.mkdirs();
@@ -89,11 +90,11 @@ public class ErrorAnalyContentManager {
                 });
     }
 
-    public void writeMayByNetError(final String url) {
+    public void writeMayByNetError(Context context, final String url) {
         Observable.create(new ObservableOnSubscribe<Boolean>() {
                     @Override
                     public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                        String filePath = GreenDaoManager.mContext.getExternalFilesDir("").getPath();
+                        String filePath = context.getExternalFilesDir("").getPath();
                         File dir = new File(filePath);
                         if (!dir.exists()) {
                             dir.mkdirs();

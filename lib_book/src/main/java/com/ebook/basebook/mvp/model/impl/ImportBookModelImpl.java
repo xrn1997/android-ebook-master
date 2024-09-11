@@ -3,12 +3,14 @@ package com.ebook.basebook.mvp.model.impl;
 
 import com.ebook.basebook.base.impl.MBaseModelImpl;
 import com.ebook.basebook.mvp.model.ImportBookModel;
-import com.ebook.db.GreenDaoManager;
-import com.ebook.db.entity.BookInfoDao;
+import com.ebook.db.ObjectBoxManager;
+import com.ebook.db.entity.BookContent;
+import com.ebook.db.entity.BookInfo;
+import com.ebook.db.entity.BookInfo_;
 import com.ebook.db.entity.BookShelf;
-import com.ebook.db.entity.BookShelfDao;
+import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.ChapterList;
-import com.ebook.db.entity.ChapterListDao;
+import com.ebook.db.entity.ChapterList_;
 import com.ebook.db.entity.LocBookShelf;
 
 import org.mozilla.universalchardet.UniversalDetector;
@@ -21,9 +23,11 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.objectbox.Box;
 import io.reactivex.Observable;
 
 
@@ -54,33 +58,37 @@ public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookMod
             in.close();
 
             String md5 = new BigInteger(1, md.digest()).toString(16);
+            Box<BookShelf> bookShelfBox = ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class);
+            Box<BookInfo> bookInfoBox = ObjectBoxManager.INSTANCE.getStore().boxFor(BookInfo.class);
+            Box<ChapterList> chapterListBox = ObjectBoxManager.INSTANCE.getStore().boxFor(ChapterList.class);
             BookShelf bookShelf;
-            List<BookShelf> temp = GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().queryBuilder().where(BookShelfDao.Properties.NoteUrl.eq(md5)).build().list();
+            List<BookShelf> temp = bookShelfBox.query(BookShelf_.noteUrl.equal(md5)).build().find();
             boolean isNew = true;
-            if (temp != null && !temp.isEmpty()) {
+            if (!temp.isEmpty()) {
                 isNew = false;
                 bookShelf = temp.get(0);
-                bookShelf.setBookInfo(GreenDaoManager.getInstance().getmDaoSession().getBookInfoDao().queryBuilder().where(BookInfoDao.Properties.NoteUrl.eq(bookShelf.getNoteUrl())).build().list().get(0));
+                bookShelf.bookInfo.setTarget(bookInfoBox.query(BookInfo_.noteUrl.equal(bookShelf.noteUrl)).build().find().get(0));
             } else {
                 bookShelf = new BookShelf();
-                bookShelf.setFinalDate(System.currentTimeMillis());
-                bookShelf.setDurChapter(0);
-                bookShelf.setDurChapterPage(0);
+                bookShelf.finalDate = System.currentTimeMillis();
+                bookShelf.durChapter = 0;
+                bookShelf.durChapterPage = 0;
                 bookShelf.setTag(BookShelf.LOCAL_TAG);
-                bookShelf.setNoteUrl(md5);
+                bookShelf.noteUrl = md5;
 
-                bookShelf.getBookInfo().setAuthor("佚名");
-                bookShelf.getBookInfo().setName(book.getName().replace(".txt", "").replace(".TXT", ""));
-                bookShelf.getBookInfo().setFinalRefreshData(System.currentTimeMillis());
-                bookShelf.getBookInfo().setCoverUrl("");
-                bookShelf.getBookInfo().setNoteUrl(md5);
-                bookShelf.getBookInfo().setTag(BookShelf.LOCAL_TAG);
+                bookShelf.getBookInfo().getTarget().setAuthor("佚名");
+                bookShelf.getBookInfo().getTarget().setName(book.getName().replace(".txt", "").replace(".TXT", ""));
+                bookShelf.getBookInfo().getTarget().finalRefreshData = System.currentTimeMillis();
+                bookShelf.getBookInfo().getTarget().setCoverUrl("");
+                bookShelf.getBookInfo().getTarget().setNoteUrl(md5);
+                bookShelf.getBookInfo().getTarget().setTag(BookShelf.LOCAL_TAG);
 
                 saveChapter(book, md5);
-                GreenDaoManager.getInstance().getmDaoSession().getBookInfoDao().insertOrReplace(bookShelf.getBookInfo());
-                GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().insertOrReplace(bookShelf);
+                //todo insertOrReplace
+                bookInfoBox.put(bookShelf.getBookInfo().getTarget());
+                bookShelfBox.put(bookShelf);
             }
-            bookShelf.getBookInfo().setChapterlist(GreenDaoManager.getInstance().getmDaoSession().getChapterListDao().queryBuilder().where(ChapterListDao.Properties.NoteUrl.eq(bookShelf.getNoteUrl())).orderAsc(ChapterListDao.Properties.DurChapterIndex).build().list());
+            bookShelf.getBookInfo().getTarget().chapterlist = chapterListBox.query(ChapterList_.noteUrl.equal(bookShelf.noteUrl)).order(ChapterList_.durChapterIndex).build().find();
             e.onNext(new LocBookShelf(isNew, bookShelf));
             e.onComplete();
         });
@@ -93,7 +101,7 @@ public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookMod
         } else {
             int a = 0;
             for (int i = 0; i < shelf.size(); i++) {
-                if (temp.getNoteUrl().equals(shelf.get(i).getNoteUrl())) {
+                if (Objects.equals(temp.noteUrl, shelf.get(i).noteUrl)) {
                     break;
                 } else {
                     a++;
@@ -172,16 +180,16 @@ public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookMod
     private void saveDurChapterContent(String md5, int chapterPageIndex, String name, String content) {
         ChapterList chapterList = new ChapterList();
         chapterList.setNoteUrl(md5);
-        chapterList.setDurChapterIndex(chapterPageIndex);
+        chapterList.durChapterIndex = chapterPageIndex;
         chapterList.setTag(BookShelf.LOCAL_TAG);
         chapterList.setDurChapterUrl(md5 + "_" + chapterPageIndex);
         chapterList.setDurChapterName(name);
-        chapterList.getBookContent().setDurChapterUrl(chapterList.getDurChapterUrl());
-        chapterList.getBookContent().setTag(BookShelf.LOCAL_TAG);
-        chapterList.getBookContent().setDurChapterIndex(chapterList.getDurChapterIndex());
-        chapterList.getBookContent().setDurCapterContent(content);
-
-        GreenDaoManager.getInstance().getmDaoSession().getBookContentDao().insertOrReplace(chapterList.getBookContent());
-        GreenDaoManager.getInstance().getmDaoSession().getChapterListDao().insertOrReplace(chapterList);
+        chapterList.getBookContent().getTarget().durChapterUrl = chapterList.getDurChapterUrl();
+        chapterList.getBookContent().getTarget().tag = BookShelf.LOCAL_TAG;
+        chapterList.getBookContent().getTarget().durChapterIndex = chapterList.durChapterIndex;
+        chapterList.getBookContent().getTarget().durChapterContent = content;
+        //todo insertOrReplace
+        ObjectBoxManager.INSTANCE.getStore().boxFor(BookContent.class).put(chapterList.bookContent.getTarget());
+        ObjectBoxManager.INSTANCE.getStore().boxFor(ChapterList.class).put(chapterList);
     }
 }

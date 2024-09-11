@@ -99,12 +99,7 @@ public class MainBookFragment extends BaseMvvmRefreshFragment<FragmentBookMainBi
             intent.putExtra("from", ReadBookPresenterImpl.OPEN_FROM_APP);
             String key = String.valueOf(System.currentTimeMillis());
             intent.putExtra("data_key", key);
-            try {
-                BitIntentDataManager.getInstance().putData(key, bookShelf.clone());
-            } catch (CloneNotSupportedException e) {
-                BitIntentDataManager.getInstance().putData(key, bookShelf);
-                Log.e(TAG, "initView: ", e);
-            }
+            BitIntentDataManager.getInstance().putData(key, bookShelf.clone());
             startActivity(intent);
         });
         mBookListAdapter.setOnItemLongClickListener((bookShelf, position) -> {
@@ -145,7 +140,7 @@ public class MainBookFragment extends BaseMvvmRefreshFragment<FragmentBookMainBi
             }
     )
     public void hadAddOrRemoveBook(BookShelf bookShelf) {
-        Log.e(TAG, "hadAddOrRemoveBook: " + bookShelf.getBookInfo().getName());
+        Log.e(TAG, "hadAddOrRemoveBook: " + bookShelf.bookInfo.getTarget().getName());
         mViewModel.refreshData();
         //autoLoadData();
     }

@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
-    id("org.greenrobot.greendao")
+    id("kotlin-parcelize")
+    id("io.objectbox")
 }
 android {
 
@@ -44,9 +45,6 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api libs.appcompat
 
-    api libs.greendao
-    api libs.greendao.generator
-    api libs.greendao.gradle.plugin
     implementation libs.core.ktx
 
     testImplementation libs.junit

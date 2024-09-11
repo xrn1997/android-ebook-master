@@ -38,7 +38,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/cover"
                     android:scaleType="centerCrop"
-                    app:imageUrl="@{String.valueOf(bookshelf.bookInfo.coverUrl)}"
+                    app:imageUrl="@{String.valueOf(bookshelf.bookInfo.target.coverUrl)}"
                     app:placeHolder="@{@drawable/img_cover_default}" />
             </androidx.cardview.widget.CardView>
 
@@ -54,7 +54,7 @@
                     android:ellipsize="end"
                     android:fontFamily="monospace"
                     android:singleLine="true"
-                    android:text="@{String.valueOf(bookshelf.bookInfo.name)}"
+                    android:text="@{String.valueOf(bookshelf.bookInfo.target.name)}"
                     android:textSize="16sp" />
 
                 <TextView
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txt_book_name"
                     android:layout_marginTop="4dp"
-                    android:text="@{String.valueOf(bookshelf.bookInfo.author)}"
+                    android:text="@{String.valueOf(bookshelf.bookInfo.target.author)}"
                     android:textColor="#888888"
                     android:textSize="12sp" />
 
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txt_book_author"
                     android:layout_marginTop="4dp"
-                    android:text="@{@string/read_to+String.valueOf(bookshelf.bookInfo.chapterlist.get(bookshelf.durChapter).durChapterName)}"
+                    android:text="@{@string/read_to+String.valueOf(bookshelf.bookInfo.target.chapterlist.get(bookshelf.durChapter).durChapterName)}"
                     android:textColor="#888888"
                     android:textSize="12sp" />
             </RelativeLayout>

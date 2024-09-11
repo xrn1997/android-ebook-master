@@ -1,5 +1,7 @@
 package com.ebook.basebook.mvp.presenter.impl;
 
+import static com.xrn1997.common.BaseApplication.context;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -28,11 +30,11 @@ import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.basebook.view.BookContentView;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.common.util.ToastUtil;
-import com.ebook.db.GreenDaoManager;
+import com.ebook.db.ObjectBoxManager;
 import com.ebook.db.entity.BookContent;
-import com.ebook.db.entity.BookContentDao;
+import com.ebook.db.entity.BookContent_;
 import com.ebook.db.entity.BookShelf;
-import com.ebook.db.entity.BookShelfDao;
+import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.LocBookShelf;
 import com.ebook.db.entity.ReadBookContent;
 import com.ebook.db.event.DBCode;
@@ -44,9 +46,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -83,7 +85,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
         if (open_from == OPEN_FROM_APP) {
             String key = intent.getStringExtra("data_key");
             bookShelf = (BookShelf) BitIntentDataManager.getInstance().getData(key);
-            if (!bookShelf.getTag().equals(BookShelf.LOCAL_TAG)) {
+            if (!Objects.equals(bookShelf.getTag(), BookShelf.LOCAL_TAG)) {
                 mView.showDownloadMenu();
             }
             BitIntentDataManager.getInstance().cleanData(key);
@@ -93,12 +95,8 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                     !Environment.isExternalStorageManager()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity)
                         .setMessage("在Android11及以上的版本中，本程序还需要您同意允许访问所有文件权限，不然无法打开和扫描本地文件")
-                        .setPositiveButton("确定", (dialog, which) -> {
-                            mView.getRequestPermission().launch(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION));
-                        })
-                        .setNegativeButton("取消", ((dialog, which) -> {
-                            activity.onBackPressed();
-                        }));
+                        .setPositiveButton("确定", (dialog, which) -> mView.getRequestPermission().launch(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)))
+                        .setNegativeButton("取消", ((dialog, which) -> activity.onBackPressed()));
                 AlertDialog dialog = builder.create();
                 //点击dialog之外的空白处，dialog不能消失
                 dialog.setCanceledOnTouchOutside(false);
@@ -128,7 +126,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                     public void onNext(@NotNull LocBookShelf value) {
                                         if (value.getNew())
                                             RxBus.get().post(RxBusTag.HAD_ADD_BOOK, value);
-                                        bookShelf = value.getBookShelf();
+                                        bookShelf = value.bookShelf;
                                         mView.dimissLoadBook();
                                         checkInShelf();
                                     }
@@ -169,16 +167,17 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     @Override
     public void initContent() {
-        mView.initContentSuccess(bookShelf.getDurChapter(), bookShelf.getBookInfo().getChapterlist().size(), bookShelf.getDurChapterPage());
+        mView.initContentSuccess(bookShelf.durChapter, bookShelf.getBookInfo().getTarget().chapterlist.size(), bookShelf.durChapterPage);
     }
 
     @Override
     public void loadContent(final BookContentView bookContentView, final long bookTag, final int chapterIndex, int pageIndex) {
-        if (null != bookShelf && bookShelf.getBookInfo().getChapterlist().size() > 0) {
-            if (null != bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent() && null != bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getDurCapterContent()) {
-                if (bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getLineSize() == mView.getPaint().getTextSize() && bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getLineContent().size() > 0) {
+        if (null != bookShelf && !bookShelf.getBookInfo().getTarget().chapterlist.isEmpty()) {
+            bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent();
+            if (null != bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().durChapterContent) {
+                if (bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineSize == mView.getPaint().getTextSize() && !bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.isEmpty()) {
                     //已有数据
-                    int tempCount = (int) Math.ceil(bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getLineContent().size() * 1.0 / pageLineCount) - 1;
+                    int tempCount = (int) Math.ceil(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.size() * 1.0 / pageLineCount) - 1;
 
                     if (pageIndex == DBCode.BookContentView.DURPAGEINDEXBEGIN) {
                         pageIndex = 0;
@@ -191,28 +190,28 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                     }
 
                     int start = pageIndex * pageLineCount;
-                    int end = pageIndex == tempCount ? bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getLineContent().size() : start + pageLineCount;
+                    int end = pageIndex == tempCount ? bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.size() : start + pageLineCount;
                     if (bookContentView != null && bookTag == bookContentView.getqTag()) {
-                        bookContentView.updateData(bookTag, bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getDurChapterName()
-                                , bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getLineContent().subList(start, end)
+                        bookContentView.updateData(bookTag, bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterName()
+                                , bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.subList(start, end)
                                 , chapterIndex
-                                , bookShelf.getBookInfo().getChapterlist().size()
+                                , bookShelf.getBookInfo().getTarget().chapterlist.size()
                                 , pageIndex
                                 , tempCount + 1);
                     }
                 } else {
                     //有元数据  重新分行
-                    bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().setLineSize(mView.getPaint().getTextSize());
+                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineSize = mView.getPaint().getTextSize();
                     final int finalPageIndex = pageIndex;
-                    SeparateParagraphtoLines(bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getDurCapterContent())
+                    SeparateParagraphtoLines(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().durChapterContent)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
-                            .compose(((BaseActivity) mView.getContext()).<List<String>>bindUntilEvent(ActivityEvent.DESTROY))
-                            .subscribe(new SimpleObserver<List<String>>() {
+                            .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
+                            .subscribe(new SimpleObserver<>() {
                                 @Override
                                 public void onNext(List<String> value) {
-                                    bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getLineContent().clear();
-                                    bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getBookContent().getLineContent().addAll(value);
+                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.clear();
+                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.addAll(value);
                                     loadContent(bookContentView, bookTag, chapterIndex, finalPageIndex);
                                 }
 
@@ -226,36 +225,40 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
             } else {
                 final int finalPageIndex1 = pageIndex;
                 Observable.create((ObservableOnSubscribe<ReadBookContent>) e -> {
-                            List<BookContent> tempList = GreenDaoManager.getInstance().getmDaoSession().getBookContentDao().queryBuilder().where(BookContentDao.Properties.DurChapterUrl.eq(bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getDurChapterUrl())).build().list();
-                            e.onNext(new ReadBookContent(tempList == null ? new ArrayList<>() : tempList, finalPageIndex1));
+                            List<BookContent> tempList = ObjectBoxManager.INSTANCE.getBookContentBox()
+                                    .query(BookContent_.durChapterUrl.equal(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterUrl()))
+                                    .build().find();
+                            e.onNext(new ReadBookContent(tempList, finalPageIndex1));
                             e.onComplete();
                         }).observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .compose(((BaseActivity) mView.getContext()).<ReadBookContent>bindUntilEvent(ActivityEvent.DESTROY))
+                        .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
                         .subscribe(new SimpleObserver<>() {
                             @Override
                             public void onNext(ReadBookContent tempList) {
-                                if (tempList.getBookContentList() != null && tempList.getBookContentList().size() > 0 && tempList.getBookContentList().get(0).getDurCapterContent() != null) {
-                                    bookShelf.getBookInfo().getChapterlist().get(chapterIndex).setBookContent(tempList.getBookContentList().get(0));
-                                    loadContent(bookContentView, bookTag, chapterIndex, tempList.getPageIndex());
+                                if (!tempList.bookContentList.isEmpty() && tempList.bookContentList.get(0).durChapterContent != null) {
+                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).bookContent.setTarget(tempList.bookContentList.get(0));
+                                    loadContent(bookContentView, bookTag, chapterIndex, tempList.pageIndex);
                                 } else {
-                                    final int finalPageIndex1 = tempList.getPageIndex();
-                                    WebBookModelImpl.getInstance().getBookContent(bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getDurChapterUrl(), chapterIndex).map(bookContent -> {
+                                    final int finalPageIndex1 = tempList.pageIndex;
+                                    WebBookModelImpl.getInstance().getBookContent(context, bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterUrl(), chapterIndex).map(bookContent -> {
                                                 if (bookContent.getRight()) {
-                                                    GreenDaoManager.getInstance().getmDaoSession().getBookContentDao().insertOrReplace(bookContent);
-                                                    bookShelf.getBookInfo().getChapterlist().get(chapterIndex).setHasCache(true);
-                                                    GreenDaoManager.getInstance().getmDaoSession().getChapterListDao().update(bookShelf.getBookInfo().getChapterlist().get(chapterIndex));
+                                                    //todo getBookContentBox
+                                                    ObjectBoxManager.INSTANCE.getBookContentBox().put(bookContent);
+                                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).setHasCache(true);
+                                                    //todo update
+                                                    ObjectBoxManager.INSTANCE.getChapterListBox().put(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex));
                                                 }
                                                 return bookContent;
                                             })
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribeOn(Schedulers.io())
-                                            .compose(((BaseActivity) mView.getContext()).<BookContent>bindUntilEvent(ActivityEvent.DESTROY))
-                                            .subscribe(new SimpleObserver<BookContent>() {
+                                            .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
+                                            .subscribe(new SimpleObserver<>() {
                                                 @Override
                                                 public void onNext(BookContent value) {
-                                                    if (value.getDurChapterUrl() != null && value.getDurChapterUrl().length() > 0) {
-                                                        bookShelf.getBookInfo().getChapterlist().get(chapterIndex).setBookContent(value);
+                                                    if (value.durChapterUrl != null && !value.durChapterUrl.isEmpty()) {
+                                                        bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).bookContent.setTarget(value);
                                                         if (bookTag == bookContentView.getqTag())
                                                             loadContent(bookContentView, bookTag, chapterIndex, finalPageIndex1);
                                                     } else {
@@ -288,16 +291,17 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     @Override
     public void updateProgress(int chapterIndex, int pageIndex) {
-        bookShelf.setDurChapter(chapterIndex);
-        bookShelf.setDurChapterPage(pageIndex);
+        bookShelf.durChapter = chapterIndex;
+        bookShelf.durChapterPage = pageIndex;
     }
 
     @Override
     public void saveProgress() {
         if (bookShelf != null) {
             Observable.create((ObservableOnSubscribe<BookShelf>) e -> {
-                        bookShelf.setFinalDate(System.currentTimeMillis());
-                        GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().insertOrReplace(bookShelf);
+                        bookShelf.finalDate = System.currentTimeMillis();
+                        //todo insertOrReplace
+                        ObjectBoxManager.INSTANCE.getBookShelfBox().put(bookShelf);
                         e.onNext(bookShelf);
                         e.onComplete();
                     }).subscribeOn(Schedulers.io())
@@ -317,10 +321,10 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     @Override
     public String getChapterTitle(int chapterIndex) {
-        if (bookShelf.getBookInfo().getChapterlist().size() == 0) {
+        if (bookShelf.getBookInfo().getTarget().chapterlist.size() == 0) {
             return "无章节";
         } else
-            return bookShelf.getBookInfo().getChapterlist().get(chapterIndex).getDurChapterName();
+            return bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterName();
     }
 
     public Observable<List<String>> SeparateParagraphtoLines(final String paragraphstr) {
@@ -344,21 +348,19 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     private void checkInShelf() {
         Observable.create((ObservableOnSubscribe<Boolean>) e -> {
-                    List<BookShelf> temp = GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().queryBuilder().where(BookShelfDao.Properties.NoteUrl.eq(bookShelf.getNoteUrl())).build().list();
-                    if (temp == null || temp.size() == 0) {
-                        isAdd = false;
-                    } else
-                        isAdd = true;
+                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getBookShelfBox()
+                            .query(BookShelf_.noteUrl.equal(bookShelf.noteUrl)).build().find();
+                    isAdd = !temp.isEmpty();
                     e.onNext(isAdd);
                     e.onComplete();
                 }).subscribeOn(Schedulers.io())
-                .compose(((BaseActivity) mView.getContext()).<Boolean>bindUntilEvent(ActivityEvent.DESTROY))
+                .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<Boolean>() {
+                .subscribe(new SimpleObserver<>() {
                     @Override
                     public void onNext(Boolean value) {
                         mView.initPop();
-                        mView.setHpbReadProgressMax(bookShelf.getBookInfo().getChapterlist().size());
+                        mView.setHpbReadProgressMax(bookShelf.getBookInfo().getTarget().chapterlist.size());
                         mView.startLoadingBook();
                     }
 
@@ -372,18 +374,16 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
     @Override
     public void addToShelf(final OnAddListner addListner) {
         if (bookShelf != null) {
-            Observable.create(new ObservableOnSubscribe<Boolean>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                            GreenDaoManager.getInstance().getmDaoSession().getChapterListDao().insertOrReplaceInTx(bookShelf.getBookInfo().getChapterlist());
-                            GreenDaoManager.getInstance().getmDaoSession().getBookInfoDao().insertOrReplace(bookShelf.getBookInfo());
-                            //网络数据获取成功  存入BookShelf表数据库
-                            GreenDaoManager.getInstance().getmDaoSession().getBookShelfDao().insertOrReplace(bookShelf);
-                            RxBus.get().post(RxBusTag.HAD_ADD_BOOK, bookShelf);
-                            isAdd = true;
-                            e.onNext(true);
-                            e.onComplete();
-                        }
+            Observable.create((ObservableOnSubscribe<Boolean>) e -> {
+                        //todo insertOrReplaceInTx insertOrReplace
+                        ObjectBoxManager.INSTANCE.getChapterListBox().put(bookShelf.getBookInfo().getTarget().chapterlist);
+                        ObjectBoxManager.INSTANCE.getBookInfoBox().put(bookShelf.getBookInfo().getTarget());
+                        //网络数据获取成功  存入BookShelf表数据库
+                        ObjectBoxManager.INSTANCE.getBookShelfBox().put(bookShelf);
+                        RxBus.get().post(RxBusTag.HAD_ADD_BOOK, bookShelf);
+                        isAdd = true;
+                        e.onNext(true);
+                        e.onComplete();
                     }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new SimpleObserver<Object>() {
@@ -437,6 +437,6 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
     }
 
     public interface OnAddListner {
-        public void addSuccess();
+        void addSuccess();
     }
 }

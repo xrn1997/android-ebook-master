@@ -30,7 +30,7 @@ public class SearchHistoryAdapter extends TagAdapter<SearchHistory> {
     public View getView(FlowLayout parent, int position, final SearchHistory searchHistory) {
         TextView tv = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_searchhistory_item,
                 parent, false);
-        tv.setText(searchHistory.getContent());
+        tv.setText(searchHistory.content);
         tv.setOnClickListener(v -> {
             if (null != onItemClickListener) {
                 onItemClickListener.itemClick(searchHistory);

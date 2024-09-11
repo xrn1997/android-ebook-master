@@ -156,7 +156,7 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
             }
         });
         searchHistoryAdapter.setOnItemClickListener(searchHistory -> {
-            edtContent.setText(searchHistory.getContent());
+            edtContent.setText(searchHistory.content);
             toSearch();
         });
         bindKeyBoardEvent();
@@ -431,8 +431,8 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
     public Boolean checkIsExist(SearchBook searchBook) {
         boolean result = false;
         for (int i = 0; i < searchBookAdapter.getItemcount(); i++) {
-            if (searchBookAdapter.getSearchBooks().get(i).getNoteUrl().equals(searchBook.getNoteUrl()) &&
-                    searchBookAdapter.getSearchBooks().get(i).getTag().equals(searchBook.getTag())) {
+            if (searchBookAdapter.getSearchBooks().get(i).noteUrl.equals(searchBook.noteUrl) &&
+                    searchBookAdapter.getSearchBooks().get(i).tag.equals(searchBook.tag)) {
                 result = true;
                 break;
             }

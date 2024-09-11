@@ -42,24 +42,24 @@ public class ChoiceBookAdapter extends RefreshRecyclerViewAdapter {
     public void onBindViewholder(final RecyclerView.ViewHolder holder, final int position) {
         BookShelf bookShelf = new BookShelf();
         // Log.d("解析结果", searchBooks.get(position).getCoverUrl());
-        bookShelf.setNoteUrl(searchBooks.get(position).getNoteUrl());
+        bookShelf.noteUrl=searchBooks.get(position).noteUrl;
         Glide.with(((Viewholder) holder).ivCover.getContext())
-                .load(searchBooks.get(position).getCoverUrl())
+                .load(searchBooks.get(position).coverUrl)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .fitCenter()
                 .dontAnimate()
                 .placeholder(com.ebook.basebook.R.drawable.img_cover_default)
                 .into(((Viewholder) holder).ivCover);
-        ((Viewholder) holder).tvName.setText(searchBooks.get(position).getName());
-        ((Viewholder) holder).tvAuthor.setText(searchBooks.get(position).getAuthor());
-        String state = searchBooks.get(position).getState();
+        ((Viewholder) holder).tvName.setText(searchBooks.get(position).name);
+        ((Viewholder) holder).tvAuthor.setText(searchBooks.get(position).author);
+        String state = searchBooks.get(position).state;
         if (state == null || state.length() == 0) {
             ((Viewholder) holder).tvState.setVisibility(View.GONE);
         } else {
             ((Viewholder) holder).tvState.setVisibility(View.VISIBLE);
             ((Viewholder) holder).tvState.setText(state);
         }
-        long words = searchBooks.get(position).getWords();
+        long words = searchBooks.get(position).words;
         if (words <= 0) {
             ((Viewholder) holder).tvWords.setVisibility(View.GONE);
         } else {
@@ -71,22 +71,22 @@ public class ChoiceBookAdapter extends RefreshRecyclerViewAdapter {
             ((Viewholder) holder).tvWords.setVisibility(View.VISIBLE);
             ((Viewholder) holder).tvWords.setText(wordsS);
         }
-        String kind = searchBooks.get(position).getKind();
+        String kind = searchBooks.get(position).kind;
         if (kind == null || kind.length() <= 0) {
             ((Viewholder) holder).tvKind.setVisibility(View.GONE);
         } else {
             ((Viewholder) holder).tvKind.setVisibility(View.VISIBLE);
             ((Viewholder) holder).tvKind.setText(kind);
         }
-        if (searchBooks.get(position).getLastChapter() != null && searchBooks.get(position).getLastChapter().length() > 0)
-            ((Viewholder) holder).tvLastest.setText(searchBooks.get(position).getLastChapter());
-        else if (searchBooks.get(position).getDesc() != null && searchBooks.get(position).getDesc().length() > 0) {
-            ((Viewholder) holder).tvLastest.setText(searchBooks.get(position).getDesc());
+        if (searchBooks.get(position).lastChapter != null && !searchBooks.get(position).lastChapter.isEmpty())
+            ((Viewholder) holder).tvLastest.setText(searchBooks.get(position).lastChapter);
+        else if (searchBooks.get(position).desc != null && !searchBooks.get(position).desc.isEmpty()) {
+            ((Viewholder) holder).tvLastest.setText(searchBooks.get(position).desc);
         } else
             ((Viewholder) holder).tvLastest.setText("");
-        if (searchBooks.get(position).getOrigin() != null && searchBooks.get(position).getOrigin().length() > 0) {
+        if (searchBooks.get(position).origin != null && !searchBooks.get(position).origin.isEmpty()) {
             ((Viewholder) holder).tvOrigin.setVisibility(View.VISIBLE);
-            ((Viewholder) holder).tvOrigin.setText("来源:" + searchBooks.get(position).getOrigin());
+            ((Viewholder) holder).tvOrigin.setText("来源:" + searchBooks.get(position).origin);
         } else {
             ((Viewholder) holder).tvOrigin.setVisibility(View.GONE);
         }

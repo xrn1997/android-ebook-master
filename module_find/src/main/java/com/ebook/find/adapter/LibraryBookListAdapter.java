@@ -35,13 +35,13 @@ public class LibraryBookListAdapter extends BaseBindAdapter<LibraryKindBookList,
     protected void onBindItem(ViewLibraryKindbookBinding binding, LibraryKindBookList item, int position) {
         binding.setLibraryKindBookList(item);
         ObservableArrayList<SearchBook> searchBooks = new ObservableArrayList<>();
-        searchBooks.addAll(item.getBooks());
+        searchBooks.addAll(item.books);
         LibraryBookAdapter libraryBookAdapter = new LibraryBookAdapter(context, searchBooks);
 
         searchBooks.addOnListChangedCallback(ObservableListUtil.getListChangedCallback(libraryBookAdapter));
-        if (item.getKindUrl() != null) {
+        if (item.kindUrl != null) {
             binding.tvMore.setVisibility(VISIBLE);
-            binding.tvMore.setOnClickListener(v -> ChoiceBookActivity.startChoiceBookActivity(context, item.getKindName(), item.getKindUrl()));
+            binding.tvMore.setOnClickListener(v -> ChoiceBookActivity.startChoiceBookActivity(context, item.kindName, item.kindUrl));
         } else {
             binding.tvMore.setVisibility(GONE);
             binding.tvMore.setOnClickListener(null);
