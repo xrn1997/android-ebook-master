@@ -60,7 +60,6 @@ data class BookInfo(
      * 章节列表
      */
     @IgnoredOnParcel
-    @Transient
     @Backlink(to = "bookInfo")
     lateinit var chapterlist: ToMany<ChapterList>
 

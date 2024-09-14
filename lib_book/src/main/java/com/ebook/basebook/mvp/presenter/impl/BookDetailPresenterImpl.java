@@ -36,8 +36,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import io.objectbox.Box;
+import io.objectbox.query.Query;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
@@ -91,8 +93,11 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     @Override
     public void getBookShelfInfo() {
         Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build().find();
-                    e.onNext(temp);
+                    List<BookShelf> temp;
+                    try (Query<BookShelf> query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build()) {
+                        temp = query.find();
+                        e.onNext(temp);
+                    }
                     e.onComplete();
                 }).flatMap((Function<List<BookShelf>, ObservableSource<BookShelf>>) bookShelf -> {
                     bookShelfList.addAll(bookShelf);
@@ -106,7 +111,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                     return WebBookModelImpl.getInstance().getBookInfo(bookShelfResult);
                 }).map(bookShelf -> {
                     for (int i = 0; i < bookShelfList.size(); i++) {
-                        if (bookShelfList.get(i).noteUrl.equals(bookShelf.noteUrl)) {
+                        if (Objects.equals(bookShelfList.get(i).noteUrl, bookShelf.noteUrl)) {
                             inBookShelf = true;
                             bookShelf.durChapter = bookShelfList.get(i).durChapter;
                             bookShelf.durChapterPage = bookShelfList.get(i).durChapterPage;
@@ -123,6 +128,11 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                         WebBookModelImpl.getInstance().getChapterList(value).subscribe(new SimpleObserver<>() {
                             @Override
                             public void onNext(WebChapter<BookShelf> bookShelfWebChapter) {
+                                Log.e("ttt", "onNext: " + (bookShelfWebChapter.data.bookInfo.getTarget() == null));
+                                if (bookShelfWebChapter.data.bookInfo.getTarget() != null) {
+                                    Log.e("ttt", "onNext: " + bookShelfWebChapter.data.bookInfo.getTarget().getName());
+                                }
+                                //todo 检查对象是否设置完整
                                 mBookShelf = bookShelfWebChapter.data;
                                 mView.updateView();
                             }
@@ -130,7 +140,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                             @Override
                             public void onError(Throwable e) {
                                 mBookShelf = null;
-                                Log.e("错误信息", "getChapterList onError: " + e);
+                                Log.e("错误信息", "getChapterList onError: ", e);
                                 mView.getBookShelfError();
                             }
                         });
@@ -139,7 +149,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                     @Override
                     public void onError(@NotNull Throwable e) {
                         mBookShelf = null;
-                        Log.e("错误信息", "subscribe onError: " + e);
+                        Log.e("错误信息", "subscribe onError: ", e);
                         mView.getBookShelfError();
                     }
                 });

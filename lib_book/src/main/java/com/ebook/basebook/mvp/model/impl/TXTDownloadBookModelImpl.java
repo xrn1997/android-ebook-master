@@ -292,8 +292,11 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
         return Observable.create(e -> {
             bookShelf.setTag(TXTDownloadBookService.URL);
             WebChapter<List<ChapterList>> temp = analyzeChapterList(s, bookShelf.noteUrl);
+            BookInfo bookInfo = bookShelf.getBookInfo().getTarget();
             for (ChapterList chapterList : temp.data) {
-                bookShelf.getBookInfo().getTarget().chapterlist.add(chapterList);
+                chapterList.bookInfo.setTarget(bookInfo);
+                bookInfo.chapterlist.add(chapterList);
+
             }
             e.onNext(new WebChapter<>(bookShelf, temp.next));
             e.onComplete();

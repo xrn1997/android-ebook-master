@@ -6,7 +6,7 @@ import java.util.Map;
 public class BitIntentDataManager {
     public static Map<String, Object> bigData;
 
-    private static BitIntentDataManager instance = null;
+    private static volatile BitIntentDataManager instance = null;
 
     private BitIntentDataManager() {
         bigData = new HashMap<>();

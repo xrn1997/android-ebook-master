@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
