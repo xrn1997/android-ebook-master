@@ -1,8 +1,10 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
+import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import io.objectbox.annotation.Unique
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -10,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 data class DownloadChapter(
     @Id var id: Long = 0,
     @JvmField
-    var noteUrl: String? = null,
+    var noteUrl: String = String(),
     /**
      * 当前章节数
      */
@@ -20,22 +22,23 @@ data class DownloadChapter(
      * 当前章节对应的文章地址
      */
     @JvmField
-    var durChapterUrl: String? = null,
+    @Unique(onConflict = ConflictStrategy.REPLACE)
+    var durChapterUrl: String = String(),
     /**
      * 当前章节名称
      */
     @JvmField
-    var durChapterName: String? = null,
+    var durChapterName: String = String(),
 
     @JvmField
-    var tag: String? = null,
+    var tag: String = String(),
 
     @JvmField
-    var bookName: String? = null,
+    var bookName: String = String(),
     /**
      * 小说封面
      */
     @JvmField
-    var coverUrl: String? = null,
+    var coverUrl: String = String(),
 
     ) : Parcelable

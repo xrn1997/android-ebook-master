@@ -7,7 +7,6 @@ import com.ebook.db.entity.BookInfo;
 import com.ebook.db.entity.BookInfo_;
 import com.ebook.db.entity.BookShelf;
 import com.ebook.db.entity.BookShelf_;
-import com.ebook.db.entity.ChapterList_;
 import com.xrn1997.common.mvvm.model.BaseModel;
 
 import java.util.List;

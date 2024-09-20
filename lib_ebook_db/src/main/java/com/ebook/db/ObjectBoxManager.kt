@@ -1,7 +1,6 @@
 package com.ebook.db
 
 import android.content.Context
-import com.ebook.db.ObjectBoxManager.getBox
 import com.ebook.db.entity.BookContent
 import com.ebook.db.entity.BookInfo
 import com.ebook.db.entity.BookShelf

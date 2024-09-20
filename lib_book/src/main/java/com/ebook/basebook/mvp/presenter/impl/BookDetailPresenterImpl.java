@@ -17,8 +17,6 @@ import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.common.BaseApplication;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.db.ObjectBoxManager;
-import com.ebook.db.entity.BookContent;
-import com.ebook.db.entity.BookContent_;
 import com.ebook.db.entity.BookInfo;
 import com.ebook.db.entity.BookInfo_;
 import com.ebook.db.entity.BookShelf;
@@ -51,6 +49,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     public final static int FROM_BOOKSHELF = 1;
     public final static int FROM_SEARCH = 2;
 
+    private final static String TAG = "BookDetailPresenterImpl";
     private final int openFrom;
     private final List<BookShelf> bookShelfList = Collections.synchronizedList(new ArrayList<>());   //用来比对搜索的书籍是否已经添加进书架
     private SearchBook searchBook;
@@ -176,7 +175,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
 
                         @Override
                         public void onError(@NotNull Throwable e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "onError: ", e);
                             Toast.makeText(BaseApplication.context, "放入书架失败!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -193,15 +192,13 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                         Box<BookInfo> bookInfoBox=ObjectBoxManager.INSTANCE.getBookInfoBox();
                         List<BookInfo> bookInfos=bookInfoBox.query(BookInfo_.noteUrl.equal(mBookShelf.getBookInfo().getTarget().getNoteUrl())).build().find();
                         bookInfoBox.remove(bookInfos);
-                        List<String> keys = new ArrayList<>();
-                        if (!mBookShelf.getBookInfo().getTarget().chapterlist.isEmpty()) {
-                            for (int i = 0; i < mBookShelf.getBookInfo().getTarget().chapterlist.size(); i++) {
-                                ObjectBoxManager.INSTANCE.getChapterListBox().remove(mBookShelf.getBookInfo().getTarget().chapterlist);
-                                List<BookContent> bookContents=ObjectBoxManager.INSTANCE.getBookContentBox()
-                                        .query(BookContent_.durChapterUrl.equal(mBookShelf.getBookInfo().getTarget().chapterlist.get(i).getDurChapterUrl()))
-                                        .build().find();
-                                ObjectBoxManager.INSTANCE.getBookContentBox().remove(bookContents);
+
+                        var chapterList = mBookShelf.getBookInfo().getTarget().chapterlist;
+                        if (!chapterList.isEmpty()) {
+                            for (int i = 0; i < chapterList.size(); i++) {
+                                ObjectBoxManager.INSTANCE.getBookContentBox().remove(chapterList.get(i).bookContent.getTarget());
                             }
+                            ObjectBoxManager.INSTANCE.getChapterListBox().remove(chapterList);
                         }
                         e.onNext(true);
                         e.onComplete();
@@ -220,7 +217,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
 
                         @Override
                         public void onError(Throwable e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "onError: ", e);
                             Toast.makeText(BaseApplication.context, "移出书架失败!", Toast.LENGTH_SHORT).show();
                         }
                     });

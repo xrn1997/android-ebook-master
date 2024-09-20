@@ -6,26 +6,26 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class SearchBook(
     @JvmField
-    var noteUrl: String? = null,
+    var noteUrl: String = String(),
     @JvmField
-    var coverUrl: String? = null,
+    var coverUrl: String = String(),
     @JvmField
-    var name: String? = null,
+    var name: String = String(),
     @JvmField
-    var author: String? = null,
+    var author: String = String(),
     @JvmField
     var words: Long = 0,
     @JvmField
-    var state: String? = null,
+    var state: String = String(),
     @JvmField
-    var lastChapter: String? = null,
+    var lastChapter: String = String(),
     var add: Boolean = false,
     @JvmField
-    var tag: String? = null,
+    var tag: String = String(),
     @JvmField
-    var kind: String? = null,
+    var kind: String = String(),
     @JvmField
-    var origin: String? = null,
+    var origin: String = String(),
     @JvmField
-    var desc: String? = null
+    var desc: String = String()
 ) : Parcelable

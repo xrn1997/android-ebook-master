@@ -157,7 +157,6 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     @Override
     public void initContent() {
-        Log.e(TAG, "initContent: " + bookShelf.durChapter);
         mView.initContentSuccess(bookShelf.durChapter, bookShelf.getBookInfo().getTarget().chapterlist.size(), bookShelf.durChapterPage);
     }
 
@@ -166,8 +165,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
         if (null != bookShelf && !bookShelf.getBookInfo().getTarget().chapterlist.isEmpty()) {
             var chapterList = bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex);
             var bookContent = chapterList.getBookContent().getTarget();
-            Log.e(TAG, "loadContent: " + (bookContent == null));
-            if (null != bookContent.durChapterContent) {
+            if (!bookContent.durChapterContent.isEmpty()) {
                 if (bookContent.lineSize == mView.getPaint().getTextSize() && !bookContent.lineContent.isEmpty()) {
                     //已有数据
                     int tempCount = (int) Math.ceil(bookContent.lineContent.size() * 1.0 / pageLineCount) - 1;
@@ -229,7 +227,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                         .subscribe(new SimpleObserver<>() {
                             @Override
                             public void onNext(ReadBookContent tempList) {
-                                if (!tempList.bookContentList.isEmpty() && tempList.bookContentList.get(0).durChapterContent != null) {
+                                if (!tempList.bookContentList.isEmpty() && !tempList.bookContentList.get(0).durChapterContent.isEmpty()) {
                                     chapterList.bookContent.setTarget(tempList.bookContentList.get(0));
                                     loadContent(bookContentView, bookTag, chapterIndex, tempList.pageIndex);
                                 } else {
@@ -250,7 +248,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                             .subscribe(new SimpleObserver<>() {
                                                 @Override
                                                 public void onNext(BookContent value) {
-                                                    if (value.durChapterUrl != null && !value.durChapterUrl.isEmpty()) {
+                                                    if (!value.durChapterUrl.isEmpty()) {
                                                         chapterList.bookContent.setTarget(value);
                                                         if (bookTag == bookContentView.getqTag())
                                                             loadContent(bookContentView, bookTag, chapterIndex, finalPageIndex1);

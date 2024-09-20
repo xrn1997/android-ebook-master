@@ -1,9 +1,12 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
+import com.ebook.db.ObjectBoxManager
 import io.objectbox.annotation.Backlink
+import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import io.objectbox.annotation.Unique
 import io.objectbox.relation.ToMany
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -18,16 +21,17 @@ data class BookInfo(
     /**
      * 小说名
      */
-    var name: String? = null,
-    var tag: String? = null,
+    var name: String = String(),
+    var tag: String = String(),
     /**
      * 如果是来源网站   则小说根地址 /如果是本地  则是小说本地MD5
      */
-    var noteUrl: String? = null,
+    @Unique(onConflict = ConflictStrategy.REPLACE)
+    var noteUrl: String = String(),
     /**
      * 章节目录地址
      */
-    var chapterUrl: String? = null,
+    var chapterUrl: String = String(),
     /**
      * 章节最后更新时间
      */
@@ -36,23 +40,23 @@ data class BookInfo(
     /**
      * 小说封面
      */
-    var coverUrl: String? = null,
+    var coverUrl: String = String(),
     /**
      * 作者
      */
-    var author: String? = null,
+    var author: String = String(),
     /**
      * 简介
      */
-    var introduce: String? = null,
+    var introduce: String = String(),
     /**
      * 来源
      */
-    var origin: String? = null,
+    var origin: String = String(),
     /**
      * 状态，连载or完结
      */
-    var status: String? = null,
+    var status: String = String(),
     @Id var id: Long = 0
 ) : Parcelable {
 
@@ -65,7 +69,8 @@ data class BookInfo(
 
     fun clone(): BookInfo {
         val bookInfo = this.copy()
-        bookInfo.chapterlist = ToMany<ChapterList>(bookInfo, BookInfo_.chapterlist)
+        ObjectBoxManager.bookInfoBox.attach(bookInfo)
+        bookInfo.chapterlist = ToMany(bookInfo, BookInfo_.chapterlist)
         if (this::chapterlist.isInitialized) {
             for (chapter in chapterlist) {
                 bookInfo.chapterlist.add(chapter.clone())

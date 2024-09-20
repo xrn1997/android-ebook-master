@@ -2,8 +2,10 @@ package com.ebook.db.entity
 
 import android.os.Parcelable
 import com.ebook.db.event.DBCode
+import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import io.objectbox.annotation.Unique
 import io.objectbox.relation.ToOne
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -19,7 +21,8 @@ data class BookShelf(
      * 对应BookInfo noteUrl;
      */
     @JvmField
-    var noteUrl: String? = null,
+    @Unique(onConflict = ConflictStrategy.REPLACE)
+    var noteUrl: String = String(),
     /**
      * 当前章节 （包括番外）
      */
@@ -32,7 +35,7 @@ data class BookShelf(
      */
     @JvmField
     var finalDate: Long = 0,
-    var tag: String? = null,
+    var tag: String = String(),
     @Id var id: Long = 0
 ) : Parcelable {
     companion object {

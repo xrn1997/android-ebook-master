@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class SearchHistory(
     var type: Int = 0,
     @JvmField
-    var content: String? = null,
+    var content: String = String(),
     @JvmField
     var date: Long = 0,
     @Id var id: Long = 0

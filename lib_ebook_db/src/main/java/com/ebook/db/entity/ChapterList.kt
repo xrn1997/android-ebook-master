@@ -1,8 +1,11 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
+import android.util.Log
+import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import io.objectbox.annotation.Unique
 import io.objectbox.relation.ToOne
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -17,7 +20,7 @@ data class ChapterList(
     /**
      * 对应BookInfo noteUrl;
      */
-    var noteUrl: String? = null,
+    var noteUrl: String = String(),
     /**
      * 当前章节数
      */
@@ -26,21 +29,22 @@ data class ChapterList(
     /**
      * 当前章节对应的文章地址
      */
-    var durChapterUrl: String? = null,
+    @Unique(onConflict = ConflictStrategy.REPLACE)
+    var durChapterUrl: String = String(),
     /**
      * 当前章节名称
      */
-    var durChapterName: String? = null,
-    var tag: String? = null,
+    var durChapterName: String = String(),
+    var tag: String = String(),
     var hasCache: Boolean = false,
     @Id var id: Long = 0
 ) : Parcelable {
     constructor(
-        noteUrl: String?,
+        noteUrl: String,
         durChapterIndex: Int,
-        durChapterUrl: String?,
-        durChapterName: String?,
-        tag: String?,
+        durChapterUrl: String,
+        durChapterName: String,
+        tag: String,
         hasCache: Boolean
     ) : this() {
         this.noteUrl = noteUrl
@@ -64,6 +68,8 @@ data class ChapterList(
             chapterList.bookContent.target = this.bookContent.target.clone()
         } else {
             chapterList.bookContent.target = BookContent()
+            chapterList.bookContent.target.durChapterUrl = this.durChapterUrl
+            Log.e("ttt", "clone: ${this.durChapterUrl}")
         }
         return chapterList
     }

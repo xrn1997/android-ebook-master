@@ -5,9 +5,9 @@ package com.ebook.db.entity
  */
 class LibraryKindBookList {
     @JvmField
-    var kindName: String? = null
+    var kindName: String = String()
     @JvmField
-    var kindUrl: String? = null
+    var kindUrl: String = String()
     @JvmField
     var books: List<SearchBook>? = null
 }

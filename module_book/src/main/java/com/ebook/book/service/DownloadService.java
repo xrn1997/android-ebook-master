@@ -93,7 +93,7 @@ public class DownloadService extends Service {
         isStartDownload = true;
         Observable.create((ObservableOnSubscribe<Boolean>) e -> {
             //todo 还得改
-                    ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).put(newData);
+                    ObjectBoxManager.INSTANCE.getDownloadChapterBox().put(newData);
                     e.onNext(true);
                     e.onComplete();
                 })
@@ -118,11 +118,17 @@ public class DownloadService extends Service {
         isDownloading = true;
         if (isStartDownload) {
             Observable.create((ObservableOnSubscribe<DownloadChapter>) e -> {
-                        List<BookShelf> bookShelfList = ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class).query().orderDesc(BookShelf_.finalDate).build().find();
+                        List<BookShelf> bookShelfList;
+                        try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().orderDesc(BookShelf_.finalDate).build()) {
+                            bookShelfList = query.find();
+                        }
                         if (!bookShelfList.isEmpty()) {
                             for (BookShelf bookItem : bookShelfList) {
                                 if (!Objects.equals(bookItem.getTag(), BookShelf.LOCAL_TAG)) {
-                                    List<DownloadChapter> downloadChapterList = ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex).build().find(0, 1);
+                                    List<DownloadChapter> downloadChapterList;
+                                    try (var query = ObjectBoxManager.INSTANCE.getDownloadChapterBox().query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex).build()) {
+                                        downloadChapterList = query.find(0, 1);
+                                    }
                                     if (!downloadChapterList.isEmpty()) {
                                         e.onNext(downloadChapterList.get(0));
                                         e.onComplete();
@@ -131,7 +137,7 @@ public class DownloadService extends Service {
                                 }
                             }
                         }
-                        ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).removeAll();
+                        ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
                         e.onNext(new DownloadChapter());
                         e.onComplete();
                     })
@@ -140,11 +146,11 @@ public class DownloadService extends Service {
                     .subscribe(new SimpleObserver<>() {
                         @Override
                         public void onNext(DownloadChapter value) {
-                            if (value.noteUrl != null && !value.noteUrl.isEmpty()) {
+                            if (!value.noteUrl.isEmpty()) {
                                 downloading(context,value, 0);
                             } else {
                                 Observable.create(e -> {
-                                            ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).removeAll();
+                                            ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
                                             e.onNext(new Object());
                                             e.onComplete();
                                         })
@@ -181,7 +187,10 @@ public class DownloadService extends Service {
         if (durTime < reTryTimes && isStartDownload) {
             isProgress(data);
             Observable.create((ObservableOnSubscribe<BookContent>) e -> {
-                        List<BookContent> result = ObjectBoxManager.INSTANCE.getStore().boxFor(BookContent.class).query(BookContent_.durChapterUrl.equal(data.durChapterUrl)).build().find();
+                        List<BookContent> result;
+                        try (var query = ObjectBoxManager.INSTANCE.getBookContentBox().query(BookContent_.durChapterUrl.equal(data.durChapterUrl)).build()) {
+                            result = query.find();
+                        }
                         if (!result.isEmpty()) {
                             e.onNext(result.get(0));
                         } else {
@@ -189,19 +198,19 @@ public class DownloadService extends Service {
                         }
                         e.onComplete();
                     }).flatMap((Function<BookContent, ObservableSource<BookContent>>) bookContent -> {
-                        if (bookContent.durChapterUrl == null || bookContent.durChapterUrl.isEmpty()) {
+                        if (bookContent.durChapterUrl.isEmpty()) {
                             return WebBookModelImpl.getInstance().getBookContent(context,data.durChapterUrl, data.durChapterIndex).map(bookContent1 -> {
-                                ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).remove(data);
-                                if (Boolean.TRUE.equals(bookContent1.getRight())) {
+                                ObjectBoxManager.INSTANCE.getDownloadChapterBox().remove(data);
+                                if (bookContent1.getRight()) {
                                     //todo 还得改
-                                    ObjectBoxManager.INSTANCE.getStore().boxFor(BookContent.class).put(bookContent1);
-                                    ObjectBoxManager.INSTANCE.getStore().boxFor(ChapterList.class).put(new ChapterList(data.noteUrl, data.durChapterIndex, data.durChapterUrl, data.durChapterName, data.tag, true));
+                                    ObjectBoxManager.INSTANCE.getBookContentBox().put(bookContent1);
+                                    ObjectBoxManager.INSTANCE.getChapterListBox().put(new ChapterList(data.noteUrl, data.durChapterIndex, data.durChapterUrl, data.durChapterName, data.tag, true));
                                 }
                                 return bookContent1;
                             });
                         } else {
                             return Observable.create((ObservableOnSubscribe<BookContent>) e -> {
-                                ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).remove(data);
+                                ObjectBoxManager.INSTANCE.getDownloadChapterBox().remove(data);
                                 e.onNext(bookContent);
                                 e.onComplete();
                             });
@@ -235,7 +244,7 @@ public class DownloadService extends Service {
         } else {
             if (isStartDownload) {
                 Observable.create((ObservableOnSubscribe<Boolean>) e -> {
-                            ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).remove(data);
+                            ObjectBoxManager.INSTANCE.getDownloadChapterBox().remove(data);
                             e.onNext(true);
                             e.onComplete();
                         })
@@ -281,7 +290,7 @@ public class DownloadService extends Service {
 
     public void cancelDownload() {
         Observable.create(e -> {
-                    ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).removeAll();
+                    ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
                     e.onNext(new Object());
                     e.onComplete();
                 })
@@ -315,11 +324,17 @@ public class DownloadService extends Service {
     private void isPause() {
         isDownloading = false;
         Observable.create((ObservableOnSubscribe<DownloadChapter>) e -> {
-                    List<BookShelf> bookShelfList = ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class).query().orderDesc(BookShelf_.finalDate).build().find();
+                    List<BookShelf> bookShelfList;
+                    try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().orderDesc(BookShelf_.finalDate).build()) {
+                        bookShelfList = query.find();
+                    }
                     if (!bookShelfList.isEmpty()) {
                         for (BookShelf bookItem : bookShelfList) {
                             if (!Objects.equals(bookItem.getTag(), BookShelf.LOCAL_TAG)) {
-                                List<DownloadChapter> downloadChapterList = ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex).build().find(0, 1);
+                                List<DownloadChapter> downloadChapterList;
+                                try (var query = ObjectBoxManager.INSTANCE.getDownloadChapterBox().query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex).build()) {
+                                    downloadChapterList = query.find(0, 1);
+                                }
                                 if (!downloadChapterList.isEmpty()) {
                                     e.onNext(downloadChapterList.get(0));
                                     e.onComplete();
@@ -328,7 +343,7 @@ public class DownloadService extends Service {
                             }
                         }
                     }
-                    ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).removeAll();
+                    ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
                     e.onNext(new DownloadChapter());
                     e.onComplete();
                 }).subscribeOn(Schedulers.io())
@@ -336,7 +351,7 @@ public class DownloadService extends Service {
                 .subscribe(new SimpleObserver<>() {
                     @Override
                     public void onNext(DownloadChapter value) {
-                        if (value.noteUrl != null && !value.noteUrl.isEmpty()) {
+                        if (!value.noteUrl.isEmpty()) {
                             RxBus.get().post(RxBusTag.PAUSE_DOWNLOAD_LISTENER, new Object());
                         } else {
                             RxBus.get().post(RxBusTag.FINISH_DOWNLOAD_LISTENER, new Object());
@@ -366,7 +381,7 @@ public class DownloadService extends Service {
                 //点击通知后自动清除
                 .setAutoCancel(true)
                 .setContentTitle("正在下载：" + downloadChapter.bookName)
-                .setContentText(downloadChapter.durChapterName == null ? "  " : downloadChapter.durChapterName)
+                .setContentText(downloadChapter.durChapterName)
                 .setContentIntent(mainPendingIntent);
         //发送通知
         int notifyId = 19931118;

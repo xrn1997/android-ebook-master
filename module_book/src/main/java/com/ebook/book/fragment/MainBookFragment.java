@@ -2,7 +2,6 @@ package com.ebook.book.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -140,7 +139,6 @@ public class MainBookFragment extends BaseMvvmRefreshFragment<FragmentBookMainBi
             }
     )
     public void hadAddOrRemoveBook(BookShelf bookShelf) {
-        Log.e(TAG, "hadAddOrRemoveBook: " + bookShelf.bookInfo.getTarget().getName());
         mViewModel.refreshData();
         //autoLoadData();
     }
@@ -151,7 +149,6 @@ public class MainBookFragment extends BaseMvvmRefreshFragment<FragmentBookMainBi
             }
     )
     public void startDownloadService(DownloadChapterList result) {
-        Log.e(TAG, "startDownloadService: 开启下载服务");
         mActivity.startService(new Intent(mActivity, DownloadService.class));
         TimerTask task = new TimerTask() {
             @Override

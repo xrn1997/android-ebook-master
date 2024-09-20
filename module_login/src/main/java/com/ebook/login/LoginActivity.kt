@@ -19,7 +19,7 @@ import com.xrn1997.common.mvvm.view.BaseMvvmActivity
 class LoginActivity : BaseMvvmActivity<ActivityLoginBinding, LoginViewModel>() {
     @Autowired
     @JvmField
-    var path: String? = null
+    var path: String = String()
     private var mBundle: Bundle? = null //储存被拦截的信息
 
     public override fun onCreate(savedInstanceState: Bundle?) {

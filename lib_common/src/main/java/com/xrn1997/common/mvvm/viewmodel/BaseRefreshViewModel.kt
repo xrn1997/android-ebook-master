@@ -80,7 +80,7 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
      */
     var onRefreshCommand = BindingCommand(object : BindingAction {
         override fun call() {
-            Log.e("BRViewModel", "下拉刷新")
+            Log.d("BRViewModel", "下拉刷新")
             refreshData()
         }
     })
@@ -90,7 +90,7 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
      */
     var onLoadMoreCommand = BindingCommand(object : BindingAction {
         override fun call() {
-            Log.e("BRViewModel", "上拉加载")
+            Log.d("BRViewModel", "上拉加载")
             loadMore()
         }
     })
