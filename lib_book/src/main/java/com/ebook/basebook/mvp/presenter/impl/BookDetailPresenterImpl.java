@@ -128,11 +128,6 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                         WebBookModelImpl.getInstance().getChapterList(value).subscribe(new SimpleObserver<>() {
                             @Override
                             public void onNext(WebChapter<BookShelf> bookShelfWebChapter) {
-                                Log.e("ttt", "onNext: " + (bookShelfWebChapter.data.bookInfo.getTarget() == null));
-                                if (bookShelfWebChapter.data.bookInfo.getTarget() != null) {
-                                    Log.e("ttt", "onNext: " + bookShelfWebChapter.data.bookInfo.getTarget().getName());
-                                }
-                                //todo 检查对象是否设置完整
                                 mBookShelf = bookShelfWebChapter.data;
                                 mView.updateView();
                             }

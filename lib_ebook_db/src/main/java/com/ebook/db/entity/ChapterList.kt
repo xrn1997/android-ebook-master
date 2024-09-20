@@ -1,7 +1,6 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
-import io.objectbox.annotation.Backlink
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.relation.ToOne
@@ -59,6 +58,13 @@ data class ChapterList(
     lateinit var bookContent: ToOne<BookContent>
 
     fun clone(): ChapterList {
-        return this.copy()
+        val chapterList = this.copy()
+        chapterList.bookContent = ToOne(chapterList, ChapterList_.bookContent)
+        if (this::bookContent.isInitialized && this.bookContent.target != null) {
+            chapterList.bookContent.target = this.bookContent.target.clone()
+        } else {
+            chapterList.bookContent.target = BookContent()
+        }
+        return chapterList
     }
 }

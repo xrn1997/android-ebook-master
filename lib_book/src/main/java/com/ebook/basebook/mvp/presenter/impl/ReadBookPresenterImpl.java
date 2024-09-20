@@ -2,7 +2,6 @@ package com.ebook.basebook.mvp.presenter.impl;
 
 import static com.xrn1997.common.BaseApplication.context;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -58,7 +57,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     public final static int OPEN_FROM_OTHER = 0;
     public final static int OPEN_FROM_APP = 1;
-
+    private final static String TAG = "ReadBookPresenterImpl";
     private Boolean isAdd = false; //判断是否已经添加进书架
     private int open_from;
     private BookShelf bookShelf;
@@ -67,16 +66,6 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     public ReadBookPresenterImpl() {
 
-    }
-
-    /**
-     * 所有需要的权限
-     */
-    public static List<String> allNeedPermissions() {
-        List<String> permissions = new ArrayList<>();
-        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        return permissions;
     }
 
     @Override
@@ -134,7 +123,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        e.printStackTrace();
+                                        Log.e(TAG, "onError: ", e);
                                         mView.dimissLoadBook();
                                         mView.loadLocationBookError();
                                         ToastUtil.showToast("文本打开失败！");
@@ -144,7 +133,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "onError: ", e);
                         mView.dimissLoadBook();
                         mView.loadLocationBookError();
                         ToastUtil.showToast("文本打开失败！");
@@ -168,17 +157,20 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     @Override
     public void initContent() {
+        Log.e(TAG, "initContent: " + bookShelf.durChapter);
         mView.initContentSuccess(bookShelf.durChapter, bookShelf.getBookInfo().getTarget().chapterlist.size(), bookShelf.durChapterPage);
     }
 
     @Override
     public void loadContent(final BookContentView bookContentView, final long bookTag, final int chapterIndex, int pageIndex) {
         if (null != bookShelf && !bookShelf.getBookInfo().getTarget().chapterlist.isEmpty()) {
-            bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent();
-            if (null != bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().durChapterContent) {
-                if (bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineSize == mView.getPaint().getTextSize() && !bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.isEmpty()) {
+            var chapterList = bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex);
+            var bookContent = chapterList.getBookContent().getTarget();
+            Log.e(TAG, "loadContent: " + (bookContent == null));
+            if (null != bookContent.durChapterContent) {
+                if (bookContent.lineSize == mView.getPaint().getTextSize() && !bookContent.lineContent.isEmpty()) {
                     //已有数据
-                    int tempCount = (int) Math.ceil(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.size() * 1.0 / pageLineCount) - 1;
+                    int tempCount = (int) Math.ceil(bookContent.lineContent.size() * 1.0 / pageLineCount) - 1;
 
                     if (pageIndex == DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN) {
                         pageIndex = 0;
@@ -191,10 +183,10 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                     }
 
                     int start = pageIndex * pageLineCount;
-                    int end = pageIndex == tempCount ? bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.size() : start + pageLineCount;
+                    int end = pageIndex == tempCount ? bookContent.lineContent.size() : start + pageLineCount;
                     if (bookContentView != null && bookTag == bookContentView.getqTag()) {
-                        bookContentView.updateData(bookTag, bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterName()
-                                , bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.subList(start, end)
+                        bookContentView.updateData(bookTag, chapterList.getDurChapterName()
+                                , bookContent.lineContent.subList(start, end)
                                 , chapterIndex
                                 , bookShelf.getBookInfo().getTarget().chapterlist.size()
                                 , pageIndex
@@ -202,17 +194,17 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                     }
                 } else {
                     //有元数据  重新分行
-                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineSize = mView.getPaint().getTextSize();
+                    bookContent.lineSize = mView.getPaint().getTextSize();
                     final int finalPageIndex = pageIndex;
-                    SeparateParagraphtoLines(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().durChapterContent)
+                    SeparateParagraphtoLines(bookContent.durChapterContent)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
                             .subscribe(new SimpleObserver<>() {
                                 @Override
                                 public void onNext(List<String> value) {
-                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.clear();
-                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getBookContent().getTarget().lineContent.addAll(value);
+                                    bookContent.lineContent.clear();
+                                    bookContent.lineContent.addAll(value);
                                     loadContent(bookContentView, bookTag, chapterIndex, finalPageIndex);
                                 }
 
@@ -227,7 +219,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                 final int finalPageIndex1 = pageIndex;
                 Observable.create((ObservableOnSubscribe<ReadBookContent>) e -> {
                             List<BookContent> tempList = ObjectBoxManager.INSTANCE.getBookContentBox()
-                                    .query(BookContent_.durChapterUrl.equal(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterUrl()))
+                                    .query(BookContent_.durChapterUrl.equal(chapterList.getDurChapterUrl()))
                                     .build().find();
                             e.onNext(new ReadBookContent(tempList, finalPageIndex1));
                             e.onComplete();
@@ -238,17 +230,17 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                             @Override
                             public void onNext(ReadBookContent tempList) {
                                 if (!tempList.bookContentList.isEmpty() && tempList.bookContentList.get(0).durChapterContent != null) {
-                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).bookContent.setTarget(tempList.bookContentList.get(0));
+                                    chapterList.bookContent.setTarget(tempList.bookContentList.get(0));
                                     loadContent(bookContentView, bookTag, chapterIndex, tempList.pageIndex);
                                 } else {
                                     final int finalPageIndex1 = tempList.pageIndex;
-                                    WebBookModelImpl.getInstance().getBookContent(context, bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterUrl(), chapterIndex).map(bookContent -> {
+                                    WebBookModelImpl.getInstance().getBookContent(context, chapterList.getDurChapterUrl(), chapterIndex).map(bookContent -> {
                                                 if (bookContent.getRight()) {
                                                     //todo getBookContentBox
                                                     ObjectBoxManager.INSTANCE.getBookContentBox().put(bookContent);
-                                                    bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).setHasCache(true);
+                                                    chapterList.setHasCache(true);
                                                     //todo update
-                                                    ObjectBoxManager.INSTANCE.getChapterListBox().put(bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex));
+                                                    ObjectBoxManager.INSTANCE.getChapterListBox().put(chapterList);
                                                 }
                                                 return bookContent;
                                             })
@@ -259,7 +251,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                                 @Override
                                                 public void onNext(BookContent value) {
                                                     if (value.durChapterUrl != null && !value.durChapterUrl.isEmpty()) {
-                                                        bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).bookContent.setTarget(value);
+                                                        chapterList.bookContent.setTarget(value);
                                                         if (bookTag == bookContentView.getqTag())
                                                             loadContent(bookContentView, bookTag, chapterIndex, finalPageIndex1);
                                                     } else {
@@ -270,7 +262,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
                                                 @Override
                                                 public void onError(Throwable e) {
-                                                    e.printStackTrace();
+                                                    Log.e(TAG, "onError: ", e);
                                                     if (bookContentView != null && bookTag == bookContentView.getqTag())
                                                         bookContentView.loadError();
                                                 }
@@ -314,7 +306,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
                         @Override
                         public void onError(Throwable e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "onError: ", e);
                         }
                     });
         }
@@ -322,7 +314,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
     @Override
     public String getChapterTitle(int chapterIndex) {
-        if (bookShelf.getBookInfo().getTarget().chapterlist.size() == 0) {
+        if (bookShelf.getBookInfo().getTarget().chapterlist.isEmpty()) {
             return "无章节";
         } else
             return bookShelf.getBookInfo().getTarget().chapterlist.get(chapterIndex).getDurChapterName();
@@ -367,7 +359,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "onError: ", e);
                     }
                 });
     }
@@ -427,7 +419,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                         cursor.close();
                     }
 
-                    if ((data == null || data.length() <= 0) && uri.getPath() != null && uri.getPath().contains("/storage/emulated/")) {
+                    if ((data == null || data.isEmpty()) && uri.getPath() != null && uri.getPath().contains("/storage/emulated/")) {
                         data = uri.getPath().substring(uri.getPath().indexOf("/storage/emulated/"));
                     }
                 }

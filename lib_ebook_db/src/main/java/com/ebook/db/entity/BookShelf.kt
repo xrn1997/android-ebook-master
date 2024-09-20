@@ -50,6 +50,11 @@ data class BookShelf(
     lateinit var bookInfo: ToOne<BookInfo>
 
     fun clone(): BookShelf {
-        return this.copy()
+        val bookShelf = this.copy()
+        bookShelf.bookInfo = ToOne(bookShelf, BookShelf_.bookInfo)
+        if (this::bookInfo.isInitialized && this.bookInfo.target != null) {
+            bookShelf.bookInfo.target = this.bookInfo.target.clone()
+        }
+        return bookShelf
     }
 }

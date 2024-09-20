@@ -198,7 +198,8 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
 
     @Override
     public void initPop() {
-        checkAddShelfPop = new CheckAddShelfPop(this, mPresenter.getBookShelf().getBookInfo().getTarget().getName(), new CheckAddShelfPop.OnItemClickListener() {
+        var bookName = mPresenter.getBookShelf().getBookInfo().getTarget().getName();
+        checkAddShelfPop = new CheckAddShelfPop(this, bookName, new CheckAddShelfPop.OnItemClickListener() {
             @Override
             public void clickExit() {
                 finish();

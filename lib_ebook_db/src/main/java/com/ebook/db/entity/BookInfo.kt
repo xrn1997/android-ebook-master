@@ -64,6 +64,13 @@ data class BookInfo(
     lateinit var chapterlist: ToMany<ChapterList>
 
     fun clone(): BookInfo {
-        return this.copy()
+        val bookInfo = this.copy()
+        bookInfo.chapterlist = ToMany<ChapterList>(bookInfo, BookInfo_.chapterlist)
+        if (this::chapterlist.isInitialized) {
+            for (chapter in chapterlist) {
+                bookInfo.chapterlist.add(chapter.clone())
+            }
+        }
+        return bookInfo
     }
 }
