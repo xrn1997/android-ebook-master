@@ -3,7 +3,6 @@ package com.ebook.db.entity
 import android.os.Parcelable
 import com.ebook.db.ObjectBoxManager
 import io.objectbox.annotation.Backlink
-import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Unique
@@ -26,7 +25,7 @@ data class BookInfo(
     /**
      * 如果是来源网站   则小说根地址 /如果是本地  则是小说本地MD5
      */
-    @Unique(onConflict = ConflictStrategy.REPLACE)
+    @Unique
     var noteUrl: String = String(),
     /**
      * 章节目录地址

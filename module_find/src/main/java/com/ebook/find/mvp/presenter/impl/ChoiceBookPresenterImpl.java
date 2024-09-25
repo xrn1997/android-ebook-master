@@ -14,6 +14,7 @@ import com.ebook.basebook.utils.NetworkUtil;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.db.ObjectBoxManager;
 import com.ebook.db.entity.BookShelf;
+import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.SearchBook;
 import com.ebook.db.entity.WebChapter;
 import com.ebook.find.mvp.presenter.IChoiceBookPresenter;
@@ -166,10 +167,14 @@ public class ChoiceBookPresenterImpl extends BasePresenterImpl<IChoiceBookView> 
 
     private void saveBookToShelf(final BookShelf bookShelf) {
         Observable.create((ObservableOnSubscribe<BookShelf>) e -> {
-                    //todo insertOrReplaceInTx insertOrReplace
-                    ObjectBoxManager.INSTANCE.getChapterListBox().put(bookShelf.getBookInfo().getTarget().chapterlist);
-                    ObjectBoxManager.INSTANCE.getBookInfoBox().put(bookShelf.getBookInfo().getTarget());
+                    try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query(BookShelf_.noteUrl.equal(bookShelf.noteUrl)).build()) {
+                        var temp = query.findFirst();
+                        if (temp != null) {
+                            bookShelf.setId(temp.getId());
+                        }
+                    }
                     //网络数据获取成功  存入BookShelf表数据库
+                    //todo 这里假定不会出现多对多关系，即每个章节地址不会被引用多次。
                     ObjectBoxManager.INSTANCE.getBookShelfBox().put(bookShelf);
                     e.onNext(bookShelf);
                     e.onComplete();

@@ -1,8 +1,7 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
-import android.util.Log
-import io.objectbox.annotation.ConflictStrategy
+import com.ebook.db.ObjectBoxManager
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Unique
@@ -29,7 +28,7 @@ data class ChapterList(
     /**
      * 当前章节对应的文章地址
      */
-    @Unique(onConflict = ConflictStrategy.REPLACE)
+    @Unique
     var durChapterUrl: String = String(),
     /**
      * 当前章节名称
@@ -67,9 +66,13 @@ data class ChapterList(
         if (this::bookContent.isInitialized && this.bookContent.target != null) {
             chapterList.bookContent.target = this.bookContent.target.clone()
         } else {
-            chapterList.bookContent.target = BookContent()
-            chapterList.bookContent.target.durChapterUrl = this.durChapterUrl
-            Log.e("ttt", "clone: ${this.durChapterUrl}")
+            // 尝试从数据库查找
+            val bookContentFromDB = ObjectBoxManager.bookContentBox
+                .query(BookContent_.durChapterUrl.equal(this.durChapterUrl))
+                .build().findFirst()
+            if (bookContentFromDB != null) {
+                chapterList.bookContent.target = bookContentFromDB
+            }
         }
         return chapterList
     }

@@ -1,7 +1,6 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
-import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Transient
@@ -18,7 +17,7 @@ data class BookContent(
      * 对应BookInfo noteUrl;
      */
     @JvmField
-    @Unique(onConflict = ConflictStrategy.REPLACE)
+    @Unique
     var durChapterUrl: String = String(),
 
     /**

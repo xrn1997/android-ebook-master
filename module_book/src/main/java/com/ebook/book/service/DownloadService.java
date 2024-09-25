@@ -29,6 +29,7 @@ import com.ebook.db.entity.BookContent_;
 import com.ebook.db.entity.BookShelf;
 import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.ChapterList;
+import com.ebook.db.entity.ChapterList_;
 import com.ebook.db.entity.DownloadChapter;
 import com.ebook.db.entity.DownloadChapterList;
 import com.ebook.db.entity.DownloadChapter_;
@@ -92,7 +93,14 @@ public class DownloadService extends Service {
     private void addNewTask(final List<DownloadChapter> newData) {
         isStartDownload = true;
         Observable.create((ObservableOnSubscribe<Boolean>) e -> {
-            //todo 还得改
+                    for (var chapter : newData) {
+                        try (var query = ObjectBoxManager.INSTANCE.getDownloadChapterBox().query(DownloadChapter_.durChapterUrl.equal(chapter.durChapterUrl)).build()) {
+                            var tmp = query.findFirst();
+                            if (tmp != null) {
+                                chapter.setId(tmp.getId());
+                            }
+                        }
+                    }
                     ObjectBoxManager.INSTANCE.getDownloadChapterBox().put(newData);
                     e.onNext(true);
                     e.onComplete();
@@ -187,28 +195,39 @@ public class DownloadService extends Service {
         if (durTime < reTryTimes && isStartDownload) {
             isProgress(data);
             Observable.create((ObservableOnSubscribe<BookContent>) e -> {
-                        List<BookContent> result;
                         try (var query = ObjectBoxManager.INSTANCE.getBookContentBox().query(BookContent_.durChapterUrl.equal(data.durChapterUrl)).build()) {
-                            result = query.find();
+                            var result = query.findFirst();
+                            e.onNext(result != null ? result : new BookContent());
+                            e.onComplete();
+                        } catch (Exception ex) {
+                            e.onError(ex);
                         }
-                        if (!result.isEmpty()) {
-                            e.onNext(result.get(0));
-                        } else {
-                            e.onNext(new BookContent());
-                        }
-                        e.onComplete();
                     }).flatMap((Function<BookContent, ObservableSource<BookContent>>) bookContent -> {
                         if (bookContent.durChapterUrl.isEmpty()) {
+                            //todo 存在问题
+                            //章节内容不存在
                             return WebBookModelImpl.getInstance().getBookContent(context,data.durChapterUrl, data.durChapterIndex).map(bookContent1 -> {
                                 ObjectBoxManager.INSTANCE.getDownloadChapterBox().remove(data);
+                                Log.e(TAG, "downloading: " + bookContent1.getRight());
                                 if (bookContent1.getRight()) {
-                                    //todo 还得改
-                                    ObjectBoxManager.INSTANCE.getBookContentBox().put(bookContent1);
-                                    ObjectBoxManager.INSTANCE.getChapterListBox().put(new ChapterList(data.noteUrl, data.durChapterIndex, data.durChapterUrl, data.durChapterName, data.tag, true));
+                                    var cl = new ChapterList(data.noteUrl, data.durChapterIndex, data.durChapterUrl, data.durChapterName, data.tag, true);
+                                    try (var query = ObjectBoxManager.INSTANCE.getChapterListBox().query(ChapterList_.durChapterUrl.equal(bookContent1.durChapterUrl)).build()) {
+                                        var tmp = query.findFirst();
+                                        if (tmp != null) {
+                                            cl.setId(tmp.getId());
+                                            var bc = tmp.getBookContent().getTarget();
+                                            if (bc != null) {
+                                                bookContent1.setId(bc.getId());
+                                            }
+                                        }
+                                    }
+                                    cl.bookContent.setTarget(bookContent1);
+                                    ObjectBoxManager.INSTANCE.getChapterListBox().put(cl);
                                 }
                                 return bookContent1;
                             });
                         } else {
+                            //存在章节内容
                             return Observable.create((ObservableOnSubscribe<BookContent>) e -> {
                                 ObjectBoxManager.INSTANCE.getDownloadChapterBox().remove(data);
                                 e.onNext(bookContent);

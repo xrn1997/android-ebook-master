@@ -1,7 +1,6 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
-import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Unique
@@ -22,7 +21,7 @@ data class DownloadChapter(
      * 当前章节对应的文章地址
      */
     @JvmField
-    @Unique(onConflict = ConflictStrategy.REPLACE)
+    @Unique
     var durChapterUrl: String = String(),
     /**
      * 当前章节名称

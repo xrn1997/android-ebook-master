@@ -2,7 +2,6 @@ package com.ebook.db.entity
 
 import android.os.Parcelable
 import com.ebook.db.event.DBCode
-import io.objectbox.annotation.ConflictStrategy
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Unique
@@ -21,7 +20,7 @@ data class BookShelf(
      * 对应BookInfo noteUrl;
      */
     @JvmField
-    @Unique(onConflict = ConflictStrategy.REPLACE)
+    @Unique
     var noteUrl: String = String(),
     /**
      * 当前章节 （包括番外）

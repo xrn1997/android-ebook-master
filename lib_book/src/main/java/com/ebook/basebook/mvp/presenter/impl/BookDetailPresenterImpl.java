@@ -17,10 +17,11 @@ import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.common.BaseApplication;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.db.ObjectBoxManager;
+import com.ebook.db.entity.BookContent;
 import com.ebook.db.entity.BookInfo;
-import com.ebook.db.entity.BookInfo_;
 import com.ebook.db.entity.BookShelf;
 import com.ebook.db.entity.BookShelf_;
+import com.ebook.db.entity.ChapterList;
 import com.ebook.db.entity.SearchBook;
 import com.ebook.db.entity.WebChapter;
 import com.hwangjr.rxbus.RxBus;
@@ -153,10 +154,14 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     public void addToBookShelf() {
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
-                        //todo insertOrReplaceInTx insertOrReplace
-                        ObjectBoxManager.INSTANCE.getChapterListBox().put(mBookShelf.getBookInfo().getTarget().chapterlist);
-                        ObjectBoxManager.INSTANCE.getBookInfoBox().put(mBookShelf.getBookInfo().getTarget());
+                        try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query(BookShelf_.noteUrl.equal(mBookShelf.noteUrl)).build()) {
+                            var temp = query.findFirst();
+                            if (temp != null) {
+                                mBookShelf.setId(temp.getId());
+                            }
+                        }
                         //网络数据获取成功  存入BookShelf表数据库
+                        //todo 这里假定不会出现多对多关系，即每个章节地址不会被引用多次。
                         ObjectBoxManager.INSTANCE.getBookShelfBox().put(mBookShelf);
                         e.onNext(true);
                         e.onComplete();
@@ -187,18 +192,26 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
                         Box<BookShelf> bookShelfBox=ObjectBoxManager.INSTANCE.getBookShelfBox();
-                        List<BookShelf> bookShelves=bookShelfBox.query(BookShelf_.noteUrl.equal(mBookShelf.noteUrl)).build().find();
-                        bookShelfBox.remove(bookShelves);
-                        Box<BookInfo> bookInfoBox=ObjectBoxManager.INSTANCE.getBookInfoBox();
-                        List<BookInfo> bookInfos=bookInfoBox.query(BookInfo_.noteUrl.equal(mBookShelf.getBookInfo().getTarget().getNoteUrl())).build().find();
-                        bookInfoBox.remove(bookInfos);
-
-                        var chapterList = mBookShelf.getBookInfo().getTarget().chapterlist;
-                        if (!chapterList.isEmpty()) {
-                            for (int i = 0; i < chapterList.size(); i++) {
-                                ObjectBoxManager.INSTANCE.getBookContentBox().remove(chapterList.get(i).bookContent.getTarget());
+                        Box<BookInfo> bookInfoBox = ObjectBoxManager.INSTANCE.getBookInfoBox();
+                        Box<ChapterList> chapterListBox = ObjectBoxManager.INSTANCE.getChapterListBox();
+                        Box<BookContent> bookContentBox = ObjectBoxManager.INSTANCE.getBookContentBox();
+                        try (var query = bookShelfBox.query(BookShelf_.noteUrl.equal(mBookShelf.noteUrl)).build()) {
+                            var bookShelf = query.findFirst();
+                            if (bookShelf != null) {
+                                var bookInfo = bookShelf.bookInfo.getTarget();
+                                if (bookInfo != null) {
+                                    for (var chapterList : bookInfo.chapterlist) {
+                                        var bookContent = chapterList.bookContent.getTarget();
+                                        if (bookContent != null && bookContent.getId() != 0L) {
+                                            bookContentBox.remove(bookContent);
+                                        }
+                                    }
+                                    chapterListBox.remove(bookInfo.chapterlist);
+                                    bookInfoBox.remove(bookInfo);
+                                }
+                                Log.e(TAG, "removeFromBookShelf: " + bookShelf.getId());
+                                bookShelfBox.remove(bookShelf);
                             }
-                            ObjectBoxManager.INSTANCE.getChapterListBox().remove(chapterList);
                         }
                         e.onNext(true);
                         e.onComplete();
