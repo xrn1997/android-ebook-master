@@ -160,7 +160,8 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                                 mBookShelf.setId(temp.getId());
                             }
                             //网络数据获取成功  存入BookShelf表数据库
-                            ObjectBoxManager.INSTANCE.getBookShelfBox().put(mBookShelf);
+                            long id = ObjectBoxManager.INSTANCE.getBookShelfBox().put(mBookShelf);
+                            Log.e(TAG, "addToBookShelf: " + id);
                             e.onNext(true);
                             e.onComplete();
                         } catch (Exception ex) {

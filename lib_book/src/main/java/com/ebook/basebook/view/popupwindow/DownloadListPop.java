@@ -113,7 +113,7 @@ public class DownloadListPop extends PopupWindow {
                 .subscribe(new SimpleObserver<>() {
                     @Override
                     public void onNext(DownloadChapter value) {
-                        if (value.noteUrl != null && !value.noteUrl.isEmpty()) {
+                        if (!value.noteUrl.isEmpty()) {
                             llDownload.setVisibility(View.GONE);
                             tvNone.setVisibility(View.GONE);
                             tvDownload.setText("开始下载");

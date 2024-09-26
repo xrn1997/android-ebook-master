@@ -78,20 +78,21 @@ public class LibraryModel extends BaseModel {
     public static Observable<SearchHistory> insertSearchHistory(int type, String content) {
         return Observable.create((ObservableOnSubscribe<SearchHistory>) e -> {
                     Box<SearchHistory> boxStore = ObjectBoxManager.INSTANCE.getSearchHistoryBox();
-                    List<SearchHistory> searchHistories = boxStore
+                    try (var query = boxStore
                             .query(SearchHistory_.type.equal(type).and(SearchHistory_.content.equal(content)))
-                            .build().find(0, 1);
-                    SearchHistory searchHistory;
-                    if (!searchHistories.isEmpty()) {
-                        searchHistory = searchHistories.get(0);
-                        searchHistory.date = System.currentTimeMillis();
-                        //todo update
-                        boxStore.put(searchHistory);
-                    } else {
-                        searchHistory = new SearchHistory(type, content, System.currentTimeMillis());
-                        boxStore.put(searchHistory);
+                            .build()) {
+                        var searchHistories = query.find(0, 1);
+                        SearchHistory searchHistory;
+                        if (!searchHistories.isEmpty()) {
+                            searchHistory = searchHistories.get(0);
+                            searchHistory.date = System.currentTimeMillis();
+                            boxStore.put(searchHistory);
+                        } else {
+                            searchHistory = new SearchHistory(type, content, System.currentTimeMillis());
+                            boxStore.put(searchHistory);
+                        }
+                        e.onNext(searchHistory);
                     }
-                    e.onNext(searchHistory);
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -100,12 +101,14 @@ public class LibraryModel extends BaseModel {
     public static Observable<Integer> cleanSearchHistory(int type, String content) {
         return Observable.create((ObservableOnSubscribe<Integer>) e -> {
                     Box<SearchHistory> boxStore = ObjectBoxManager.INSTANCE.getSearchHistoryBox();
-                    List<SearchHistory> histories = boxStore
+                    try (var query = boxStore
                             .query(SearchHistory_.type.equal(type))
                             .contains(SearchHistory_.content, content, QueryBuilder.StringOrder.CASE_INSENSITIVE)  // 等同于 SQL 中的 "content LIKE ?"
-                            .build().find();
-                    boxStore.remove(histories);
-                    e.onNext(histories.size());
+                            .build()) {
+                        List<SearchHistory> histories = query.find();
+                        boxStore.remove(histories);
+                        e.onNext(histories.size());
+                    }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -113,12 +116,14 @@ public class LibraryModel extends BaseModel {
     //获得查询记录
     public static Observable<List<SearchHistory>> querySearchHistory(int type, String content) {
         return Observable.create((ObservableOnSubscribe<List<SearchHistory>>) e -> {
-                    List<SearchHistory> histories = ObjectBoxManager.INSTANCE.getSearchHistoryBox()
+                    try (var query = ObjectBoxManager.INSTANCE.getSearchHistoryBox()
                             .query(SearchHistory_.type.equal(type))
                             .contains(SearchHistory_.content, content, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                             .order(SearchHistory_.date, QueryBuilder.DESCENDING)
-                            .build().find(0, 20);
-                    e.onNext(histories);
+                            .build()) {
+                        List<SearchHistory> histories = query.find(0, 20);
+                        e.onNext(histories);
+                    }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
