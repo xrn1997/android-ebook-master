@@ -100,7 +100,7 @@ public class BookDetailActivity extends BaseActivity<IBookDetailPresenter> imple
     public void updateView() {
         BookShelf bookShelf = mPresenter.getBookShelf();
         if (null != bookShelf) {
-            var bookInfo =bookShelf.getBookInfo().getTarget();
+            var bookInfo = bookShelf.getBookInfo().getTarget();
             Glide.with(this)
                     .load(bookInfo.getCoverUrl())
                     .dontAnimate()
@@ -188,7 +188,7 @@ public class BookDetailActivity extends BaseActivity<IBookDetailPresenter> imple
         String name;
         String author;
         if (mPresenter.getOpenFrom() == BookDetailPresenterImpl.FROM_BOOKSHELF) {
-            var bookInfo=mPresenter.getBookShelf().getBookInfo().getTarget();
+            var bookInfo = mPresenter.getBookShelf().getBookInfo().getTarget();
             coverUrl = bookInfo.getCoverUrl();
             name = bookInfo.getName();
             author = bookInfo.getAuthor();

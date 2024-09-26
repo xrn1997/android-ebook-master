@@ -91,11 +91,11 @@ public class DownloadListPop extends PopupWindow {
 
     private void initWait() {
         Observable.create((ObservableOnSubscribe<DownloadChapter>) e -> {
-                    List<BookShelf> bookShelfList = ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class).query().orderDesc(BookShelf_.finalDate).build().find();
+                    List<BookShelf> bookShelfList = ObjectBoxManager.INSTANCE.getBookShelfBox().query().orderDesc(BookShelf_.finalDate).build().find();
                     if (!bookShelfList.isEmpty()) {
                         for (BookShelf bookItem : bookShelfList) {
                             if (!Objects.equals(bookItem.getTag(), BookShelf.LOCAL_TAG)) {
-                                List<DownloadChapter> downloadChapterList = ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex, QueryBuilder.DESCENDING).build().find(0, 1);
+                                List<DownloadChapter> downloadChapterList = ObjectBoxManager.INSTANCE.getDownloadChapterBox().query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex, QueryBuilder.DESCENDING).build().find(0, 1);
                                 if (!downloadChapterList.isEmpty()) {
                                     e.onNext(downloadChapterList.get(0));
                                     e.onComplete();
@@ -104,7 +104,7 @@ public class DownloadListPop extends PopupWindow {
                             }
                         }
                     }
-                    ObjectBoxManager.INSTANCE.getStore().boxFor(DownloadChapter.class).removeAll();
+                    ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
                     e.onNext(new DownloadChapter());
                     e.onComplete();
                 })

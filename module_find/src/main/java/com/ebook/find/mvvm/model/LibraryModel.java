@@ -6,10 +6,8 @@ import com.ebook.basebook.cache.ACache;
 import com.ebook.basebook.constant.Url;
 import com.ebook.basebook.mvp.model.impl.WebBookModelImpl;
 import com.ebook.db.ObjectBoxManager;
-import com.ebook.db.entity.BookInfo;
 import com.ebook.db.entity.BookShelf;
 import com.ebook.db.entity.BookShelf_;
-import com.ebook.db.entity.ChapterList;
 import com.ebook.db.entity.Library;
 import com.ebook.db.entity.SearchHistory;
 import com.ebook.db.entity.SearchHistory_;
@@ -50,7 +48,7 @@ public class LibraryModel extends BaseModel {
     //获取书架书籍列表信息
     public static Observable<List<BookShelf>> getBookShelfList() {
         return Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class).query().build().find();
+                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build().find();
                     e.onNext(temp);
                     e.onComplete();
                 }).subscribeOn(Schedulers.io())
@@ -79,7 +77,7 @@ public class LibraryModel extends BaseModel {
     //保存查询记录
     public static Observable<SearchHistory> insertSearchHistory(int type, String content) {
         return Observable.create((ObservableOnSubscribe<SearchHistory>) e -> {
-                    Box<SearchHistory> boxStore = ObjectBoxManager.INSTANCE.getStore().boxFor(SearchHistory.class);
+                    Box<SearchHistory> boxStore = ObjectBoxManager.INSTANCE.getSearchHistoryBox();
                     List<SearchHistory> searchHistories = boxStore
                             .query(SearchHistory_.type.equal(type).and(SearchHistory_.content.equal(content)))
                             .build().find(0, 1);
@@ -101,7 +99,7 @@ public class LibraryModel extends BaseModel {
     //删除查询记录
     public static Observable<Integer> cleanSearchHistory(int type, String content) {
         return Observable.create((ObservableOnSubscribe<Integer>) e -> {
-                    Box<SearchHistory> boxStore = ObjectBoxManager.INSTANCE.getStore().boxFor(SearchHistory.class);
+                    Box<SearchHistory> boxStore = ObjectBoxManager.INSTANCE.getSearchHistoryBox();
                     List<SearchHistory> histories = boxStore
                             .query(SearchHistory_.type.equal(type))
                             .contains(SearchHistory_.content, content, QueryBuilder.StringOrder.CASE_INSENSITIVE)  // 等同于 SQL 中的 "content LIKE ?"
@@ -115,7 +113,7 @@ public class LibraryModel extends BaseModel {
     //获得查询记录
     public static Observable<List<SearchHistory>> querySearchHistory(int type, String content) {
         return Observable.create((ObservableOnSubscribe<List<SearchHistory>>) e -> {
-                    List<SearchHistory> histories = ObjectBoxManager.INSTANCE.getStore().boxFor(SearchHistory.class)
+                    List<SearchHistory> histories = ObjectBoxManager.INSTANCE.getSearchHistoryBox()
                             .query(SearchHistory_.type.equal(type))
                             .contains(SearchHistory_.content, content, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                             .order(SearchHistory_.date, QueryBuilder.DESCENDING)
