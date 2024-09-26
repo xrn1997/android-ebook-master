@@ -8,6 +8,7 @@ import com.ebook.basebook.mvp.model.impl.WebBookModelImpl;
 import com.ebook.db.ObjectBoxManager;
 import com.ebook.db.entity.BookInfo;
 import com.ebook.db.entity.BookShelf;
+import com.ebook.db.entity.BookShelf_;
 import com.ebook.db.entity.ChapterList;
 import com.ebook.db.entity.Library;
 import com.ebook.db.entity.SearchHistory;
@@ -59,11 +60,16 @@ public class LibraryModel extends BaseModel {
     //将书籍信息存入书架书籍列表
     public static Observable<BookShelf> saveBookToShelf(BookShelf bookShelf) {
         return Observable.create((ObservableOnSubscribe<BookShelf>) e -> {
-                    //todo insertOrReplaceInTx
-                    ObjectBoxManager.INSTANCE.getStore().boxFor(ChapterList.class).put(bookShelf.bookInfo.getTarget().chapterlist);
-                    ObjectBoxManager.INSTANCE.getStore().boxFor(BookInfo.class).put(bookShelf.bookInfo.getTarget());
+                    try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query(BookShelf_.noteUrl.equal(bookShelf.noteUrl)).build()) {
+                        var temp = query.findFirst();
+                        if (temp != null) {
+                            bookShelf.setId(temp.getId());
+                        } else {
+                            bookShelf.setId(0L);
+                        }
+                    }
                     //网络数据获取成功  存入BookShelf表数据库
-                    ObjectBoxManager.INSTANCE.getStore().boxFor(BookShelf.class).put(bookShelf);
+                    ObjectBoxManager.INSTANCE.getBookShelfBox().put(bookShelf);
                     e.onNext(bookShelf);
                     e.onComplete();
                 }).subscribeOn(Schedulers.io())

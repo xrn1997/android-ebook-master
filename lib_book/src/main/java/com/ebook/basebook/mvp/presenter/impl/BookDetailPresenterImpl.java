@@ -159,12 +159,13 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                             if (temp != null) {
                                 mBookShelf.setId(temp.getId());
                             }
+                            //网络数据获取成功  存入BookShelf表数据库
+                            ObjectBoxManager.INSTANCE.getBookShelfBox().put(mBookShelf);
+                            e.onNext(true);
+                            e.onComplete();
+                        } catch (Exception ex) {
+                            e.onError(ex);
                         }
-                        //网络数据获取成功  存入BookShelf表数据库
-                        //todo 这里假定不会出现多对多关系，即每个章节地址不会被引用多次。
-                        ObjectBoxManager.INSTANCE.getBookShelfBox().put(mBookShelf);
-                        e.onNext(true);
-                        e.onComplete();
                     }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
@@ -254,6 +255,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
             }
     )
     public void hadAddBook(BookShelf value) {
+        bookShelfList.add(value);
         if ((null != mBookShelf && value.noteUrl.equals(mBookShelf.noteUrl)) || (null != searchBook && value.noteUrl.equals(searchBook.noteUrl))) {
             inBookShelf = true;
             if (null != searchBook) {
@@ -279,22 +281,6 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
             inBookShelf = false;
             if (null != searchBook) {
                 searchBook.setAdd(false);
-            }
-            mView.updateView();
-        }
-    }
-
-    @Subscribe(thread = EventThread.MAIN_THREAD,
-            tags = {
-                    @Tag(RxBusTag.HAD_ADD_BOOK),
-            }
-    )
-    public void hadBook(BookShelf value) {
-        bookShelfList.add(value);
-        if ((null != mBookShelf && value.noteUrl.equals(mBookShelf.noteUrl)) || (null != searchBook && value.noteUrl.equals(searchBook.noteUrl))) {
-            inBookShelf = true;
-            if (null != searchBook) {
-                searchBook.setAdd(true);
             }
             mView.updateView();
         }

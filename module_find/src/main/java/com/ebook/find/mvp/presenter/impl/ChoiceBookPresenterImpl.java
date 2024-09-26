@@ -174,7 +174,6 @@ public class ChoiceBookPresenterImpl extends BasePresenterImpl<IChoiceBookView> 
                         }
                     }
                     //网络数据获取成功  存入BookShelf表数据库
-                    //todo 这里假定不会出现多对多关系，即每个章节地址不会被引用多次。
                     ObjectBoxManager.INSTANCE.getBookShelfBox().put(bookShelf);
                     e.onNext(bookShelf);
                     e.onComplete();
