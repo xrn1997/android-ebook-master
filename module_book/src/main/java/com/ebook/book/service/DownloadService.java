@@ -75,7 +75,7 @@ public class DownloadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (!isInit) {
             isInit = true;
-            notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notifyManager = getSystemService(NotificationManager.class);
             NotificationChannel notificationChannel =
                     new NotificationChannel("40", "App Service", NotificationManager.IMPORTANCE_HIGH);
             notifyManager.createNotificationChannel(notificationChannel);

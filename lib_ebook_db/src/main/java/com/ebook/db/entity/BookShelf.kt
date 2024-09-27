@@ -1,6 +1,7 @@
 package com.ebook.db.entity
 
 import android.os.Parcelable
+import com.ebook.db.ObjectBoxManager
 import com.ebook.db.event.DBCode
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -53,8 +54,10 @@ data class BookShelf(
 
     fun clone(): BookShelf {
         val bookShelf = this.copy()
+        ObjectBoxManager.bookShelfBox.attach(bookShelf)
         bookShelf.bookInfo = ToOne(bookShelf, BookShelf_.bookInfo)
-        if (this::bookInfo.isInitialized && this.bookInfo.target != null) {
+
+        if (this::bookInfo.isInitialized && this.bookInfo.target != null && bookShelf.bookInfo.target == null) {
             bookShelf.bookInfo.target = this.bookInfo.target.clone()
         }
         return bookShelf

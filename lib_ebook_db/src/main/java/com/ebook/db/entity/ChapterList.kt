@@ -62,16 +62,19 @@ data class ChapterList(
 
     fun clone(): ChapterList {
         val chapterList = this.copy()
+        ObjectBoxManager.chapterListBox.attach(chapterList)
         chapterList.bookContent = ToOne(chapterList, ChapterList_.bookContent)
-        if (this::bookContent.isInitialized && this.bookContent.target != null) {
-            chapterList.bookContent.target = this.bookContent.target.clone()
-        } else {
-            // 尝试从数据库查找
-            val bookContentFromDB = ObjectBoxManager.bookContentBox
-                .query(BookContent_.durChapterUrl.equal(this.durChapterUrl))
-                .build().findFirst()
-            if (bookContentFromDB != null) {
-                chapterList.bookContent.target = bookContentFromDB
+        if (chapterList.bookContent.target == null) {
+            if (this::bookContent.isInitialized && this.bookContent.target != null) {
+                chapterList.bookContent.target = this.bookContent.target.clone()
+            } else {
+                // 尝试从数据库查找
+                val bookContentFromDB = ObjectBoxManager.bookContentBox
+                    .query(BookContent_.durChapterUrl.equal(this.durChapterUrl))
+                    .build().findFirst()
+                if (bookContentFromDB != null) {
+                    chapterList.bookContent.target = bookContentFromDB
+                }
             }
         }
         return chapterList

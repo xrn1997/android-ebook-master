@@ -198,8 +198,8 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
 
     @Override
     public void initPop() {
-        var bookName = mPresenter.getBookShelf().getBookInfo().getTarget().getName();
-        checkAddShelfPop = new CheckAddShelfPop(this, bookName, new CheckAddShelfPop.OnItemClickListener() {
+        var bookInfo = mPresenter.getBookShelf().getBookInfo().getTarget();
+        checkAddShelfPop = new CheckAddShelfPop(this, bookInfo.getName(), new CheckAddShelfPop.OnItemClickListener() {
             @Override
             public void clickExit() {
                 finish();
@@ -211,7 +211,7 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
                 checkAddShelfPop.dismiss();
             }
         });
-        chapterListView.setData(mPresenter.getBookShelf(), index -> csvBook.setInitData(index, mPresenter.getBookShelf().getBookInfo().getTarget().chapterlist.size(), DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN));
+        chapterListView.setData(mPresenter.getBookShelf(), index -> csvBook.setInitData(index, bookInfo.chapterlist.size(), DBCode.BookContentView.DUR_PAGE_INDEX_BEGIN));
 
         windowLightPop = new WindowLightPop(this);
         windowLightPop.initLight();
@@ -445,7 +445,7 @@ public class ReadBookActivity extends BaseActivity<IBookReadPresenter> implement
                     checkAddShelfPop.showAtLocation(flContent, Gravity.CENTER, 0, 0);
                     return true;
                 } else {
-                    Boolean temp2 = chapterListView.dimissChapterList();
+                    Boolean temp2 = chapterListView.dismissChapterList();
                     if (!temp2) {
                         finish();
                     }

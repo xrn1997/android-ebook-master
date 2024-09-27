@@ -1,11 +1,8 @@
 package com.ebook.basebook.view;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -37,7 +34,6 @@ public class ChapterListView extends FrameLayout {
     private Animation animIn;
     private Animation animOut;
     private OnItemClickListener itemClickListener;
-    private BookShelf bookShelf;
 
     public ChapterListView(@NonNull Context context) {
         this(context, null);
@@ -52,7 +48,6 @@ public class ChapterListView extends FrameLayout {
         init();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ChapterListView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
@@ -75,12 +70,7 @@ public class ChapterListView extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                flBg.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dimissChapterList();
-                    }
-                });
+                flBg.setOnClickListener(v -> dismissChapterList());
             }
 
             @Override
@@ -110,7 +100,10 @@ public class ChapterListView extends FrameLayout {
 
     public void show(int durChapter) {
         chapterListAdapter.setIndex(durChapter);
-        ((LinearLayoutManager) rvList.getLayoutManager()).scrollToPositionWithOffset(durChapter, 0);
+        var manager = (LinearLayoutManager) rvList.getLayoutManager();
+        if (manager != null) {
+            manager.scrollToPositionWithOffset(durChapter, 0);
+        }
         if (getVisibility() != VISIBLE) {
             setVisibility(VISIBLE);
             animOut.cancel();
@@ -121,35 +114,32 @@ public class ChapterListView extends FrameLayout {
     }
 
     private void initView() {
-        flBg = (FrameLayout) findViewById(R.id.fl_bg);
-        llContent = (LinearLayout) findViewById(R.id.ll_content);
-        tvName = (TextView) findViewById(R.id.tv_name);
-        tvListCount = (TextView) findViewById(R.id.tv_listcount);
-        rvList = (RecyclerView) findViewById(R.id.rv_list);
+        flBg = findViewById(R.id.fl_bg);
+        llContent = findViewById(R.id.ll_content);
+        tvName = findViewById(R.id.tv_name);
+        tvListCount = findViewById(R.id.tv_listcount);
+        rvList = findViewById(R.id.rv_list);
         rvList.setLayoutManager(new LinearLayoutManager(getContext()));
         rvList.setItemAnimator(null);
-        rvbSlider = (RecyclerViewBar) findViewById(R.id.rvb_slider);
+        rvbSlider = findViewById(R.id.rvb_slider);
     }
 
     public void setData(BookShelf bookShelf, OnItemClickListener clickListener) {
         this.itemClickListener = clickListener;
-        this.bookShelf = bookShelf;
-        tvName.setText(bookShelf.getBookInfo().getTarget().getName());
-        tvListCount.setText("共" + bookShelf.getBookInfo().getTarget().chapterlist.size() + "章");
-        chapterListAdapter = new ChapterListAdapter(bookShelf, new OnItemClickListener() {
-            @Override
-            public void itemClick(int index) {
-                if (itemClickListener != null) {
-                    itemClickListener.itemClick(index);
-                    rvbSlider.scrollToPositionWithOffset(index);
-                }
+        var bookInfo = bookShelf.getBookInfo().getTarget();
+        tvName.setText(bookInfo.getName());
+        tvListCount.setText("共" + bookInfo.chapterlist.size() + "章");
+        chapterListAdapter = new ChapterListAdapter(bookShelf, index -> {
+            if (itemClickListener != null) {
+                itemClickListener.itemClick(index);
+                rvbSlider.scrollToPositionWithOffset(index);
             }
         });
         rvList.setAdapter(chapterListAdapter);
         rvbSlider.setRecyclerView(rvList);
     }
 
-    public Boolean dimissChapterList() {
+    public Boolean dismissChapterList() {
         if (getVisibility() != VISIBLE) {
             return false;
         } else {
@@ -161,6 +151,6 @@ public class ChapterListView extends FrameLayout {
     }
 
     public interface OnItemClickListener {
-        public void itemClick(int index);
+        void itemClick(int index);
     }
 }

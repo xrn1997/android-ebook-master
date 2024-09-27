@@ -68,9 +68,12 @@ data class BookInfo(
 
     fun clone(): BookInfo {
         val bookInfo = this.copy()
+        //将对象与数据库进行关联，不然无法初始化ToMany。
         ObjectBoxManager.bookInfoBox.attach(bookInfo)
         bookInfo.chapterlist = ToMany(bookInfo, BookInfo_.chapterlist)
-        if (this::chapterlist.isInitialized) {
+
+        //数据保存到数据库之前如果调用了clone，需要手动处理一下关系。
+        if (this::chapterlist.isInitialized && bookInfo.chapterlist.isEmpty()) {
             for (chapter in chapterlist) {
                 bookInfo.chapterlist.add(chapter.clone())
             }

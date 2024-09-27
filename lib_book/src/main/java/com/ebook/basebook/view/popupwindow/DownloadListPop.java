@@ -1,5 +1,6 @@
 package com.ebook.basebook.view.popupwindow;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class DownloadListPop extends PopupWindow {
     private TextView tvCancel;
     private TextView tvDownload;
 
+    @SuppressLint("InflateParams")
     public DownloadListPop(Context context) {
         super(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mContext = context;
@@ -91,22 +93,29 @@ public class DownloadListPop extends PopupWindow {
 
     private void initWait() {
         Observable.create((ObservableOnSubscribe<DownloadChapter>) e -> {
-                    List<BookShelf> bookShelfList = ObjectBoxManager.INSTANCE.getBookShelfBox().query().orderDesc(BookShelf_.finalDate).build().find();
-                    if (!bookShelfList.isEmpty()) {
-                        for (BookShelf bookItem : bookShelfList) {
-                            if (!Objects.equals(bookItem.getTag(), BookShelf.LOCAL_TAG)) {
-                                List<DownloadChapter> downloadChapterList = ObjectBoxManager.INSTANCE.getDownloadChapterBox().query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex, QueryBuilder.DESCENDING).build().find(0, 1);
-                                if (!downloadChapterList.isEmpty()) {
-                                    e.onNext(downloadChapterList.get(0));
-                                    e.onComplete();
-                                    return;
+                    try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().orderDesc(BookShelf_.finalDate).build()) {
+                        List<BookShelf> bookShelfList = query.find();
+                        if (!bookShelfList.isEmpty()) {
+                            for (BookShelf bookItem : bookShelfList) {
+                                if (!Objects.equals(bookItem.getTag(), BookShelf.LOCAL_TAG)) {
+                                    try (var downloadChapterQuery = ObjectBoxManager.INSTANCE.getDownloadChapterBox().query(DownloadChapter_.noteUrl.equal(bookItem.noteUrl)).order(DownloadChapter_.durChapterIndex, QueryBuilder.DESCENDING).build()) {
+                                        List<DownloadChapter> downloadChapterList = downloadChapterQuery.find(0, 1);
+                                        if (!downloadChapterList.isEmpty()) {
+                                            //下载数据库表不为空即意味着当前存在下载中断、暂停。
+                                            e.onNext(downloadChapterList.get(0));
+                                            e.onComplete();
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }
+                        ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
+                        e.onNext(new DownloadChapter());
+                        e.onComplete();
+                    } catch (Exception ex) {
+                        e.onError(ex);
                     }
-                    ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
-                    e.onNext(new DownloadChapter());
-                    e.onComplete();
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
