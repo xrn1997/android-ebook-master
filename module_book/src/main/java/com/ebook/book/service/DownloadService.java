@@ -204,7 +204,6 @@ public class DownloadService extends Service {
                         }
                     }).flatMap((Function<BookContent, ObservableSource<BookContent>>) bookContent -> {
                         if (bookContent.durChapterUrl.isEmpty()) {
-                            //todo 存在问题
                             //章节内容不存在
                             return WebBookModelImpl.getInstance().getBookContent(context,data.durChapterUrl, data.durChapterIndex).map(bookContent1 -> {
                                 ObjectBoxManager.INSTANCE.getDownloadChapterBox().remove(data);
@@ -218,6 +217,10 @@ public class DownloadService extends Service {
                                             var bc = tmp.getBookContent().getTarget();
                                             if (bc != null) {
                                                 bookContent1.setId(bc.getId());
+                                            }
+                                            var info = tmp.getBookInfo().getTarget();
+                                            if (info != null) {
+                                                cl.bookInfo.setTarget(info);
                                             }
                                         }
                                     }
