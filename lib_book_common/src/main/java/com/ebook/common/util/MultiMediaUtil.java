@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -11,13 +12,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.ebook.common.BuildConfig;
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.permissionx.guolindev.PermissionMediator;
+import com.permissionx.guolindev.PermissionX;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
-import io.reactivex.functions.Consumer;
 import me.nereo.multi_image_selector.MultiImageSelector;
 
 /**
@@ -35,6 +37,7 @@ import me.nereo.multi_image_selector.MultiImageSelector;
  * </ul>
  */
 public class MultiMediaUtil {
+    private static final String TAG = "MultiMediaUtil";
     public static final int SELECT_IMAGE = 1001;
     public static final int TAKE_PHONE = 1002;
     public static final int TAKE_VIDEO = 1003;
@@ -43,169 +46,175 @@ public class MultiMediaUtil {
      * 打开图片选择器，选择图片<br>
      * 来获取图片
      *
-     * @param activity
      * @param count：选择图片个数
-     * @param requestcode
      */
-    public static void pohotoSelect(FragmentActivity activity, int count, int requestcode) {
-        pohotoSelect(activity, null, count, requestcode);
+    public static void photoSelect(FragmentActivity activity, int count, int requestCode) {
+        photoSelect(activity, null, count, requestCode);
     }
 
-    public static void pohotoSelect(Fragment fragment, int count, int requestcode) {
-        pohotoSelect(null, fragment, count, requestcode);
+    public static void photoSelect(Fragment fragment, int count, int requestCode) {
+        photoSelect(null, fragment, count, requestCode);
     }
 
-    private static void pohotoSelect(final FragmentActivity activity, final Fragment fragment, final int count, final int requestcode) {
-        RxPermissions rxPermissions = null;
-        if (activity != null) {
-            rxPermissions = new RxPermissions(activity);
-        } else if (fragment != null) {
-            rxPermissions = new RxPermissions(fragment);
+    private static void photoSelect(final FragmentActivity activity, final Fragment fragment, final int count, final int requestCode) {
+        if (activity == null && fragment == null) {
+            return;
         }
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                if (aBoolean) {
-                    if (activity != null) {
-                        MultiImageSelector.create().showCamera(false).count(count).single().multi()
-                                //.origin(ArrayList<String>)
-                                .start(activity, requestcode);
-                    } else if (fragment != null) {
-                        MultiImageSelector.create().showCamera(false).count(count).single().multi()
-                                //.origin(ArrayList<String>)
-                                .start(fragment, requestcode);
+        PermissionMediator permissionX;
+        if (activity != null) {
+            permissionX = PermissionX.init(activity);
+        } else {
+            permissionX = PermissionX.init(fragment);
+        }
+        permissionX.permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .onExplainRequestReason((scope, deniedList) -> scope.showRequestReasonDialog(deniedList, "即将重新申请的权限是程序必须依赖的权限(请选择始终)", "我已明白", "取消"))
+                .onForwardToSettings((scope, deniedList) -> scope.showForwardToSettingsDialog(deniedList, "您需要去应用程序设置当中手动开启权限", "我已明白", "取消"))
+                .request((allGranted, grantedList, deniedList) -> {
+                    if (allGranted) {
+                        if (activity != null) {
+                            MultiImageSelector.create().showCamera(false).count(count).single().multi()
+                                    //.origin(ArrayList<String>)
+                                    .start(activity, requestCode);
+                        } else {
+                            MultiImageSelector.create().showCamera(false).count(count).single().multi()
+                                    //.origin(ArrayList<String>)
+                                    .start(fragment, requestCode);
+                        }
+                    } else {
+                        ToastUtil.showToast("无读写外部存储设备权限");
                     }
-                } else {
-                    ToastUtil.showToast("无读写外部存储设备权限");
-                }
-            }
-        });
-
-
+                });
     }
 
     /**
      * 拍照
      *
-     * @param activity
      * @param path:照片存放的路径
-     * @param requestcode
+     * @param requestCode {@link MultiMediaUtil#TAKE_PHONE}
      */
-    public static void takePhoto(FragmentActivity activity, String path, int requestcode) {
-        takePhoto(activity, null, path, requestcode);
+    public static void takePhoto(FragmentActivity activity, String path, int requestCode) {
+        takePhoto(activity, null, path, requestCode);
     }
 
-    public static void takePhoto(Fragment fragment, String path, int requestcode) {
-        takePhoto(null, fragment, path, requestcode);
+    public static void takePhoto(Fragment fragment, String path, int requestCode) {
+        takePhoto(null, fragment, path, requestCode);
     }
 
-    private static void takePhoto(final FragmentActivity activity, final Fragment fragment, final String path, final int requestcode) {
+    private static void takePhoto(final FragmentActivity activity, final Fragment fragment, final String path, final int requestCode) {
         if (activity == null && fragment == null) {
             return;
         }
-        RxPermissions rxPermissions = null;
+        PermissionMediator permissionX;
         if (activity != null) {
-            rxPermissions = new RxPermissions(activity);
-        } else if (fragment != null) {
-            rxPermissions = new RxPermissions(fragment);
+            permissionX = PermissionX.init(activity);
+        } else {
+            permissionX = PermissionX.init(fragment);
         }
+        permissionX.permissions(Manifest.permission.CAMERA)
+                .onExplainRequestReason((scope, deniedList) -> scope.showRequestReasonDialog(deniedList, "即将重新申请的权限是程序必须依赖的权限(请选择始终)", "我已明白", "取消"))
+                .onForwardToSettings((scope, deniedList) -> scope.showForwardToSettingsDialog(deniedList, "您需要去应用程序设置当中手动开启权限", "我已明白", "取消"))
+                .request((allGranted, grantedList, deniedList) -> {
+                    if (allGranted) {
+                        File file = new File(path);
 
-        rxPermissions.request(Manifest.permission.CAMERA).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                if (aBoolean) {
-                    File file = new File(path);
-
-                    try {
-                        if (file.createNewFile()) {
-                            Intent intent = new Intent();
-                            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.addCategory(Intent.CATEGORY_DEFAULT);
-                            if (activity != null) {
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(activity, BuildConfig.LIBRARY_PACKAGE_NAME, file));
-                                activity.startActivityForResult(intent, requestcode);
-                            } else if (fragment != null) {
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(fragment.getContext(), BuildConfig.LIBRARY_PACKAGE_NAME, file));
-                                fragment.startActivityForResult(intent, requestcode);
+                        try {
+                            if (file.createNewFile()) {
+                                Intent intent = new Intent();
+                                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                if (activity != null) {
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(activity, BuildConfig.LIBRARY_PACKAGE_NAME, file));
+                                    activity.startActivityForResult(intent, requestCode);
+                                } else {
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(fragment.getContext(), BuildConfig.LIBRARY_PACKAGE_NAME, file));
+                                    fragment.startActivityForResult(intent, requestCode);
+                                }
                             }
+                        } catch (Exception e) {
+                            Log.e(TAG, "takePhoto: ", e);
+                            ToastUtil.showToast("无法启动拍照程序");
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ToastUtil.showToast("无法启动拍照程序");
+                    } else {
+                        ToastUtil.showToast("无摄像头权限,无法进行拍照!");
                     }
-                } else {
-                    ToastUtil.showToast("无摄像头权限,无法进行拍照!");
-                }
-            }
-        });
+                });
     }
 
 
     /**
      * 拍视频
      *
-     * @param activity
      * @param path:视频存放的路径
-     * @param requestcode
      */
-    public static void takeVideo(final FragmentActivity activity, final String path, final int requestcode) {
-        takeVideo(activity, null, path, requestcode);
+    public static void takeVideo(final FragmentActivity activity, final String path, final int requestCode) {
+        takeVideo(activity, null, path, requestCode);
     }
 
-    public static void takeVideo(final Fragment fragment, final String path, final int requestcode) {
-        takeVideo(null, fragment, path, requestcode);
+    public static void takeVideo(final Fragment fragment, final String path, final int requestCode) {
+        takeVideo(null, fragment, path, requestCode);
     }
 
-    private static void takeVideo(final FragmentActivity activity, final Fragment fragment, final String path, final int requestcode) {
+    private static void takeVideo(final FragmentActivity activity, final Fragment fragment, final String path, final int requestCode) {
         if (activity == null && fragment == null) {
             return;
         }
-        RxPermissions rxPermissions = null;
+        PermissionMediator permissionX;
         if (activity != null) {
-            rxPermissions = new RxPermissions(activity);
-        } else if (fragment != null) {
-            rxPermissions = new RxPermissions(fragment);
+            permissionX = PermissionX.init(activity);
+        } else {
+            permissionX = PermissionX.init(fragment);
         }
-        rxPermissions.request(Manifest.permission.CAMERA).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                if (aBoolean) {
-                    File file = new File(path);
-                    try {
-                        if (file.createNewFile()) {
-                            Intent intent = new Intent();
-                            intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
-                            intent.addCategory(Intent.CATEGORY_DEFAULT);
-                            //intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-                            if (activity != null) {
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(activity, BuildConfig.LIBRARY_PACKAGE_NAME, file));
-                                activity.startActivityForResult(intent, requestcode);
-                            } else if (fragment != null) {
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(fragment.getContext(), BuildConfig.LIBRARY_PACKAGE_NAME, file));
-                                fragment.startActivityForResult(intent, requestcode);
-                            }
+        permissionX.permissions(Manifest.permission.CAMERA)
+                .onExplainRequestReason((scope, deniedList) -> scope.showRequestReasonDialog(deniedList, "即将重新申请的权限是程序必须依赖的权限(请选择始终)", "我已明白", "取消"))
+                .onForwardToSettings((scope, deniedList) -> scope.showForwardToSettingsDialog(deniedList, "您需要去应用程序设置当中手动开启权限", "我已明白", "取消"))
+                .request((allGranted, grantedList, deniedList) -> {
+                    if (allGranted) {
+                        File file = new File(path);
+                        try {
+                            if (file.createNewFile()) {
+                                Intent intent = new Intent();
+                                intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
+                                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                //intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                                if (activity != null) {
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(activity, BuildConfig.LIBRARY_PACKAGE_NAME, file));
+                                    activity.startActivityForResult(intent, requestCode);
+                                } else {
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(fragment.getContext(), BuildConfig.LIBRARY_PACKAGE_NAME, file));
+                                    fragment.startActivityForResult(intent, requestCode);
+                                }
 
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "takeVideo: ", e);
+                            ToastUtil.showToast("无法启动拍视频程序");
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ToastUtil.showToast("无法启动拍视频程序");
+                    } else {
+                        ToastUtil.showToast("无摄像头权限,无法进行拍视频!");
                     }
-                } else {
-                    ToastUtil.showToast("无摄像头权限,无法进行拍视频!");
-                }
-            }
-        });
+                });
     }
 
     //获取图片路径
     public static String getPhotoPath(AppCompatActivity activity) {
-        String filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".jpg";
-        return activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator + filename;
+        String filename = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date()) + ".jpg";
+        File dir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (dir != null) {
+            return dir.getAbsolutePath() + File.separator + filename;
+        } else {
+            return null;
+        }
     }
 
     //获取视频的路径
     public static String getVideoPath(AppCompatActivity activity) {
-        String filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".3gp";
-        return activity.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getAbsolutePath() + File.separator + filename;
+        String filename = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date()) + ".3gp";
+        File dir = activity.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+        if (dir != null) {
+            return dir.getAbsolutePath() + File.separator + filename;
+        } else {
+            return null;
+        }
     }
+
 }

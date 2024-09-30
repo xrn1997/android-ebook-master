@@ -4,7 +4,7 @@ import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.LoginDTO;
 import com.ebook.api.entity.User;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import okhttp3.MultipartBody;
 import retrofit2.http.Body;
 import retrofit2.http.Header;

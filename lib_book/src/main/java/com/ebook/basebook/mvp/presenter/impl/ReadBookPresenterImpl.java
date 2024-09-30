@@ -26,7 +26,6 @@ import com.ebook.basebook.mvp.model.impl.ImportBookModelImpl;
 import com.ebook.basebook.mvp.model.impl.WebBookModelImpl;
 import com.ebook.basebook.mvp.presenter.IBookReadPresenter;
 import com.ebook.basebook.mvp.view.IBookReadView;
-import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.basebook.view.BookContentView;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.common.util.ToastUtil;
@@ -39,7 +38,8 @@ import com.ebook.db.entity.LocBookShelf;
 import com.ebook.db.entity.ReadBookContent;
 import com.ebook.db.event.DBCode;
 import com.hwangjr.rxbus.RxBus;
-import com.trello.rxlifecycle3.android.ActivityEvent;
+import com.trello.rxlifecycle4.android.ActivityEvent;
+import com.xrn1997.common.event.SimpleObserver;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,10 +48,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> implements IBookReadPresenter {
 
@@ -239,6 +240,12 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                     final int finalPageIndex1 = tempList.pageIndex;
                                     WebBookModelImpl.getInstance().getBookContent(context, chapterList.getDurChapterUrl(), chapterIndex).map(bookContent -> {
                                                 if (bookContent.getRight()) {
+                                                    try (var query = ObjectBoxManager.INSTANCE.getBookContentBox().query(BookContent_.durChapterUrl.equal(bookContent.durChapterUrl)).build()) {
+                                                        var tmp = query.findFirst();
+                                                        if (tmp != null) {
+                                                            bookContent.setId(tmp.getId());
+                                                        }
+                                                    }
                                                     chapterList.setHasCache(true);
                                                     chapterList.getBookContent().setTarget(bookContent);
                                                     ObjectBoxManager.INSTANCE.getChapterListBox().put(chapterList);

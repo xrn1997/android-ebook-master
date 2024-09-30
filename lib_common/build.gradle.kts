@@ -61,7 +61,7 @@ dependencies {
     api(libs.rxjava)
     //RxLifecycle  https://github.com/trello/RxLifecycle
     api(libs.rxlifecycle.kotlin)
-    api(libs.rxlifecycle.rxlifecycle.android)
+    api(libs.rxlifecycle.android)
     api(libs.rxlifecycle.android.lifecycle)
     api(libs.rxlifecycle.android.lifecycle.kotlin)
     api(libs.rxlifecycle.components)

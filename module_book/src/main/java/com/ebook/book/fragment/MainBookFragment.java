@@ -2,7 +2,6 @@ package com.ebook.book.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -99,7 +98,6 @@ public class MainBookFragment extends BaseMvvmRefreshFragment<FragmentBookMainBi
             intent.putExtra("from", ReadBookPresenterImpl.OPEN_FROM_APP);
             String key = String.valueOf(System.currentTimeMillis());
             intent.putExtra("data_key", key);
-            Log.e(TAG, "initView: " + bookShelf.bookInfo.getTarget().chapterlist.size());
             BitIntentDataManager.getInstance().putData(key, bookShelf.clone());
             startActivity(intent);
         });

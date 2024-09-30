@@ -8,16 +8,17 @@ import androidx.databinding.ObservableField;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.ebook.api.dto.RespDTO;
-import com.ebook.api.http.ExceptionHandler;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.common.util.ToastUtil;
 import com.ebook.me.mvvm.model.ModifyModel;
 import com.hwangjr.rxbus.RxBus;
+import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+
 
 public class ModifyViewModel extends BaseViewModel<ModifyModel> {
     private static final String TAG = ModifyViewModel.class.getSimpleName();
@@ -41,7 +42,7 @@ public class ModifyViewModel extends BaseViewModel<ModifyModel> {
 
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
-                if (integerRespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     ToastUtil.showToast("修改成功");
                     SPUtils.getInstance().put(KeyCode.Login.SP_NICKNAME, nickname.get());
                     RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME, new Object());
@@ -78,7 +79,7 @@ public class ModifyViewModel extends BaseViewModel<ModifyModel> {
 
             @Override
             public void onNext(RespDTO<String> stringRespDTO) {
-                if (stringRespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                if (stringRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     ToastUtil.showToast("头像修改成功");
                     String url = stringRespDTO.data;
                     SPUtils.getInstance().put(KeyCode.Login.SP_IMAGE, url);

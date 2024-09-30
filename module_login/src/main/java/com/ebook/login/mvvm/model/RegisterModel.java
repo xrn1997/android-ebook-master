@@ -6,11 +6,11 @@ import com.ebook.api.RetrofitManager;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.LoginDTO;
 import com.ebook.api.entity.User;
-import com.ebook.api.http.RxAdapter;
 import com.ebook.api.service.UserService;
+import com.xrn1997.common.http.RxJavaAdapter;
 import com.xrn1997.common.mvvm.model.BaseModel;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 
 
 public class RegisterModel extends BaseModel {
@@ -26,8 +26,8 @@ public class RegisterModel extends BaseModel {
     public Observable<RespDTO<LoginDTO>> register(String username, String password) {
         Observable<RespDTO<LoginDTO>> result = mUserService.register(new User(username, password));
         return result
-                .compose(RxAdapter.schedulersTransformer())
-                .compose(RxAdapter.exceptionTransformer());
+                .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())
+                .compose(RxJavaAdapter.INSTANCE.exceptionTransformer());
     }
 
 }

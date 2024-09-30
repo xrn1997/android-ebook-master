@@ -13,7 +13,6 @@ import com.ebook.basebook.base.manager.BitIntentDataManager;
 import com.ebook.basebook.mvp.model.impl.WebBookModelImpl;
 import com.ebook.basebook.mvp.presenter.IBookDetailPresenter;
 import com.ebook.basebook.mvp.view.IBookDetailView;
-import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.common.BaseApplication;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.db.ObjectBoxManager;
@@ -28,7 +27,8 @@ import com.hwangjr.rxbus.RxBus;
 import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
-import com.trello.rxlifecycle3.android.ActivityEvent;
+import com.trello.rxlifecycle4.android.ActivityEvent;
+import com.xrn1997.common.event.SimpleObserver;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,12 +39,13 @@ import java.util.Objects;
 
 import io.objectbox.Box;
 import io.objectbox.query.Query;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> implements IBookDetailPresenter {
     public final static int FROM_BOOKSHELF = 1;

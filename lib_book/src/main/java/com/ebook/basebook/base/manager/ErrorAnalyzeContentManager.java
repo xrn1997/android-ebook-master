@@ -3,7 +3,7 @@ package com.ebook.basebook.base.manager;
 import android.content.Context;
 import android.util.Log;
 
-import com.ebook.basebook.observer.SimpleObserver;
+import com.xrn1997.common.event.SimpleObserver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,10 +11,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ErrorAnalyzeContentManager {
     private static final String TAG = "ErrorAnalyzeContentManager";

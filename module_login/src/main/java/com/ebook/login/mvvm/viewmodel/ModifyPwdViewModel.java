@@ -10,7 +10,6 @@ import androidx.databinding.ObservableField;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.ebook.api.dto.RespDTO;
-import com.ebook.api.http.ExceptionHandler;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.common.util.ToastUtil;
@@ -19,10 +18,12 @@ import com.ebook.login.mvvm.model.ModifyPwdModel;
 import com.hwangjr.rxbus.RxBus;
 import com.therouter.TheRouter;
 import com.xrn1997.common.event.SingleLiveEvent;
+import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+
 
 public class ModifyPwdViewModel extends BaseViewModel<ModifyPwdModel> {
     private static final String TAG = ModifyPwdViewModel.class.getSimpleName();
@@ -80,7 +81,7 @@ public class ModifyPwdViewModel extends BaseViewModel<ModifyPwdModel> {
             @Override
             public void onNext(RespDTO<Integer> loginDTORespDTO) {
                 //  Log.d(TAG, "修改密码onNext: start");
-                if (loginDTORespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                if (loginDTORespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     ToastUtil.showToast("修改成功");
                     SPUtils.getInstance().clear();
                     RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME);

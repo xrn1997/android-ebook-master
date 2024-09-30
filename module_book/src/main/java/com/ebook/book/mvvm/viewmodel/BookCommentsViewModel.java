@@ -11,18 +11,18 @@ import com.blankj.utilcode.util.StringUtils;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.Comment;
 import com.ebook.api.entity.User;
-import com.ebook.api.http.ExceptionHandler;
 import com.ebook.book.mvvm.model.BookCommentsModel;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.util.DateUtil;
 import com.ebook.common.util.ToastUtil;
 import com.xrn1997.common.event.SingleLiveEvent;
+import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel;
 
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 
 public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCommentsModel> {
@@ -45,7 +45,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
 
             @Override
             public void onNext(RespDTO<List<Comment>> listRespDTO) {
-                if (listRespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                if (listRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     List<Comment> comments = listRespDTO.data;
                     comments.sort((x, y) -> DateUtil.parseTime(y.getAddtime(), DateUtil.FormatType.yyyyMMddHHmm).compareTo(DateUtil.parseTime(x.getAddtime(), DateUtil.FormatType.yyyyMMddHHmm)));
                     mList.clear();
@@ -99,7 +99,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
 
                 @Override
                 public void onNext(RespDTO<Comment> commentRespDTO) {
-                    if (commentRespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                    if (commentRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                         getmVoidSingleLiveEvent().call();
                         refreshData();
                     } else {
@@ -132,7 +132,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
 
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
-                if (integerRespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     ToastUtil.showToast("删除成功！");
                     refreshData();
                 } else {

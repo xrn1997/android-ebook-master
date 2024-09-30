@@ -17,9 +17,6 @@ public class CheckAddShelfPop extends PopupWindow {
     private final View view;
     private final OnItemClickListener itemClick;
     private final String bookName;
-    private TextView tvBookName;
-    private TextView tvExit;
-    private TextView tvAddShelf;
 
     public CheckAddShelfPop(Context context, @NonNull String bookName, @NonNull OnItemClickListener itemClick) {
         super(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -37,14 +34,14 @@ public class CheckAddShelfPop extends PopupWindow {
     }
 
     private void initView() {
-        tvBookName = view.findViewById(R.id.tv_book_name);
+        TextView tvBookName = view.findViewById(R.id.tv_book_name);
         tvBookName.setText(String.format(mContext.getString(R.string.tv_pop_checkaddshelf), bookName));
-        tvExit = view.findViewById(R.id.tv_exit);
+        TextView tvExit = view.findViewById(R.id.tv_exit);
         tvExit.setOnClickListener(v -> {
             dismiss();
             itemClick.clickExit();
         });
-        tvAddShelf = view.findViewById(R.id.tv_addshelf);
+        TextView tvAddShelf = view.findViewById(R.id.tv_addshelf);
         tvAddShelf.setOnClickListener(v -> itemClick.clickAddShelf());
     }
 

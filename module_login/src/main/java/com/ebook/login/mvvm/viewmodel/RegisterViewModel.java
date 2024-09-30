@@ -9,14 +9,15 @@ import androidx.databinding.ObservableField;
 
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.LoginDTO;
-import com.ebook.api.http.ExceptionHandler;
 import com.ebook.common.util.ToastUtil;
 import com.ebook.login.mvvm.model.RegisterModel;
 import com.xrn1997.common.event.SingleLiveEvent;
+import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+
 
 public class RegisterViewModel extends BaseViewModel<RegisterModel> {
     private static final String TAG = RegisterViewModel.class.getSimpleName();
@@ -55,7 +56,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterModel> {
 
             @Override
             public void onNext(RespDTO<LoginDTO> loginDTORespDTO) {
-                if (loginDTORespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                if (loginDTORespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     ToastUtil.showToast("注册成功");
                     postFinishActivityEvent();
                 } else {

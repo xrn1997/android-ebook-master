@@ -19,12 +19,12 @@ import java.util.List;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class LibraryModel extends BaseModel {
@@ -48,9 +48,13 @@ public class LibraryModel extends BaseModel {
     //获取书架书籍列表信息
     public static Observable<List<BookShelf>> getBookShelfList() {
         return Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> temp = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build().find();
-                    e.onNext(temp);
-                    e.onComplete();
+                    try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build()) {
+                        List<BookShelf> temp = query.find();
+                        e.onNext(temp);
+                        e.onComplete();
+                    } catch (Exception ex) {
+                        e.onError(ex);
+                    }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

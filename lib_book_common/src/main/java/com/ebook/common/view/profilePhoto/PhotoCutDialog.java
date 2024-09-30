@@ -65,7 +65,7 @@ public class PhotoCutDialog extends BottomSheetDialogFragment implements View.On
             MultiMediaUtil.takePhoto(this, mPhotoPath, MultiMediaUtil.TAKE_PHONE);
 
         } else if (i == R.id.btn_select_photo) {
-            MultiMediaUtil.pohotoSelect(this, 1, MultiMediaUtil.SELECT_IMAGE);
+            MultiMediaUtil.photoSelect(this, 1, MultiMediaUtil.SELECT_IMAGE);
 
         } else if (i == R.id.btn_cancel) {
             dismiss();

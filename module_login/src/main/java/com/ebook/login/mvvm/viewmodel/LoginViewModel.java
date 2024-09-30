@@ -13,17 +13,18 @@ import com.ebook.api.RetrofitManager;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.LoginDTO;
 import com.ebook.api.entity.User;
-import com.ebook.api.http.ExceptionHandler;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.common.util.ToastUtil;
 import com.ebook.login.mvvm.model.LoginModel;
 import com.hwangjr.rxbus.RxBus;
 import com.therouter.TheRouter;
+import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+
 
 public class LoginViewModel extends BaseViewModel<LoginModel> {
     private static final String TAG = LoginViewModel.class.getSimpleName();
@@ -65,13 +66,13 @@ public class LoginViewModel extends BaseViewModel<LoginModel> {
             @Override
             public void onNext(RespDTO<LoginDTO> loginDTORespDTO) {
                 //   Log.d(TAG, "onNext: start");
-                if (loginDTORespDTO.code == ExceptionHandler.APP_ERROR.SUCC) {
+                if (loginDTORespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     RetrofitManager.getInstance().TOKEN = "Bearer " + loginDTORespDTO.data.getToken();
                     User user = loginDTORespDTO.data.getUser();
                     user.setPassword(password);//返回的是加密过的密码，不能使用，需要记住本地输入的密码。
                     loginOnNext(user);//非自动登录
                     RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME, new Object());//通知其更新UI
-                } else if (loginDTORespDTO.code == ExceptionHandler.SYSTEM_ERROR.UNAUTHORIZED) {
+                } else if (loginDTORespDTO.code == ExceptionHandler.SystemError.UNAUTHORIZED) {
                     RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME, new Object());
                     SPUtils.getInstance().clear();
                     //   Log.d(TAG, "登录失效 is login 状态：" + SPUtils.getInstance().getString(KeyCode.Login.SP_IS_LOGIN));

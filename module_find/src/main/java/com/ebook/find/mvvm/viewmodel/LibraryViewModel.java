@@ -8,16 +8,17 @@ import androidx.databinding.ObservableArrayList;
 
 import com.ebook.basebook.cache.ACache;
 import com.ebook.basebook.mvp.model.impl.WebBookModelImpl;
-import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.common.BaseApplication;
 import com.ebook.db.entity.Library;
 import com.ebook.db.entity.LibraryKindBookList;
 import com.ebook.find.entity.BookType;
 import com.ebook.find.mvvm.model.LibraryModel;
+import com.xrn1997.common.event.SimpleObserver;
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class LibraryViewModel extends BaseRefreshViewModel<Library, LibraryModel> {
     public static final String TAG = LibraryViewModel.class.getSimpleName();

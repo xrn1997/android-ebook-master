@@ -7,10 +7,10 @@ import com.ebook.basebook.base.impl.BasePresenterImpl;
 import com.ebook.basebook.mvp.model.impl.ImportBookModelImpl;
 import com.ebook.basebook.mvp.presenter.IImportBookPresenter;
 import com.ebook.basebook.mvp.view.IImportBookView;
-import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.db.entity.LocBookShelf;
 import com.hwangjr.rxbus.RxBus;
+import com.xrn1997.common.event.SimpleObserver;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,13 +18,14 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class ImportBookPresenterImpl extends BasePresenterImpl<IImportBookView> implements IImportBookPresenter {
     public static final String TAG = "ImportBookPresenterImpl";

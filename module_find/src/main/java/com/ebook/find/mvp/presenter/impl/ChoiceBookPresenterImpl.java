@@ -9,7 +9,6 @@ import com.ebook.basebook.base.IView;
 import com.ebook.basebook.base.activity.BaseActivity;
 import com.ebook.basebook.base.impl.BasePresenterImpl;
 import com.ebook.basebook.mvp.model.impl.WebBookModelImpl;
-import com.ebook.basebook.observer.SimpleObserver;
 import com.ebook.basebook.utils.NetworkUtil;
 import com.ebook.common.event.RxBusTag;
 import com.ebook.db.ObjectBoxManager;
@@ -23,17 +22,19 @@ import com.hwangjr.rxbus.RxBus;
 import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
-import com.trello.rxlifecycle3.android.ActivityEvent;
+import com.trello.rxlifecycle4.android.ActivityEvent;
+import com.xrn1997.common.event.SimpleObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import io.objectbox.query.Query;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class ChoiceBookPresenterImpl extends BasePresenterImpl<IChoiceBookView> implements IChoiceBookPresenter {
     private static final String TAG = "ChoiceBookPresenterImpl";

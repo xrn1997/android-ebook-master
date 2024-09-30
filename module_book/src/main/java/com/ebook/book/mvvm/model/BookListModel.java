@@ -11,10 +11,11 @@ import com.xrn1997.common.mvvm.model.BaseModel;
 import java.util.List;
 
 import io.objectbox.query.QueryBuilder;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class BookListModel extends BaseModel {
     public BookListModel(Application application) {

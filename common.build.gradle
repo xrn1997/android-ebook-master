@@ -111,7 +111,4 @@ dependencies {
     implementation libs.input
     implementation libs.core
     implementation libs.bottomsheets
-
-    //Scarlet  https://github.com/Tinder/Scarlet
-    implementation libs.scarlet
 }

@@ -108,7 +108,6 @@ dependencies {
     }
     api libs.converter.scalars
     api libs.juniversalchardet
-    api libs.rxpermissions
 
 //    debugApi(libs.leakcanary.android)
 }

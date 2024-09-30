@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 import io.objectbox.Box;
 import io.objectbox.query.Query;
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 
 
 public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookModel {

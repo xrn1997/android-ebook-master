@@ -5,13 +5,14 @@ import android.app.Application;
 import com.ebook.api.RetrofitManager;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.Comment;
-import com.ebook.api.http.RxAdapter;
 import com.ebook.api.service.CommentService;
+import com.xrn1997.common.http.RxJavaAdapter;
 import com.xrn1997.common.mvvm.model.BaseModel;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
+
 
 public class BookCommentsModel extends BaseModel {
     private final CommentService commentService;
@@ -27,8 +28,8 @@ public class BookCommentsModel extends BaseModel {
     @SuppressWarnings("unchecked")
     public Observable<RespDTO<Comment>> addComment(Comment comment) {
         return commentService.addComment(RetrofitManager.getInstance().TOKEN, comment)
-                .compose(RxAdapter.schedulersTransformer())
-                .compose(RxAdapter.exceptionTransformer());
+                .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())
+                .compose(RxJavaAdapter.INSTANCE.exceptionTransformer());
     }
 
     /**
@@ -37,8 +38,8 @@ public class BookCommentsModel extends BaseModel {
     @SuppressWarnings("unchecked")
     public Observable<RespDTO<List<Comment>>> getChapterComments(String chapterUrl) {
         return commentService.getChapterComments(RetrofitManager.getInstance().TOKEN, chapterUrl)
-                .compose(RxAdapter.schedulersTransformer())
-                .compose(RxAdapter.exceptionTransformer());
+                .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())
+                .compose(RxJavaAdapter.INSTANCE.exceptionTransformer());
     }
 
     /**
@@ -47,7 +48,7 @@ public class BookCommentsModel extends BaseModel {
     @SuppressWarnings("unchecked")
     public Observable<RespDTO<Integer>> deleteComment(Long id) {
         return commentService.deleteComment(RetrofitManager.getInstance().TOKEN, id)
-                .compose(RxAdapter.schedulersTransformer())
-                .compose(RxAdapter.exceptionTransformer());
+                .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())
+                .compose(RxJavaAdapter.INSTANCE.exceptionTransformer());
     }
 }

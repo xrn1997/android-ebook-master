@@ -10,8 +10,8 @@ import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel;
 
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 
 public class BookListViewModel extends BaseRefreshViewModel<BookShelf, BookListModel> {

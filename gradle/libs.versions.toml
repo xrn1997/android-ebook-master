@@ -1,29 +1,28 @@
 [versions]
-agp = "8.4.0"
+agp = "8.4.2"
 annotations = "24.1.0"
 autofittextview = "0.2.1"
 circleimageview = "3.1.0"
-composeBom = "2024.05.00"
+composeBom = "2024.09.02"
 converterScalars = "2.11.0"
 coreKtx = "1.13.1"
 dagger = "2.51"
 explosionfield = "1.0.1"
 fastjson2 = "2.0.50"
-foundation = "1.6.7"
-fragmentKtx = "1.7.1"
+foundation = "1.7.2"
+fragmentKtx = "1.8.3"
 glide = "4.16.0"
 glideTransformations = "4.3.0"
-greendao = "3.3.0"
 greendaoGradlePluginVersion = "3.3.1"
 gson = "2.11.0"
 input = "3.3.0"
 jsoup = "1.17.2"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-appcompat = "1.6.1"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
 juniversalchardet = "1.0.3"
-kotlinReflect = "1.9.24"
+kotlinReflect = "2.0.0"
 kotlinxCoroutinesCore = "1.8.1"
 kyleduoLibrary = "2.1.0"
 leakcanaryAndroid = "2.14"
@@ -32,40 +31,39 @@ lib = "1.0.4"
 library = "2.4"
 libraryVersion = "2.4"
 lifecycleExtensions = "2.2.0"
-lifecycleRuntimeKtx = "2.8.0"
-lifecycleViewmodelSavedstate = "2.8.0"
+lifecycleRuntimeKtx = "2.8.6"
+lifecycleViewmodelSavedstate = "2.8.6"
 loggingInterceptor = "5.0.0-alpha.12"
 logginginterceptorVersion = "3.1.0"
 material = "1.12.0"
-activity = "1.9.0"
+activity = "1.9.2"
 constraintlayout = "2.1.4"
 kotlin = "1.9.22"
 ksp = "1.9.22-1.0.17"
-material3 = "1.2.1"
+material3 = "1.3.0"
 multiimageselector = "1.2"
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.1"
 paletteVersion = "1.0.0"
-permissionx = "1.7.1"
+permissionx = "1.8.0"
 plugin = "1.2.2"
 recyclerview = "1.3.2"
 refreshFooterClassics = "2.1.0"
-runtimeLivedataVersion = "1.6.7"
+runtimeLivedataVersion = "1.7.2"
+
 rxandroid = "3.0.2"
 rxbinding = "4.0.0"
 rxbus = "3.0.0"
 rxjava = "3.1.8"
 rxkotlin = "3.0.1"
-rxlifecycle = "3.1.0"
 rxlifecycleKotlin = "4.0.2"
-rxpermissions = "0.10.2"
+
 scarlet = "0.1.12"
 stetho = "1.6.0"
 tinypinyin = "2.0.3"
-ui = "1.6.7"
+ui = "1.7.2"
 utilcodex = "1.31.1"
 [libraries]
 activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
-adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "converterScalars" }
 adapter-rxjava3 = { module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "converterScalars" }
 androidanimations-library = { module = "com.daimajia.androidanimations:library", version.ref = "libraryVersion" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
@@ -143,22 +141,21 @@ refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", v
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterScalars" }
 router = { module = "cn.therouter:router", version.ref = "plugin" }
 runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedataVersion" }
+
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxbinding = { module = "com.jakewharton.rxbinding4:rxbinding", version.ref = "rxbinding" }
 rxbus = { module = "com.hwangjr.rxbus:rxbus", version.ref = "rxbus" }
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 rxkotlin = { module = "io.reactivex.rxjava3:rxkotlin", version.ref = "rxkotlin" }
-rxlifecycle = { module = "com.trello.rxlifecycle3:rxlifecycle", version.ref = "rxlifecycle" }
-rxlifecycle-android = { module = "com.trello.rxlifecycle3:rxlifecycle-android", version.ref = "rxlifecycle" }
-rxlifecycle-android-lifecycle = { module = "com.trello.rxlifecycle4:rxlifecycle-android-lifecycle", version.ref = "rxlifecycleKotlin" }
+
+rxlifecycle = { module = "com.trello.rxlifecycle4:rxlifecycle", version.ref = "rxlifecycleKotlin" }
 rxlifecycle-android-lifecycle-kotlin = { module = "com.trello.rxlifecycle4:rxlifecycle-android-lifecycle-kotlin", version.ref = "rxlifecycleKotlin" }
 rxlifecycle-components = { module = "com.trello.rxlifecycle4:rxlifecycle-components", version.ref = "rxlifecycleKotlin" }
 rxlifecycle-components-preference = { module = "com.trello.rxlifecycle4:rxlifecycle-components-preference", version.ref = "rxlifecycleKotlin" }
 rxlifecycle-kotlin = { module = "com.trello.rxlifecycle4:rxlifecycle-kotlin", version.ref = "rxlifecycleKotlin" }
-rxlifecycle3-rxlifecycle-components = { module = "com.trello.rxlifecycle3:rxlifecycle-components", version.ref = "rxlifecycle" }
-rxlifecycle-rxlifecycle-android = { module = "com.trello.rxlifecycle4:rxlifecycle-android", version.ref = "rxlifecycleKotlin" }
-rxpermissions = { module = "com.github.tbruyelle:rxpermissions", version.ref = "rxpermissions" }
-scarlet = { module = "com.tinder.scarlet:scarlet", version.ref = "scarlet" }
+rxlifecycle-android = { module = "com.trello.rxlifecycle4:rxlifecycle-android", version.ref = "rxlifecycleKotlin" }
+rxlifecycle-android-lifecycle = { module = "com.trello.rxlifecycle4:rxlifecycle-android-lifecycle", version.ref = "rxlifecycleKotlin" }
+
 stetho = { module = "com.facebook.stetho:stetho", version.ref = "stetho" }
 stetho-okhttp3 = { module = "com.facebook.stetho:stetho-okhttp3", version.ref = "stetho" }
 switchbutton-library = { module = "com.kyleduo.switchbutton:library", version.ref = "kyleduoLibrary" }
