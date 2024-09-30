@@ -206,7 +206,6 @@ object FileUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, path)
         } else {
-            @Suppress("deprecation")
             values.put(
                 MediaStore.MediaColumns.DATA,
                 "${Environment.getExternalStorageDirectory().path}/${path}/$displayName"

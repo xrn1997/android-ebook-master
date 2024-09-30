@@ -1,4 +1,4 @@
-package com.xrn1997.api.factory
+package com.xrn1997.common.factory
 
 import android.annotation.SuppressLint
 import java.io.IOException

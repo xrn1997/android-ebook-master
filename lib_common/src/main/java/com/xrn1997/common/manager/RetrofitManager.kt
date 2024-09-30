@@ -6,7 +6,7 @@ import android.util.Log.VERBOSE
 import com.blankj.utilcode.util.PathUtils
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
-import com.xrn1997.api.factory.TLSSocketFactory
+import com.xrn1997.common.factory.TLSSocketFactory
 import com.xrn1997.common.util.FileUtil
 import com.xrn1997.common.util.HttpUrlUtil
 import com.xrn1997.common.util.SSLUtil

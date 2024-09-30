@@ -1,6 +1,6 @@
 package com.xrn1997.common.util
 
-import com.xrn1997.api.factory.TLSSocketFactory
+import com.xrn1997.common.factory.TLSSocketFactory
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSession
 import javax.net.ssl.SSLSocketFactory
