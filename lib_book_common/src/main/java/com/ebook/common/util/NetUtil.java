@@ -1,98 +1,68 @@
 package com.ebook.common.util;
 
-import static com.ebook.common.util.NetUtil.NetType.NET_4G;
-import static com.ebook.common.util.NetUtil.NetType.NO_NET;
-import static com.ebook.common.util.NetUtil.NetType.WIFI;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.NetworkCapabilities;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 
-import androidx.annotation.NonNull;
+import com.blankj.utilcode.util.ToastUtils;
 
-import com.ebook.common.BaseApplication;
-
-
-/**
- * Description: <ToastUtil><br>
- */
+@SuppressWarnings("unused")
 public class NetUtil {
+    private TelephonyManager telephonyManager;
+    private PhoneStateListener phoneStateListener;
 
-
-    public static boolean checkNet() {
-        Context context = BaseApplication.context;
-        return isWifiConnection(context) || isStationConnection(context);
+    public static boolean checkNet(Context context) {
+        return isWifiConnection(context) || isMobileConnection(context);
     }
 
-    public static boolean checkNetToast() {
-        boolean isNet = checkNet();
+    public static boolean checkNetToast(Context context) {
+        boolean isNet = checkNet(context);
         if (!isNet) {
-            ToastUtil.showToast("网络不给力哦！");
+            ToastUtils.showShort("网络不给力哦！");
         }
         return isNet;
     }
 
     /**
-     * 是否使用基站联网
-     *
-     * @param context
-     * @return
+     * 是否使用移动网络
      */
-    public static boolean isStationConnection(@NonNull Context context) {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager == null) {
-            return false;
-        }
-        NetworkInfo networkInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (networkInfo != null) {
-            return networkInfo.isAvailable() && networkInfo.isConnected();
+    public static boolean isMobileConnection(Context context) {
+        ConnectivityManager manager = context.getSystemService(ConnectivityManager.class);
+        if (manager != null) {
+            NetworkCapabilities capabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
+            return capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
         }
         return false;
     }
 
     /**
      * 是否使用WIFI联网
-     *
-     * @param context
-     * @return
      */
-    public static boolean isWifiConnection(@NonNull Context context) {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager == null) {
-            return false;
-        }
-        NetworkInfo networkInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (networkInfo != null) {
-            return networkInfo.isAvailable() && networkInfo.isConnected();
+    public static boolean isWifiConnection(Context context) {
+        ConnectivityManager manager = context.getSystemService(ConnectivityManager.class);
+        if (manager != null) {
+            NetworkCapabilities capabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
+            return capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
         }
         return false;
     }
 
-    public static NetType isNetWorkState(Context context) {
-        ConnectivityManager manager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
-        if (activeNetwork != null) {
-            if (activeNetwork.isConnected()) {
-                if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                    // Logger.v(TAG, "当前WiFi连接可用 ");
-                    return WIFI;
-                } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                    // Logger.v(TAG, "当前移动网络连接可用 ");
-                    return NET_4G;
+    public static NetType getNetworkType(Context context) {
+        ConnectivityManager manager = context.getSystemService(ConnectivityManager.class);
+        if (manager != null) {
+            NetworkCapabilities capabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    return NetType.WIFI;
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    return NetType.MOBILE_NET; // 移动网络
                 }
-            } else {
-                // Logger.v(TAG, "当前没有网络连接，请确保你已经打开网络 ");
-                return NO_NET;
             }
-        } else {
-            // Logger.v(TAG, "当前没有网络连接，请确保你已经打开网络 ");
-            return NO_NET;
         }
-        return NO_NET;
+        return NetType.NO_NET;
     }
 
-    public enum NetType {WIFI, NET_4G, NO_NET}
-
-    ;
+    public enum NetType {WIFI, MOBILE_NET, NO_NET}
 }

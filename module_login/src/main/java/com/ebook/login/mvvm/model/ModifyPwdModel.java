@@ -19,7 +19,6 @@ public class ModifyPwdModel extends BaseModel {
         mUserService = RetrofitManager.getInstance().getUserService();
     }
 
-    @SuppressWarnings("unchecked")
     public Observable<RespDTO<Integer>> modifyPwd(String username, String password) {
         Observable<RespDTO<Integer>> result = mUserService.modifyPwd(new User(username, password));
         return result

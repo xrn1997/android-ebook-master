@@ -27,7 +27,6 @@ public class CommentModel extends BaseModel {
     /**
      * 删除评论
      */
-    @SuppressWarnings("unchecked")
     public Observable<RespDTO<Integer>> deleteComment(Long id) {
         return commentService.deleteComment(RetrofitManager.getInstance().TOKEN, id)
                 .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())
@@ -37,7 +36,6 @@ public class CommentModel extends BaseModel {
     /**
      * 获得用户评论
      */
-    @SuppressWarnings("unchecked")
     public Observable<RespDTO<List<Comment>>> getUserComments() {
         String username = SPUtils.getInstance().getString(KeyCode.Login.SP_USERNAME);
         return commentService.getUserComments(RetrofitManager.getInstance().TOKEN, username)

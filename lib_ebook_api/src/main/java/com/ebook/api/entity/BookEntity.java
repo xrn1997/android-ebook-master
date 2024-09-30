@@ -3,6 +3,7 @@ package com.ebook.api.entity;
 
 import androidx.annotation.NonNull;
 
+@SuppressWarnings("unused")
 public class BookEntity {
 
     private String Id;

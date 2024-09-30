@@ -65,7 +65,6 @@ object ObservableListUtil {
  */
 @Composable
 fun <T> ObservableArrayList<T>.observeAsStateList(): SnapshotStateList<T> {
-    val TAG = "observeAsStateList"
     val stateList = remember { mutableStateListOf<T>() }
     stateList.addAll(this)
     DisposableEffect(this) {

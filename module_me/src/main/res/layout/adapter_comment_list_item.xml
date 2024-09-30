@@ -75,7 +75,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                android:text="@{DateUtil.formatDate(comment.addtime,DateUtil.FormatType.yyyyMMddHHmm)}"
+                android:text="@{DateUtil.formatDate(comment.addTime,DateUtil.FormatType.yyyyMMddHHmm)}"
                 android:textSize="12sp" />
         </RelativeLayout>
 

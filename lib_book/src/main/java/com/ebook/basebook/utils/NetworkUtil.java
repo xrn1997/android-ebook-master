@@ -29,15 +29,10 @@ public class NetworkUtil {
     }
 
     public static boolean isNetWorkAvailable() {
-        ConnectivityManager manager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = context.getSystemService(ConnectivityManager.class);
         if (manager != null) {
             NetworkInfo info = manager.getActiveNetworkInfo();
-            if (info != null && info.isConnected()) {
-                return true;
-            } else {
-                return false;
-            }
+            return info != null && info.isConnected();
         } else {
             return false;
         }

@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -19,6 +21,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.TreeSet;
 
@@ -117,7 +120,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         } else {
             // MobclickAgent.reportError(context, ex);
             // 退出程序
-            ToastUtil.showToast("发生异常，已重启应用");
+            ToastUtils.showShort("发生异常，已重启应用");
             // EnvironmentUtil.openApp(mContext, SplashActivity.class.getName());
             // Intent intent = new Intent(Intent.ACTION_MAIN);
             // intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -155,7 +158,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 // Toast 显示需要出现在一个线程的消息队列中
                 Looper.prepare();
 
-                ToastUtil.showToast("程序异常，请重启应用");
+                ToastUtils.showShort("程序异常，请重启应用");
                 Looper.loop();
                 // 程序出现异常，下次程序进入默认值更改为我的主页
                 // SaveSharedPreference.setSharedPreferenceInt(mContext,
@@ -237,7 +240,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
         try {
 
-            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA).format(new Date());
             String fileName = "crash-" + timestamp + CRASH_REPORTER_EXTENSION;
             // 保存文件
             File directory = new File(EnvironmentUtil.Storage.getExternalCacheDir(mContext), "logs");

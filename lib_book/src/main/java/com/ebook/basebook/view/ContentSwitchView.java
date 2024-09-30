@@ -516,6 +516,4 @@ public class ContentSwitchView extends FrameLayout implements BookContentView.Se
     }
 
 
-
-
 }

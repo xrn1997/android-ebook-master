@@ -211,7 +211,7 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
                         SearchBook item = new SearchBook();
                         item.tag = TXTDownloadBookService.URL;
                         item.author = booksE.get(i).getElementsByClass("s4").get(0).text();
-                        item.lastChapter=booksE.get(i).getElementsByClass("s3").get(0).getElementsByTag("a").get(0).text();
+                        item.lastChapter = booksE.get(i).getElementsByClass("s3").get(0).getElementsByTag("a").get(0).text();
                         item.origin = TAG;
                         item.name = booksE.get(i).getElementsByClass("s2").get(0).getElementsByTag("a").get(0).text();
                         item.noteUrl = booksE.get(i).getElementsByClass("s2").get(0).getElementsByTag("a").get(0).attr("href");
@@ -324,15 +324,15 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
-    public Observable<BookContent> getBookContent(Context context,String durChapterUrl, int durChapterIndex) {
+    public Observable<BookContent> getBookContent(Context context, String durChapterUrl, int durChapterIndex) {
         return getRetrofitObject(TXTDownloadBookService.URL)
                 .create(TXTDownloadBookService.class)
                 .getBookContent(durChapterUrl.replace(TXTDownloadBookService.URL, ""))
-                .flatMap((Function<String, ObservableSource<BookContent>>) s -> analyzeBookContent(context,s, durChapterUrl, durChapterIndex));
+                .flatMap((Function<String, ObservableSource<BookContent>>) s -> analyzeBookContent(context, s, durChapterUrl, durChapterIndex));
     }
 
 
-    private Observable<BookContent> analyzeBookContent(Context context,final String s, final String durChapterUrl, final int durChapterIndex) {
+    private Observable<BookContent> analyzeBookContent(Context context, final String s, final String durChapterUrl, final int durChapterIndex) {
         return Observable.create(e -> {
             BookContent bookContent = new BookContent();
             bookContent.durChapterIndex = durChapterIndex;

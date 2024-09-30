@@ -19,6 +19,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.basebook.base.activity.BaseActivity;
 import com.ebook.basebook.base.impl.BasePresenterImpl;
 import com.ebook.basebook.base.manager.BitIntentDataManager;
@@ -28,7 +29,6 @@ import com.ebook.basebook.mvp.presenter.IBookReadPresenter;
 import com.ebook.basebook.mvp.view.IBookReadView;
 import com.ebook.basebook.view.BookContentView;
 import com.ebook.common.event.RxBusTag;
-import com.ebook.common.util.ToastUtil;
 import com.ebook.db.ObjectBoxManager;
 import com.ebook.db.entity.BookContent;
 import com.ebook.db.entity.BookContent_;
@@ -128,7 +128,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                         Log.e(TAG, "onError: ", e);
                                         mView.dimissLoadBook();
                                         mView.loadLocationBookError();
-                                        ToastUtil.showToast("文本打开失败！");
+                                        ToastUtils.showShort("文本打开失败！");
                                     }
                                 });
                     }
@@ -138,7 +138,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                         Log.e(TAG, "onError: ", e);
                         mView.dimissLoadBook();
                         mView.loadLocationBookError();
-                        ToastUtil.showToast("文本打开失败！");
+                        ToastUtils.showShort("文本打开失败！");
                     }
                 });
     }

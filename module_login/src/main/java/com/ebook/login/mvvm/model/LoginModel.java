@@ -20,7 +20,6 @@ public class LoginModel extends BaseModel {
         mUserService = RetrofitManager.getInstance().getUserService();
     }
 
-    @SuppressWarnings("unchecked")
     public Observable<RespDTO<LoginDTO>> login(String username, String password) {
         Observable<RespDTO<LoginDTO>> result = mUserService.login(new User(username, password));
         return result

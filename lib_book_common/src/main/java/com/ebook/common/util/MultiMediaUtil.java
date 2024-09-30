@@ -11,6 +11,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.common.BuildConfig;
 import com.permissionx.guolindev.PermissionMediator;
 import com.permissionx.guolindev.PermissionX;
@@ -81,7 +82,7 @@ public class MultiMediaUtil {
                                     .start(fragment, requestCode);
                         }
                     } else {
-                        ToastUtil.showToast("无读写外部存储设备权限");
+                        ToastUtils.showShort("无读写外部存储设备权限");
                     }
                 });
     }
@@ -90,7 +91,7 @@ public class MultiMediaUtil {
      * 拍照
      *
      * @param path:照片存放的路径
-     * @param requestCode {@link MultiMediaUtil#TAKE_PHONE}
+     * @param requestCode  {@link MultiMediaUtil#TAKE_PHONE}
      */
     public static void takePhoto(FragmentActivity activity, String path, int requestCode) {
         takePhoto(activity, null, path, requestCode);
@@ -132,10 +133,10 @@ public class MultiMediaUtil {
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "takePhoto: ", e);
-                            ToastUtil.showToast("无法启动拍照程序");
+                            ToastUtils.showShort("无法启动拍照程序");
                         }
                     } else {
-                        ToastUtil.showToast("无摄像头权限,无法进行拍照!");
+                        ToastUtils.showShort("无摄像头权限,无法进行拍照!");
                     }
                 });
     }
@@ -187,10 +188,10 @@ public class MultiMediaUtil {
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "takeVideo: ", e);
-                            ToastUtil.showToast("无法启动拍视频程序");
+                            ToastUtils.showShort("无法启动拍视频程序");
                         }
                     } else {
-                        ToastUtil.showToast("无摄像头权限,无法进行拍视频!");
+                        ToastUtils.showShort("无摄像头权限,无法进行拍视频!");
                     }
                 });
     }

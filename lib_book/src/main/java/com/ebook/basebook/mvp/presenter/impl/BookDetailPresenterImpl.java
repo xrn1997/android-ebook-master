@@ -104,7 +104,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                     bookShelfList.addAll(bookShelf);
 
                     final BookShelf bookShelfResult = new BookShelf();
-                    bookShelfResult.noteUrl=searchBook.noteUrl;
+                    bookShelfResult.noteUrl = searchBook.noteUrl;
                     bookShelfResult.finalDate = System.currentTimeMillis();
                     bookShelfResult.durChapter = 0;
                     bookShelfResult.durChapterPage = 0;
@@ -153,6 +153,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
 
     @Override
     public void addToBookShelf() {
+        //todo 存在问题，remove后紧接着add，无效，且只添加了部分
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
                         try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query(BookShelf_.noteUrl.equal(mBookShelf.noteUrl)).build()) {
@@ -192,9 +193,10 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
 
     @Override
     public void removeFromBookShelf() {
+        //todo 存在问题
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
-                        Box<BookShelf> bookShelfBox=ObjectBoxManager.INSTANCE.getBookShelfBox();
+                        Box<BookShelf> bookShelfBox = ObjectBoxManager.INSTANCE.getBookShelfBox();
                         Box<BookInfo> bookInfoBox = ObjectBoxManager.INSTANCE.getBookInfoBox();
                         Box<ChapterList> chapterListBox = ObjectBoxManager.INSTANCE.getChapterListBox();
                         Box<BookContent> bookContentBox = ObjectBoxManager.INSTANCE.getBookContentBox();

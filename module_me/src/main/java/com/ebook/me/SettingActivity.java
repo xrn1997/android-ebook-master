@@ -9,10 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.api.RetrofitManager;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.event.RxBusTag;
-import com.ebook.common.util.ToastUtil;
 import com.ebook.me.databinding.ActivitySettingBinding;
 import com.hwangjr.rxbus.RxBus;
 import com.therouter.router.Route;
@@ -38,7 +38,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding> {
         mExitButton.setOnClickListener(v -> {
             SPUtils.getInstance().clear();
             RetrofitManager.getInstance().TOKEN = "";
-            ToastUtil.showToast("退出登录成功");
+            ToastUtils.showShort("退出登录成功");
             RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME, new Object());//更新UI
             finish();
         });

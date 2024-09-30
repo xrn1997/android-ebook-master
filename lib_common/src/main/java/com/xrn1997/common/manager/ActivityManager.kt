@@ -2,6 +2,7 @@ package com.xrn1997.common.manager
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import java.util.Stack
 import kotlin.system.exitProcess
 
@@ -11,6 +12,7 @@ import kotlin.system.exitProcess
  */
 @Suppress("unused")
 object ActivityManager {
+    private const val TAG = " ActivityManager"
     private var activityStack: Stack<Activity> = Stack()
 
     val isActivityStackEmpty: Boolean
@@ -141,10 +143,10 @@ object ActivityManager {
         try {
             finishAllActivity()
             val activityMgr =
-                context.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
+                context.getSystemService(android.app.ActivityManager::class.java)
             activityMgr.killBackgroundProcesses(context.packageName)
-        } catch (_: Exception) {
-
+        } catch (e: Exception) {
+            Log.e(TAG, "appExit: ", e)
         } finally {
             // 注意,如果您有后台程序运行,请不要支持此句子
             if ((!isBackground!!)) {

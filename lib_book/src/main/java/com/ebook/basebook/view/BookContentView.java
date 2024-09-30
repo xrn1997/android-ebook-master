@@ -15,7 +15,6 @@ import java.util.List;
 
 public class BookContentView extends FrameLayout {
     public long qTag = System.currentTimeMillis();
-    private View view;
     private ImageView ivBg;
     private TextView tvTitle;
     private LinearLayout llContent;
@@ -26,7 +25,6 @@ public class BookContentView extends FrameLayout {
     private TextView tvLoading;
     private LinearLayout llError;
     private TextView tvErrorInfo;
-    private TextView tvLoadAgain;
 
     private String title;
     private String content;
@@ -58,7 +56,7 @@ public class BookContentView extends FrameLayout {
     }
 
     private void init() {
-        view = LayoutInflater.from(getContext()).inflate(R.layout.adapter_content_switch_item, this, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.adapter_content_switch_item, this, false);
         addView(view);
         ivBg = view.findViewById(R.id.iv_bg);
         tvTitle = view.findViewById(R.id.tv_title);
@@ -70,7 +68,7 @@ public class BookContentView extends FrameLayout {
         tvLoading = view.findViewById(R.id.tv_loading);
         llError = view.findViewById(R.id.ll_error);
         tvErrorInfo = view.findViewById(R.id.tv_error_info);
-        tvLoadAgain = view.findViewById(R.id.tv_load_again);
+        TextView tvLoadAgain = view.findViewById(R.id.tv_load_again);
 
         tvLoadAgain.setOnClickListener(v -> {
             if (loadDataListener != null)

@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,11 @@ import com.ebook.basebook.view.mprogressbar.OnProgressListener;
 
 
 public class WindowLightPop extends PopupWindow {
-    private Context mContext;
-    private View view;
+    public final static String SP_NAME = "CONFIG";
+    private final static String TAG = "WindowLightPop";
+    private final Context mContext;
+    private final SharedPreferences preferences;
+    private final View view;
 
     private MHorProgressBar hpbLight;
     private LinearLayout llFollowSys;
@@ -34,7 +38,7 @@ public class WindowLightPop extends PopupWindow {
     public WindowLightPop(Context context) {
         super(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.mContext = context;
-
+        preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         view = LayoutInflater.from(mContext).inflate(R.layout.view_pop_windowlight, null);
         this.setContentView(view);
         initData();
@@ -53,32 +57,23 @@ public class WindowLightPop extends PopupWindow {
     }
 
     private void initView() {
-        hpbLight = (MHorProgressBar) view.findViewById(R.id.hpb_light);
-        llFollowSys = (LinearLayout) view.findViewById(R.id.ll_follow_sys);
-        scbFollowSys = (SmoothCheckBox) view.findViewById(R.id.scb_follow_sys);
+        hpbLight = view.findViewById(R.id.hpb_light);
+        llFollowSys = view.findViewById(R.id.ll_follow_sys);
+        scbFollowSys = view.findViewById(R.id.scb_follow_sys);
     }
 
     private void bindEvent() {
-        llFollowSys.setOnClickListener(v -> {
-            if (scbFollowSys.isChecked()) {
-                scbFollowSys.setChecked(false, true);
+        llFollowSys.setOnClickListener(v -> scbFollowSys.setChecked(!scbFollowSys.isChecked(), true));
+        scbFollowSys.setOnCheckedChangeListener((checkBox, isChecked) -> {
+            isFollowSys = isChecked;
+            if (isChecked) {
+                //跟随系统
+                hpbLight.setCanTouch(false);
+                setScreenBrightness();
             } else {
-                scbFollowSys.setChecked(true, true);
-            }
-        });
-        scbFollowSys.setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                isFollowSys = isChecked;
-                if (isChecked) {
-                    //跟随系统
-                    hpbLight.setCanTouch(false);
-                    setScreenBrightness();
-                } else {
-                    //不跟随系统
-                    hpbLight.setCanTouch(true);
-                    hpbLight.setDurProgress(light);
-                }
+                //不跟随系统
+                hpbLight.setCanTouch(true);
+                hpbLight.setDurProgress(light);
             }
         });
         hpbLight.setProgressListener(new OnProgressListener() {
@@ -119,7 +114,7 @@ public class WindowLightPop extends PopupWindow {
         try {
             value = Settings.System.getInt(cr, Settings.System.SCREEN_BRIGHTNESS);
         } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "getScreenBrightness: ", e);
         }
         return value;
     }
@@ -131,22 +126,20 @@ public class WindowLightPop extends PopupWindow {
     }
 
     private void saveLight() {
-        SharedPreferences preference = mContext.getSharedPreferences("CONFIG", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preference.edit();
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("light", light);
-        editor.putBoolean("isfollowsys", isFollowSys);
-        editor.commit();
+        editor.putBoolean("is_follow_sys", isFollowSys);
+        editor.apply();
     }
 
     private int getLight() {
-        SharedPreferences preference = mContext.getSharedPreferences("CONFIG", Context.MODE_PRIVATE);
-        return preference.getInt("light", getScreenBrightness());
+        return preferences.getInt("light", getScreenBrightness());
     }
 
-    private Boolean getIsFollowSys() {
-        SharedPreferences preference = mContext.getSharedPreferences("CONFIG", Context.MODE_PRIVATE);
-        return preference.getBoolean("isfollowsys", true);
+    private boolean getIsFollowSys() { // Use 'boolean' instead of 'Boolean'
+        return preferences.getBoolean("is_follow_sys", true);
     }
+
 
     @Override
     public void dismiss() {

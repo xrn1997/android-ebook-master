@@ -1,8 +1,7 @@
 package com.ebook.basebook.view.refreshview;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +14,6 @@ public class RefreshScrollView extends ScrollView {
     private float durTouchY = -1000000;
     private BaseRefreshListener baseRefreshListener;
     private Boolean isRefreshing = false;
-    private OnTouchListener touchListener;
 
     public RefreshScrollView(Context context) {
         this(context, null);
@@ -29,7 +27,6 @@ public class RefreshScrollView extends ScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RefreshScrollView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -39,45 +36,40 @@ public class RefreshScrollView extends ScrollView {
         init();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void init() {
-        touchListener = new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
+        //>0下拉
+        OnTouchListener touchListener = (v, event) -> {
+            int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    durTouchY = event.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (durTouchY == -1000000)
                         durTouchY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        if (durTouchY == -1000000)
-                            durTouchY = event.getY();
-                        float dY = event.getY() - durTouchY;  //>0下拉
-                        durTouchY = event.getY();
-                        if (baseRefreshListener != null && !isRefreshing && rpb.getSecondDurProgress() == rpb.getSecondFinalProgress() && getScrollY() <= 0) {
-                            if (rpb.getVisibility() != View.VISIBLE) {
-                                rpb.setVisibility(View.VISIBLE);
-                            }
-                            rpb.setSecondDurProgress((int) (rpb.getSecondDurProgress() + dY));
-                            if (rpb.getSecondDurProgress() <= 0) {
-                                return false;
-                            } else {
-                                return true;
-                            }
+                    float dY = event.getY() - durTouchY;  //>0下拉
+                    durTouchY = event.getY();
+                    if (baseRefreshListener != null && !isRefreshing && rpb.getSecondDurProgress() == rpb.getSecondFinalProgress() && getScrollY() <= 0) {
+                        if (rpb.getVisibility() != View.VISIBLE) {
+                            rpb.setVisibility(View.VISIBLE);
                         }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (baseRefreshListener != null && rpb.getSecondMaxProgress() > 0 && rpb.getSecondDurProgress() > 0) {
-                            if (rpb.getSecondDurProgress() >= rpb.getSecondMaxProgress() && !isRefreshing) {
-                                startRefresh();
-                            } else {
-                                rpb.setSecondDurProgressWithAnim(0);
-                            }
+                        rpb.setSecondDurProgress((int) (rpb.getSecondDurProgress() + dY));
+                        return rpb.getSecondDurProgress() > 0;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (baseRefreshListener != null && rpb.getSecondMaxProgress() > 0 && rpb.getSecondDurProgress() > 0) {
+                        if (rpb.getSecondDurProgress() >= rpb.getSecondMaxProgress() && !isRefreshing) {
+                            startRefresh();
+                        } else {
+                            rpb.setSecondDurProgressWithAnim(0);
                         }
-                        durTouchY = -1000000;
-                        break;
-                }
-                return false;
+                    }
+                    durTouchY = -1000000;
+                    break;
             }
+            return false;
         };
         this.setOnTouchListener(touchListener);
     }

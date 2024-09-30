@@ -1,7 +1,6 @@
 package com.ebook.find.mvp.view.impl;
 
 import android.animation.Animator;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -22,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -56,8 +55,7 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
     private TextView tvSearchHistoryClean;
     private TagFlowLayout tflSearchHistory;
     private SearchHistoryAdapter searchHistoryAdapter;
-    private Animation animHistory;
-    private Animator animHistory5;
+    private Animator animHistory;
     private ExplosionField explosionField;
     private RefreshRecyclerView rfRvSearchBooks;
     private SearchBookAdapter searchBookAdapter;
@@ -181,7 +179,7 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
 
     //开始搜索
     private void toSearch() {
-        if (edtContent.getText().toString().trim().length() > 0) {
+        if (!edtContent.getText().toString().trim().isEmpty()) {
             final String key = edtContent.getText().toString().trim();
             mPresenter.setHasSearch(true);
             mPresenter.insertSearchHistory();
@@ -255,71 +253,71 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
     }
 
     private void openOrCloseHistory(Boolean open) {
-        if (null != animHistory5) {
-            animHistory5.cancel();
+        if (null != animHistory) {
+            animHistory.cancel();
         }
         if (open) {
-            animHistory5 = ViewAnimationUtils.createCircularReveal(
+            animHistory = ViewAnimationUtils.createCircularReveal(
                     llSearchHistory,
                     0, 0, 0,
                     (float) Math.hypot(llSearchHistory.getWidth(), llSearchHistory.getHeight()));
-            animHistory5.setInterpolator(new AccelerateDecelerateInterpolator());
-            animHistory5.setDuration(700);
-            animHistory5.addListener(new Animator.AnimatorListener() {
+            animHistory.setInterpolator(new AccelerateDecelerateInterpolator());
+            animHistory.setDuration(700);
+            animHistory.addListener(new Animator.AnimatorListener() {
                 @Override
-                public void onAnimationStart(Animator animation) {
+                public void onAnimationStart(@NonNull Animator animation) {
                     llSearchHistory.setVisibility(View.VISIBLE);
                     edtContent.setCursorVisible(true);
                     checkTvToSearch();
                 }
 
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(@NonNull Animator animation) {
                     if (rfRvSearchBooks.getVisibility() != View.VISIBLE)
                         rfRvSearchBooks.setVisibility(View.VISIBLE);
                 }
 
                 @Override
-                public void onAnimationCancel(Animator animation) {
+                public void onAnimationCancel(@NonNull Animator animation) {
                 }
 
                 @Override
-                public void onAnimationRepeat(Animator animation) {
+                public void onAnimationRepeat(@NonNull Animator animation) {
                 }
             });
         } else {
-            animHistory5 = ViewAnimationUtils.createCircularReveal(
+            animHistory = ViewAnimationUtils.createCircularReveal(
                     llSearchHistory,
                     0, 0, (float) Math.hypot(llSearchHistory.getHeight(), llSearchHistory.getHeight()),
                     0);
-            animHistory5.setInterpolator(new AccelerateDecelerateInterpolator());
-            animHistory5.setDuration(300);
-            animHistory5.addListener(new Animator.AnimatorListener() {
+            animHistory.setInterpolator(new AccelerateDecelerateInterpolator());
+            animHistory.setDuration(300);
+            animHistory.addListener(new Animator.AnimatorListener() {
                 @Override
-                public void onAnimationStart(Animator animation) {
+                public void onAnimationStart(@NonNull Animator animation) {
                 }
 
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(@NonNull Animator animation) {
                     llSearchHistory.setVisibility(View.GONE);
                     edtContent.setCursorVisible(false);
                     checkTvToSearch();
                 }
 
                 @Override
-                public void onAnimationCancel(Animator animation) {
+                public void onAnimationCancel(@NonNull Animator animation) {
                 }
 
                 @Override
-                public void onAnimationRepeat(Animator animation) {
+                public void onAnimationRepeat(@NonNull Animator animation) {
                 }
             });
         }
-        animHistory5.start();
+        animHistory.start();
     }
 
     private void closeKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = this.getSystemService(InputMethodManager.class);
         imm.hideSoftInputFromWindow(edtContent.getWindowToken(), 0);
         /*
         由于关闭软键盘会触发监听事件导致搜索历史关闭，所以这里为了兼容没有软键盘的例外情况，再次核验了一次是否已经关闭搜索历史。
@@ -329,8 +327,7 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
     }
 
     private void openKeyBoard() {
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = getSystemService(InputMethodManager.class);
         edtContent.requestFocus();
         imm.showSoftInput(edtContent, InputMethodManager.RESULT_UNCHANGED_SHOWN);
             /*
@@ -349,8 +346,8 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
     }
 
     @Override
-    public void querySearchHistorySuccess(List<SearchHistory> datas) {
-        searchHistoryAdapter.replaceAll(datas);
+    public void querySearchHistorySuccess(List<SearchHistory> searchHistories) {
+        searchHistoryAdapter.replaceAll(searchHistories);
         if (searchHistoryAdapter.getDataSize() > 0) {
             tvSearchHistoryClean.setVisibility(View.VISIBLE);
         } else {

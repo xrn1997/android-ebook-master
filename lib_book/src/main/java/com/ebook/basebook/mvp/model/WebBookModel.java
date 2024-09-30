@@ -28,7 +28,7 @@ public interface WebBookModel {
     /**
      * 章节缓存
      */
-    Observable<BookContent> getBookContent(Context context,final String durChapterUrl, final int durChapterIndex);
+    Observable<BookContent> getBookContent(Context context, final String durChapterUrl, final int durChapterIndex);
 
     /**
      * 获取分类书籍

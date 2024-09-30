@@ -1,24 +1,27 @@
 package com.ebook.common.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Description: <DateUtil><br>
  */
 public class DateUtil {
+    private final static String TAG = "DateUtil";
 
     /**
      * 格式化时间字符串
      */
     public static String formatDate(String time, String formatStr) {
         Date setdate = parseTime(time);
-        SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+        SimpleDateFormat sdf = new SimpleDateFormat(formatStr, Locale.CHINA);
         return sdf.format(setdate);
     }
 
@@ -30,12 +33,12 @@ public class DateUtil {
         return formatDate(date, type);
     }
 
-    public static String formatDate(String time, FormatType fromtype, FormatType totype) {
+    public static String formatDate(String time, FormatType fromType, FormatType toType) {
         if (TextUtils.isEmpty(time)) {
             return "";
         }
-        Date date = parseTime(time, fromtype);
-        return formatDate(date, totype);
+        Date date = parseTime(time, fromType);
+        return formatDate(date, toType);
     }
 
     public static String formatDate(Date time, FormatType type) {
@@ -47,43 +50,18 @@ public class DateUtil {
     }
 
     private static SimpleDateFormat getSimpleDateFormat(FormatType type) {
-        SimpleDateFormat sdf;
-        switch (type) {
-            case yyyy:
-                sdf = new SimpleDateFormat("yyyy");
-                break;
-            case yyyyMM:
-                sdf = new SimpleDateFormat("yyyy-MM");
-                break;
-            case yyyyMMdd:
-                sdf = new SimpleDateFormat("yyyy-MM-dd");
-                break;
-            case yyyyMMddHHmm:
-                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                break;
-            case yyyyMMddHHmmss:
-                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                break;
-            case MMdd:
-                sdf = new SimpleDateFormat("MM-dd");
-                break;
-            case HHmm:
-                sdf = new SimpleDateFormat("HH:mm");
-                break;
-            case MM:
-                sdf = new SimpleDateFormat("MM");
-                break;
-            case dd:
-                sdf = new SimpleDateFormat("dd");
-                break;
-            case MMddHHmm:
-                sdf = new SimpleDateFormat("MM-dd HH:mm");
-                break;
-            default:
-                sdf = new SimpleDateFormat("yyyy-MM-dd");
-                break;
-        }
-        return sdf;
+        return switch (type) {
+            case yyyy -> new SimpleDateFormat("yyyy", Locale.CHINA);
+            case yyyyMM -> new SimpleDateFormat("yyyy-MM", Locale.CHINA);
+            case yyyyMMdd -> new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+            case yyyyMMddHHmm -> new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+            case yyyyMMddHHmmss -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+            case MMdd -> new SimpleDateFormat("MM-dd", Locale.CHINA);
+            case HHmm -> new SimpleDateFormat("HH:mm", Locale.CHINA);
+            case MM -> new SimpleDateFormat("MM", Locale.CHINA);
+            case dd -> new SimpleDateFormat("dd", Locale.CHINA);
+            case MMddHHmm -> new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA);
+        };
     }
 
     /**
@@ -92,10 +70,10 @@ public class DateUtil {
     public static Date parseTime(String dateStr, String formatStr) {
         Date date = null;
         try {
-            DateFormat sdf = new SimpleDateFormat(formatStr);
+            DateFormat sdf = new SimpleDateFormat(formatStr, Locale.CHINA);
             date = sdf.parse(dateStr);
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e(TAG, "parseTime: ", e);
         }
         return date;
     }
@@ -104,12 +82,12 @@ public class DateUtil {
      * 将字符串转换成date
      */
     public static Date parseTime(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         Date date = null;
         try {
             date = sdf.parse(time);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "parseTime: ", e);
         }
         return date;
     }
@@ -123,7 +101,7 @@ public class DateUtil {
         try {
             date = sdf.parse(time);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "parseTime: ", e);
         }
         return date;
     }
@@ -145,7 +123,7 @@ public class DateUtil {
      * 计算两个日期之间相差的天数
      */
     public static int daysBetween(Date smdate, Date bdate) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
         smdate = sdf.parse(sdf.format(smdate));
         bdate = sdf.parse(sdf.format(bdate));
         Calendar cal = Calendar.getInstance();
@@ -162,7 +140,7 @@ public class DateUtil {
      * 比较日期大小
      */
     public static int compareDate(Date smdate, Date bdate) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
         smdate = sdf.parse(sdf.format(smdate));
         bdate = sdf.parse(sdf.format(bdate));
         Calendar cal = Calendar.getInstance();
@@ -170,14 +148,7 @@ public class DateUtil {
         long time1 = cal.getTimeInMillis();
         cal.setTime(bdate);
         long time2 = cal.getTimeInMillis();
-        if (time1 == time2) {
-            return 0;
-        } else if (time1 > time2) {
-            return -1;
-        } else {
-            return 1;
-        }
-
+        return Long.compare(time2, time1);
     }
 
     /**
@@ -248,17 +219,16 @@ public class DateUtil {
 
     /**
      * 说明 小于1分钟：”刚刚“ 小于1小时：”X分钟前“ 小于一天：”X小时前“ 小于一月：”X天前“ 小于一年：6-23 大于一年：2015-6-23
-     *
-     * @param dateStr
-     * @return
      */
     public static String formatTimeToDay(String dateStr) {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        DateFormat sdf2 = new SimpleDateFormat("MM-dd");
-        DateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        DateFormat sdf2 = new SimpleDateFormat("MM-dd", Locale.CHINA);
+        DateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
         try {
             Date date = sdf.parse(dateStr);
-
+            if (date == null) {
+                return "";
+            }
             int minute = (int) ((System.currentTimeMillis() - date.getTime()) / 1000 / 60);
             if (minute <= 0) {
                 return "刚刚";
@@ -278,16 +248,13 @@ public class DateUtil {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "formatTimeToDay: ", e);
         }
         return dateStr;
     }
 
     /**
      * 获取几个小时以后的时间戳
-     *
-     * @param hour
-     * @return
      */
     public static String getLaterTimeByHour(int hour) {
         Date d = new Date();
@@ -295,15 +262,12 @@ public class DateUtil {
         now.setTime(d);
         now.set(Calendar.HOUR, now.get(Calendar.HOUR) + hour);
         // now.set(Calendar.MINUTE, now.get(Calendar.MINUTE) + 30);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         return sdf.format(now.getTime());
     }
 
     /**
      * 获取几天以后的时间戳
-     *
-     * @param day
-     * @return
      */
     public static String getLaterTimeByDay(int day) {
         return getLaterTimeByHour(day * 24);
@@ -311,23 +275,17 @@ public class DateUtil {
 
     /**
      * 获取给定时间以后几天的时间戳
-     *
-     * @param date
-     * @param day
-     * @return
      */
     public static String getLaterTimeByDay(String date, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(parseTime(date, FormatType.yyyyMMdd));
         calendar.set(Calendar.HOUR, calendar.get(Calendar.HOUR) + day * 24);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
         return sdf.format(calendar.getTime());
     }
 
     /**
      * 获取当前时间的位置：一天24小时以半小时为单位划分为48个单元格
-     *
-     * @return
      */
     public static int getCurrTimePosition() {
         Calendar calendar = Calendar.getInstance();
@@ -336,6 +294,6 @@ public class DateUtil {
     }
 
     public enum FormatType {
-        yyyy, yyyyMM, yyyyMMdd, yyyyMMddHHmm, yyyyMMddHHmmss, MMdd, HHmm, MM, dd, MMddHHmm;
+        yyyy, yyyyMM, yyyyMMdd, yyyyMMddHHmm, yyyyMMddHHmmss, MMdd, HHmm, MM, dd, MMddHHmm
     }
 }

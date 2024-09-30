@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.blankj.utilcode.util.ToastUtils
 import com.ebook.common.provider.IBookProvider
 import com.ebook.common.provider.IFindProvider
 import com.ebook.common.provider.IMeProvider
-import com.ebook.common.util.ToastUtil
 import com.ebook.main.databinding.ActivityMainBinding
 import com.ebook.main.entity.MainChannel
 import com.therouter.TheRouter
@@ -93,7 +93,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private fun exit() {
         if (System.currentTimeMillis() - exitTime > 2000) {
-            ToastUtil.showToast("再按一次退出程序")
+            ToastUtils.showShort("再按一次退出程序")
             exitTime = System.currentTimeMillis()
         } else {
             finish()

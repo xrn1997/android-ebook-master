@@ -8,13 +8,13 @@ import androidx.databinding.ObservableField;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.Comment;
 import com.ebook.api.entity.User;
 import com.ebook.book.mvvm.model.BookCommentsModel;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.util.DateUtil;
-import com.ebook.common.util.ToastUtil;
 import com.xrn1997.common.event.SingleLiveEvent;
 import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel;
@@ -47,7 +47,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
             public void onNext(RespDTO<List<Comment>> listRespDTO) {
                 if (listRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     List<Comment> comments = listRespDTO.data;
-                    comments.sort((x, y) -> DateUtil.parseTime(y.getAddtime(), DateUtil.FormatType.yyyyMMddHHmm).compareTo(DateUtil.parseTime(x.getAddtime(), DateUtil.FormatType.yyyyMMddHHmm)));
+                    comments.sort((x, y) -> DateUtil.parseTime(y.getAddTime(), DateUtil.FormatType.yyyyMMddHHmm).compareTo(DateUtil.parseTime(x.getAddTime(), DateUtil.FormatType.yyyyMMddHHmm)));
                     mList.clear();
                     if (!comments.isEmpty()) {
                         mList.addAll(comments);
@@ -118,7 +118,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
                 }
             });
         } else {
-            ToastUtil.showToast("不能为空哦！");
+            ToastUtils.showShort("不能为空哦！");
         }
 
     }
@@ -133,7 +133,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtil.showToast("删除成功！");
+                    ToastUtils.showShort("删除成功！");
                     refreshData();
                 } else {
                     Log.e(TAG, "error: " + integerRespDTO.error);

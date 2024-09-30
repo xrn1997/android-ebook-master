@@ -20,7 +20,8 @@ public class ErrorAnalyzeContentManager {
     private static final String TAG = "ErrorAnalyzeContentManager";
     private static volatile ErrorAnalyzeContentManager instance;
 
-    private ErrorAnalyzeContentManager() {}
+    private ErrorAnalyzeContentManager() {
+    }
 
     public static ErrorAnalyzeContentManager getInstance() {
         if (instance == null) {

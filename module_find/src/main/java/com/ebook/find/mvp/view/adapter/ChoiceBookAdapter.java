@@ -42,7 +42,7 @@ public class ChoiceBookAdapter extends RefreshRecyclerViewAdapter {
     public void onBindViewholder(final RecyclerView.ViewHolder holder, final int position) {
         BookShelf bookShelf = new BookShelf();
         // Log.d("解析结果", searchBooks.get(position).getCoverUrl());
-        bookShelf.noteUrl=searchBooks.get(position).noteUrl;
+        bookShelf.noteUrl = searchBooks.get(position).noteUrl;
         Glide.with(((Viewholder) holder).ivCover.getContext())
                 .load(searchBooks.get(position).coverUrl)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)

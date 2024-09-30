@@ -47,8 +47,8 @@ public class WebBookModelImpl implements WebBookModel {
     }
 
     @Override
-    public Observable<BookContent> getBookContent(Context context,String durChapterUrl, int durChapterIndex) {
-        return stationBookModel.getBookContent(context,durChapterUrl, durChapterIndex);
+    public Observable<BookContent> getBookContent(Context context, String durChapterUrl, int durChapterIndex) {
+        return stationBookModel.getBookContent(context, durChapterUrl, durChapterIndex);
     }
 
     @Override

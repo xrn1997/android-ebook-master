@@ -156,7 +156,7 @@ public class DownloadService extends Service {
                         @Override
                         public void onNext(DownloadChapter value) {
                             if (!value.noteUrl.isEmpty()) {
-                                downloading(context,value, 0);
+                                downloading(context, value, 0);
                             } else {
                                 Observable.create(e -> {
                                             ObjectBoxManager.INSTANCE.getDownloadChapterBox().removeAll();
@@ -206,7 +206,7 @@ public class DownloadService extends Service {
                     }).flatMap((Function<BookContent, ObservableSource<BookContent>>) bookContent -> {
                         if (bookContent.durChapterUrl.isEmpty()) {
                             //章节内容不存在
-                            return WebBookModelImpl.getInstance().getBookContent(context,data.durChapterUrl, data.durChapterIndex).map(bookContent1 -> {
+                            return WebBookModelImpl.getInstance().getBookContent(context, data.durChapterUrl, data.durChapterIndex).map(bookContent1 -> {
                                 ObjectBoxManager.INSTANCE.getDownloadChapterBox().remove(data);
                                 Log.e(TAG, "downloading: " + bookContent1.getRight());
                                 if (bookContent1.getRight()) {
@@ -261,7 +261,7 @@ public class DownloadService extends Service {
                         public void onError(Throwable e) {
                             Log.e(TAG, "onError: ", e);
                             int time = durTime + 1;
-                            downloading(context,data, time);
+                            downloading(context, data, time);
                         }
                     });
         } else {

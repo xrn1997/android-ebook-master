@@ -5,10 +5,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.Comment;
 import com.ebook.common.util.DateUtil;
-import com.ebook.common.util.ToastUtil;
 import com.ebook.me.mvvm.model.CommentModel;
 import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel;
@@ -38,7 +38,7 @@ public class CommentViewModel extends BaseRefreshViewModel<Comment, CommentModel
             public void onNext(RespDTO<List<Comment>> listRespDTO) {
                 if (listRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     List<Comment> comments = listRespDTO.data;
-                    comments.sort((x, y) -> DateUtil.parseTime(y.getAddtime(), DateUtil.FormatType.yyyyMMddHHmm).compareTo(DateUtil.parseTime(x.getAddtime(), DateUtil.FormatType.yyyyMMddHHmm)));
+                    comments.sort((x, y) -> DateUtil.parseTime(y.getAddTime(), DateUtil.FormatType.yyyyMMddHHmm).compareTo(DateUtil.parseTime(x.getAddTime(), DateUtil.FormatType.yyyyMMddHHmm)));
                     mList.clear();
                     if (!comments.isEmpty()) {
                         mList.addAll(comments);
@@ -81,7 +81,7 @@ public class CommentViewModel extends BaseRefreshViewModel<Comment, CommentModel
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtil.showToast("删除成功！");
+                    ToastUtils.showShort("删除成功！");
                     refreshData();
                 } else {
                     Log.e(TAG, "error: " + integerRespDTO.error);

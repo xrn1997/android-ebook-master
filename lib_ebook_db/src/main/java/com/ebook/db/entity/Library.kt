@@ -5,6 +5,7 @@ package com.ebook.db.entity
  */
 class Library {
     var libraryNewBooks: List<LibraryNewBook>? = null
+
     @JvmField
     var kindBooks: List<LibraryKindBookList>? = null
 }

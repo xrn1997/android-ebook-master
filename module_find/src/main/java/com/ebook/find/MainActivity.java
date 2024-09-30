@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.ebook.common.util.ToastUtil;
+import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.find.databinding.ActivityMainBinding;
 import com.ebook.find.fragment.MainFindFragment;
 import com.xrn1997.common.mvvm.view.BaseActivity;
@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     public void exit() {
         if ((System.currentTimeMillis() - exitTime) > 2000) {
-            ToastUtil.showToast("再按一次退出程序");
+            ToastUtils.showShort("再按一次退出程序");
             exitTime = System.currentTimeMillis();
         } else {
             finish();

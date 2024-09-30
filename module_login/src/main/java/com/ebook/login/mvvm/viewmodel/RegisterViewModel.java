@@ -7,9 +7,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.LoginDTO;
-import com.ebook.common.util.ToastUtil;
 import com.ebook.login.mvvm.model.RegisterModel;
 import com.xrn1997.common.event.SingleLiveEvent;
 import com.xrn1997.common.http.ExceptionHandler;
@@ -33,19 +33,19 @@ public class RegisterViewModel extends BaseViewModel<RegisterModel> {
     public void register() {
 
         if (TextUtils.isEmpty(username.get())) {//用户名为空
-            ToastUtil.showToast("用户名不能为空");
+            ToastUtils.showShort("用户名不能为空");
             return;
         }
         if (TextUtils.getTrimmedLength(username.get()) < 11) { // 手机号码不足11位
-            ToastUtil.showToast("请输入正确的手机号");
+            ToastUtils.showShort("请输入正确的手机号");
             return;
         }
         if (TextUtils.isEmpty(password_1.get()) || TextUtils.isEmpty((password_2.get()))) {
-            ToastUtil.showToast("密码未填写完整");
+            ToastUtils.showShort("密码未填写完整");
             return;
         }
         if (!TextUtils.equals(password_1.get(), password_2.get())) {//两次密码不一致
-            ToastUtil.showToast("两次密码不一致");
+            ToastUtils.showShort("两次密码不一致");
             return;
         }
         mModel.register(username.get(), password_1.get()).subscribe(new Observer<>() {
@@ -57,7 +57,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterModel> {
             @Override
             public void onNext(RespDTO<LoginDTO> loginDTORespDTO) {
                 if (loginDTORespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtil.showToast("注册成功");
+                    ToastUtils.showShort("注册成功");
                     postFinishActivityEvent();
                 } else {
                     Log.v(TAG, "error:" + loginDTORespDTO.error);

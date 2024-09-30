@@ -3,6 +3,8 @@ package com.ebook.api.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 public class Comment implements Parcelable {
     public static final Creator<Comment> CREATOR = new Creator<>() {
         @Override
@@ -40,12 +42,12 @@ public class Comment implements Parcelable {
         user = in.readParcelable(Thread.currentThread().getContextClassLoader());
     }
 
-    public String getAddtime() {
+    public String getAddTime() {
         return addtime;
     }
 
-    public void setAddtime(String addtime) {
-        this.addtime = addtime;
+    public void setAddTime(String addTime) {
+        this.addtime = addTime;
     }
 
     public Long getId() {
@@ -84,8 +86,8 @@ public class Comment implements Parcelable {
         return bookName;
     }
 
-    public void setBookName(String bookname) {
-        this.bookName = bookname;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public String getComment() {
@@ -103,7 +105,7 @@ public class Comment implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         if (id == null) {
             dest.writeByte((byte) 0);
         } else {

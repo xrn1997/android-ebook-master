@@ -12,6 +12,7 @@ import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,7 +48,7 @@ import java.util.Locale;
  * <li>4.判断是否已经安装</li>
  * </ul>
  */
-
+@SuppressWarnings("unused")
 public class EnvironmentUtil {
     private static final String TAG = "EnvironmentUtil";
 
@@ -70,7 +71,7 @@ public class EnvironmentUtil {
             PackageInfo packInfo = pm.getPackageInfo(getPackageName(context), 0);
             return packInfo.versionCode;
         } catch (NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "getAppVersionCode: ", e);
             return 0;
         }
     }
@@ -85,7 +86,7 @@ public class EnvironmentUtil {
             PackageInfo packInfo = pm.getPackageInfo(getPackageName(context), 0);
             return packInfo.versionName;
         } catch (NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "getAppVersionName: ", e);
             // 不可能发生.
             return "";
         }
@@ -93,17 +94,16 @@ public class EnvironmentUtil {
 
     /**
      * 获取应用的名称
-     *
-     * @return
      */
     public static String getApplicationName(Context context) {
-        PackageManager packageManager = null;
-        ApplicationInfo applicationInfo = null;
+        PackageManager packageManager;
+        ApplicationInfo applicationInfo;
         try {
             packageManager = context.getPackageManager();
             applicationInfo = packageManager.getApplicationInfo(getPackageName(context), 0);
         } catch (NameNotFoundException e) {
-            applicationInfo = null;
+            Log.e(TAG, "getApplicationName: ", e);
+            return null;
         }
         String applicationName = (String) packageManager.getApplicationLabel(applicationInfo);
         System.out.println(applicationName);
@@ -112,10 +112,6 @@ public class EnvironmentUtil {
 
     /**
      * 获取assets下资源
-     *
-     * @param context
-     * @param fileName
-     * @return
      */
     public static String getAssetsString(Context context, String fileName) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -128,7 +124,7 @@ public class EnvironmentUtil {
             }
             bf.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "getAssetsString: ", e);
         }
 
         return stringBuilder.toString();
@@ -136,33 +132,21 @@ public class EnvironmentUtil {
 
     /**
      * 获取系统语言
-     *
-     * @param context
-     * @param context
-     * @return
      */
     public static String getSystemLanguage(Context context) {
-        Locale locale = context.getResources().getConfiguration().locale;
-        String language = locale.getLanguage();
-        return language;
+        Locale locale = context.getResources().getConfiguration().getLocales().get(0);
+        return locale.getLanguage();
     }
 
     /**
      * app是否在前台
-     *
-     * @param context
-     * @return
      */
     public static boolean isForeground(Context context) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = context.getSystemService(ActivityManager.class);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
             if (appProcess.processName.equals(context.getPackageName())) {
-                if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
             }
         }
         return false;
@@ -173,27 +157,27 @@ public class EnvironmentUtil {
      * android:name="android.permission.GET_TASKS" />
      */
     public static int getAppStatus(Context context) {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(20);
-        // 判断程序是否在栈顶
-        if (list.get(0).topActivity.getPackageName().equals(context.getPackageName())) {
-            return 1;
-        } else {
-            // 判断程序是否在栈里
-            for (ActivityManager.RunningTaskInfo info : list) {
-                if (info.topActivity.getPackageName().equals(context.getPackageName())) {
-                    return 2;
+        ActivityManager am = context.getSystemService(ActivityManager.class);
+        List<ActivityManager.RunningAppProcessInfo> processes = am.getRunningAppProcesses();
+
+        for (ActivityManager.RunningAppProcessInfo processInfo : processes) {
+            if (processInfo.processName.equals(context.getPackageName())) {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    return 1; // 程序在前台
+                } else {
+                    return 2; // 程序在后台
                 }
             }
-            return 3;// 栈里找不到，返回3
         }
+        return 3; // 程序不在栈里
     }
 
+
     /**
-     * 启动应用
+     * 启动指定应用的主活动
      *
-     * @param context
-     * @param className
+     * @param context   上下文，用于启动活动
+     * @param className 要启动的活动类的完整名称，包括包名
      */
     public static void openApp(Context context, String className) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -205,39 +189,44 @@ public class EnvironmentUtil {
     }
 
     /**
-     * 当前app的是否在运行
+     * 当前app是否在运行
      *
-     * @return false: 说明app不在当前系统的栈中; true:当前app正处于用户使用状态(包含在Home在后台)
+     * @return false: 说明app不在当前系统的栈中; true: 当前app正处于用户使用状态(包含在Home在后台)
      */
-
     public boolean isAppRunning(Context context) {
-        ActivityManager activityManager = (ActivityManager) (context.getSystemService(Context.ACTIVITY_SERVICE));
-        List<ActivityManager.RunningTaskInfo> runningTaskInfos = activityManager.getRunningTasks(100);
-        if (runningTaskInfos == null) {
-            return false;
-        }
-        for (ActivityManager.RunningTaskInfo taskInfo : runningTaskInfos)
-            if (context.getPackageName().equals(taskInfo.baseActivity.getPackageName())) {
-                return true;
+        ActivityManager activityManager = context.getSystemService(ActivityManager.class);
+        List<ActivityManager.RunningAppProcessInfo> processes = activityManager.getRunningAppProcesses();
+
+        if (processes != null) {
+            for (ActivityManager.RunningAppProcessInfo processInfo : processes) {
+                if (processInfo.processName.equals(context.getPackageName())
+                        && processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    return true; // 应用在前台运行
+                }
             }
-        return false;
+        }
+        return false; // 应用不在运行
     }
+
 
     /**
      * 判断当前Activity是否排在栈顶
-     *
-     * @return
      */
-    protected boolean isTopActivity(Context context, Class clazz) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1);
-        if (runningTaskInfos != null && !runningTaskInfos.isEmpty()
-                && clazz.getName().equals(runningTaskInfos.get(0).topActivity.getClassName())) {
-            return true;
-        } else {
-            return false;
+    protected boolean isTopActivity(Context context, Class<?> clazz) {
+        ActivityManager manager = context.getSystemService(ActivityManager.class);
+        List<ActivityManager.RunningAppProcessInfo> processes = manager.getRunningAppProcesses();
+
+        if (processes != null) {
+            for (ActivityManager.RunningAppProcessInfo processInfo : processes) {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                        && processInfo.processName.equals(context.getPackageName())) {
+                    return true; // 当前Activity在前台
+                }
+            }
         }
+        return false; // 当前Activity不在前台
     }
+
 
     /**
      * 存储信息
@@ -261,16 +250,15 @@ public class EnvironmentUtil {
          * @return 外部存储换成路径
          */
         public static File getExternalCacheDir(Context context) {
-            File file = null;
-            if (SdkVersionUtil.hasFroyo()) {
-                file = context.getExternalCacheDir();
-            }
+            File file = context.getExternalCacheDir();
 
             if (file == null) {
                 final String cacheDir = "/Android/data/" + context.getPackageName() + "/cache/";
                 file = new File(Environment.getExternalStorageDirectory().getPath() + cacheDir);
 
-                file.mkdirs();
+                if (!file.exists() && !file.mkdirs()) {
+                    return null;
+                }
 
                 if (file.isDirectory()) {
                     return file;
@@ -304,8 +292,7 @@ public class EnvironmentUtil {
         /**
          * 安装APK
          *
-         * @param context
-         * @param file
+         * @param file apk文件名
          */
         public static void installApp(Context context, File file) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -316,8 +303,7 @@ public class EnvironmentUtil {
         /**
          * 卸载APK
          *
-         * @param context
-         * @param packageName
+         * @param packageName 包名
          */
         public static void unInstallApp(Context context, String packageName) {
             Uri packageUri = Uri.parse("package:" + packageName);
@@ -329,9 +315,7 @@ public class EnvironmentUtil {
         /**
          * 获得APK包名
          *
-         * @param context
-         * @param apkFile
-         * @return
+         * @param apkFile apk文件名称
          */
         public static String getApkFilePackage(Context context, File apkFile) {
             PackageManager pm = context.getPackageManager();
@@ -345,19 +329,19 @@ public class EnvironmentUtil {
         /**
          * 判断是否已经安装
          *
-         * @param context
-         * @param packageName
-         * @return
+         * @param packageName 包名
          */
         public static boolean isAppInstalled(Context context, String packageName) {
-            if (TextUtils.isEmpty(packageName))
+            if (TextUtils.isEmpty(packageName)) {
                 return false;
+            }
             try {
-                context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
+                context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_META_DATA);
                 return true;
-            } catch (NameNotFoundException e) {
+            } catch (PackageManager.NameNotFoundException e) {
                 return false;
             }
         }
+
     }
 }

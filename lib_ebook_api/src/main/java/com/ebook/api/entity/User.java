@@ -3,6 +3,8 @@ package com.ebook.api.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 
 public class User implements Parcelable {
     public static final Creator<User> CREATOR = new Creator<>() {
@@ -88,7 +90,7 @@ public class User implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         if (id == null) {
             dest.writeByte((byte) 0);
         } else {
