@@ -28,7 +28,6 @@ import java.util.List;
 
 public class ChoiceBookActivity extends BaseActivity<IChoiceBookPresenter> implements IChoiceBookView {
     private ImageButton ivReturn;
-    private TextView tvTitle;
     private RefreshRecyclerView rfRvSearchBooks;
     private ChoiceBookAdapter searchBookAdapter;
 
@@ -57,7 +56,7 @@ public class ChoiceBookActivity extends BaseActivity<IChoiceBookPresenter> imple
     @Override
     protected void bindView() {
         ivReturn = findViewById(R.id.iv_return);
-        tvTitle = findViewById(R.id.tv_title);
+        TextView tvTitle = findViewById(R.id.tv_title);
         tvTitle.setText(mPresenter.getTitle());
         rfRvSearchBooks = findViewById(R.id.rfRv_search_books);
         rfRvSearchBooks.setRefreshRecyclerViewAdapter(searchBookAdapter, new LinearLayoutManager(this));
@@ -78,7 +77,7 @@ public class ChoiceBookActivity extends BaseActivity<IChoiceBookPresenter> imple
     protected void bindEvent() {
         ivReturn.setOnClickListener(v -> {
             // finish();
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         });
         searchBookAdapter.setItemClickListener(new ChoiceBookAdapter.OnItemClickListener() {
             @Override
@@ -150,7 +149,7 @@ public class ChoiceBookActivity extends BaseActivity<IChoiceBookPresenter> imple
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void addBookShelfSuccess(List<SearchBook> datas) {
+    public void addBookShelfSuccess(List<SearchBook> searchBooks) {
         searchBookAdapter.notifyDataSetChanged();
     }
 
@@ -166,10 +165,9 @@ public class ChoiceBookActivity extends BaseActivity<IChoiceBookPresenter> imple
 
     @Override
     public void updateSearchItem(int index) {
-        int tempIndex = index;
-        if (tempIndex < searchBookAdapter.getItemcount()) {
+        if (index < searchBookAdapter.getItemcount()) {
             int startIndex = ((LinearLayoutManager) rfRvSearchBooks.getRecyclerView().getLayoutManager()).findFirstVisibleItemPosition();
-            TextView tvAddShelf = rfRvSearchBooks.getRecyclerView().getChildAt(tempIndex - startIndex).findViewById(R.id.tv_addshelf);
+            TextView tvAddShelf = rfRvSearchBooks.getRecyclerView().getChildAt(index - startIndex).findViewById(R.id.tv_addshelf);
             if (tvAddShelf != null) {
                 if (searchBookAdapter.getSearchBooks().get(index).getAdd()) {
                     tvAddShelf.setText("已添加");

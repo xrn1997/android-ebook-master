@@ -39,12 +39,12 @@ public class LibraryBookListAdapter extends BaseBindAdapter<LibraryKindBookList,
         LibraryBookAdapter libraryBookAdapter = new LibraryBookAdapter(context, searchBooks);
 
         searchBooks.addOnListChangedCallback(ObservableListUtil.getListChangedCallback(libraryBookAdapter));
-        if (item.kindUrl != null) {
-            binding.tvMore.setVisibility(VISIBLE);
-            binding.tvMore.setOnClickListener(v -> ChoiceBookActivity.startChoiceBookActivity(context, item.kindName, item.kindUrl));
-        } else {
+        if (item.kindUrl.isEmpty()) {
             binding.tvMore.setVisibility(GONE);
             binding.tvMore.setOnClickListener(null);
+        } else {
+            binding.tvMore.setVisibility(VISIBLE);
+            binding.tvMore.setOnClickListener(v -> ChoiceBookActivity.startChoiceBookActivity(context, item.kindName, item.kindUrl));
         }
         libraryBookAdapter.setOnItemClickListener((searchBook, position1) -> {
             Intent intent = new Intent(context, BookDetailActivity.class);

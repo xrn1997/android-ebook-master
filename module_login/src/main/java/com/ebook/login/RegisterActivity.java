@@ -46,11 +46,6 @@ public class RegisterActivity extends BaseMvvmActivity<ActivityRegisterBinding, 
     }
 
     @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-    }
-
-    @Override
     public void initData() {
     }
 }

@@ -28,8 +28,8 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class LoginViewModel extends BaseViewModel<LoginModel> {
     private static final String TAG = LoginViewModel.class.getSimpleName();
-    public ObservableField<String> username = new ObservableField<>();
-    public ObservableField<String> password = new ObservableField<>();
+    public final ObservableField<String> username = new ObservableField<>();
+    public final ObservableField<String> password = new ObservableField<>();
     public String path;//被拦截的路径
     public Bundle bundle;//被拦截的信息
 

@@ -27,10 +27,10 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class ModifyPwdViewModel extends BaseViewModel<ModifyPwdModel> {
     private static final String TAG = ModifyPwdViewModel.class.getSimpleName();
-    public ObservableField<String> username = new ObservableField<>();
-    public ObservableField<String> verifyCode = new ObservableField<>();
-    public ObservableField<String> password_1 = new ObservableField<>();
-    public ObservableField<String> password_2 = new ObservableField<>();
+    public final ObservableField<String> username = new ObservableField<>();
+    public final ObservableField<String> verifyCode = new ObservableField<>();
+    public final ObservableField<String> password_1 = new ObservableField<>();
+    public final ObservableField<String> password_2 = new ObservableField<>();
     public String mVerifyCode; // 验证码
     private SingleLiveEvent<Void> mVoidSingleLiveEvent;
 

@@ -1,5 +1,6 @@
 package com.ebook.find.mvp.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class SearchBookAdapter extends RefreshRecyclerViewAdapter {
         ((Viewholder) holder).tvName.setText(searchBooks.get(position).name);
         ((Viewholder) holder).tvAuthor.setText(searchBooks.get(position).author);
         String state = searchBooks.get(position).state;
-        if (state == null || state.length() == 0) {
+        if (state.isEmpty()) {
             ((Viewholder) holder).tvState.setVisibility(View.GONE);
         } else {
             ((Viewholder) holder).tvState.setVisibility(View.VISIBLE);
@@ -65,19 +66,19 @@ public class SearchBookAdapter extends RefreshRecyclerViewAdapter {
             ((Viewholder) holder).tvWords.setText(wordsS);
         }
         String kind = searchBooks.get(position).kind;
-        if (kind == null || kind.length() <= 0) {
+        if (kind.isEmpty()) {
             ((Viewholder) holder).tvKind.setVisibility(View.GONE);
         } else {
             ((Viewholder) holder).tvKind.setVisibility(View.VISIBLE);
             ((Viewholder) holder).tvKind.setText(kind);
         }
-        if (searchBooks.get(position).lastChapter != null && !searchBooks.get(position).lastChapter.isEmpty())
-            ((Viewholder) holder).tvLastest.setText(searchBooks.get(position).lastChapter);
-        else if (searchBooks.get(position).desc != null && !searchBooks.get(position).desc.isEmpty()) {
-            ((Viewholder) holder).tvLastest.setText(searchBooks.get(position).desc);
+        if (!searchBooks.get(position).lastChapter.isEmpty())
+            ((Viewholder) holder).tvLatest.setText(searchBooks.get(position).lastChapter);
+        else if (!searchBooks.get(position).desc.isEmpty()) {
+            ((Viewholder) holder).tvLatest.setText(searchBooks.get(position).desc);
         } else
-            ((Viewholder) holder).tvLastest.setText("");
-        if (searchBooks.get(position).origin != null && !searchBooks.get(position).origin.isEmpty()) {
+            ((Viewholder) holder).tvLatest.setText("");
+        if (!searchBooks.get(position).origin.isEmpty()) {
             ((Viewholder) holder).tvOrigin.setVisibility(View.VISIBLE);
             ((Viewholder) holder).tvOrigin.setText("来源:" + searchBooks.get(position).origin);
         } else {
@@ -115,17 +116,18 @@ public class SearchBookAdapter extends RefreshRecyclerViewAdapter {
         this.itemClickListener = itemClickListener;
     }
 
-    public void addAll(List<SearchBook> newDatas) {
-        if (newDatas != null && newDatas.size() > 0) {
+    public void addAll(List<SearchBook> searchBooks) {
+        if (searchBooks != null && !searchBooks.isEmpty()) {
             int oldCount = getItemcount();
-            searchBooks.addAll(newDatas);
-            notifyItemRangeInserted(oldCount, newDatas.size());
+            this.searchBooks.addAll(searchBooks);
+            notifyItemRangeInserted(oldCount, searchBooks.size());
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void replaceAll(List<SearchBook> newData) {
         searchBooks.clear();
-        if (newData != null && newData.size() > 0) {
+        if (newData != null && !newData.isEmpty()) {
             searchBooks.addAll(newData);
         }
         notifyDataSetChanged();
@@ -146,29 +148,29 @@ public class SearchBookAdapter extends RefreshRecyclerViewAdapter {
     }
 
     static class Viewholder extends RecyclerView.ViewHolder {
-        FrameLayout flContent;
-        ImageView ivCover;
-        TextView tvName;
-        TextView tvAuthor;
-        TextView tvState;
-        TextView tvWords;
-        TextView tvKind;
-        TextView tvLastest;
-        TextView tvAddShelf;
-        TextView tvOrigin;
+        final FrameLayout flContent;
+        final ImageView ivCover;
+        final TextView tvName;
+        final TextView tvAuthor;
+        final TextView tvState;
+        final TextView tvWords;
+        final TextView tvKind;
+        final TextView tvLatest;
+        final TextView tvAddShelf;
+        final TextView tvOrigin;
 
         public Viewholder(View itemView) {
             super(itemView);
-            flContent = (FrameLayout) itemView.findViewById(R.id.fl_content);
-            ivCover = (ImageView) itemView.findViewById(R.id.iv_cover);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvAuthor = (TextView) itemView.findViewById(R.id.tv_author);
-            tvState = (TextView) itemView.findViewById(R.id.tv_state);
-            tvWords = (TextView) itemView.findViewById(R.id.tv_words);
-            tvLastest = (TextView) itemView.findViewById(R.id.tv_lastest);
-            tvAddShelf = (TextView) itemView.findViewById(R.id.tv_addshelf);
-            tvKind = (TextView) itemView.findViewById(R.id.tv_kind);
-            tvOrigin = (TextView) itemView.findViewById(R.id.tv_origin);
+            flContent = itemView.findViewById(R.id.fl_content);
+            ivCover = itemView.findViewById(R.id.iv_cover);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvAuthor = itemView.findViewById(R.id.tv_author);
+            tvState = itemView.findViewById(R.id.tv_state);
+            tvWords = itemView.findViewById(R.id.tv_words);
+            tvLatest = itemView.findViewById(R.id.tv_lastest);
+            tvAddShelf = itemView.findViewById(R.id.tv_addshelf);
+            tvKind = itemView.findViewById(R.id.tv_kind);
+            tvOrigin = itemView.findViewById(R.id.tv_origin);
         }
     }
 }

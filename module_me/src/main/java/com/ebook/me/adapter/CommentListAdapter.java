@@ -16,6 +16,7 @@ import com.ebook.me.R;
 import com.ebook.me.databinding.AdapterCommentListItemBinding;
 import com.xrn1997.common.adapter.BaseBindAdapter;
 
+@SuppressWarnings("unused")
 public class CommentListAdapter extends BaseBindAdapter<Comment, AdapterCommentListItemBinding> {
     public CommentListAdapter(Context context, ObservableArrayList<Comment> items) {
         super(context, items);

@@ -247,7 +247,7 @@ public class SearchPresenterImpl extends BasePresenterImpl<ISearchView> implemen
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    e.printStackTrace();
+                                    Log.e(TAG, "onError: ", e);
                                     if (searchTime == startThisSearchTime) {
                                         searchEngine.get(finalSearchEngineIndex).put(HAS_LOAD_KEY, false);
                                         searchEngine.get(finalSearchEngineIndex).put(DUR_REQUEST_TIME, ((int) searchEngine.get(finalSearchEngineIndex).get(DUR_REQUEST_TIME)) + 1);

@@ -27,7 +27,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCommentsModel> {
     private static final String TAG = BookCommentsViewModel.class.getSimpleName();
-    public ObservableField<String> comments = new ObservableField<>();
+    public final ObservableField<String> comments = new ObservableField<>();
     public Comment comment = new Comment();
     private SingleLiveEvent<Void> mVoidSingleLiveEvent;
 

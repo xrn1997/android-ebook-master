@@ -21,9 +21,9 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class RegisterViewModel extends BaseViewModel<RegisterModel> {
     private static final String TAG = RegisterViewModel.class.getSimpleName();
-    public ObservableField<String> username = new ObservableField<>();
-    public ObservableField<String> password_1 = new ObservableField<>();
-    public ObservableField<String> password_2 = new ObservableField<>();
+    public final ObservableField<String> username = new ObservableField<>();
+    public final ObservableField<String> password_1 = new ObservableField<>();
+    public final ObservableField<String> password_2 = new ObservableField<>();
     private SingleLiveEvent<Void> mVoidSingleLiveEvent;
 
     public RegisterViewModel(@NonNull Application application, RegisterModel model) {

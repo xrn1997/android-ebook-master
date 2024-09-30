@@ -37,7 +37,7 @@ public class LibraryViewModel extends BaseRefreshViewModel<Library, LibraryModel
         //   Log.d(TAG, "refreshData: start");
         if (isFirst) {
             isFirst = false;
-            mModel.getLibraryData(mCache)
+            LibraryModel.getLibraryData(mCache)
                     .subscribe(new SimpleObserver<>() {
                         @Override
                         public void onNext(Library value) {
