@@ -94,31 +94,35 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
     @Override
     public void getBookShelfInfo() {
         Observable.create((ObservableOnSubscribe<List<BookShelf>>) e -> {
-                    List<BookShelf> temp;
                     try (Query<BookShelf> query = ObjectBoxManager.INSTANCE.getBookShelfBox().query().build()) {
-                        temp = query.find();
+                        var temp = query.find();
                         e.onNext(temp);
+                    } catch (Exception ex) {
+                        e.onError(ex);
                     }
                     e.onComplete();
-                }).flatMap((Function<List<BookShelf>, ObservableSource<BookShelf>>) bookShelf -> {
-                    bookShelfList.addAll(bookShelf);
-
+                }).flatMap((Function<List<BookShelf>, ObservableSource<BookShelf>>) bookShelves -> {
+                    synchronized (bookShelfList) {
+                        bookShelfList.clear();
+                        bookShelfList.addAll(bookShelves); // 确保线程安全
+                    }
                     final BookShelf bookShelfResult = new BookShelf();
                     bookShelfResult.noteUrl = searchBook.noteUrl;
                     bookShelfResult.finalDate = System.currentTimeMillis();
                     bookShelfResult.durChapter = 0;
                     bookShelfResult.durChapterPage = 0;
                     bookShelfResult.setTag(searchBook.tag);
-                    return WebBookModelImpl.getInstance().getBookInfo(bookShelfResult);
+                    return WebBookModelImpl.getInstance().getBookInfo(bookShelfResult)
+                            .onErrorResumeNext(Observable::error);
                 }).map(bookShelf -> {
-                    for (int i = 0; i < bookShelfList.size(); i++) {
-                        if (Objects.equals(bookShelfList.get(i).noteUrl, bookShelf.noteUrl)) {
-                            inBookShelf = true;
-                            bookShelf.durChapter = bookShelfList.get(i).durChapter;
-                            bookShelf.durChapterPage = bookShelfList.get(i).durChapterPage;
-                            break;
-                        }
-                    }
+                    bookShelfList.stream()
+                            .filter(shelf -> Objects.equals(shelf.noteUrl, bookShelf.noteUrl))
+                            .findFirst()
+                            .ifPresent(shelf -> {
+                                inBookShelf = true;
+                                bookShelf.durChapter = shelf.durChapter;
+                                bookShelf.durChapterPage = shelf.durChapterPage;
+                            });
                     return bookShelf;
                 }).subscribeOn(Schedulers.io())
                 .compose(((BaseActivity<?>) mView.getContext()).bindUntilEvent(ActivityEvent.DESTROY))
@@ -126,7 +130,8 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                 .subscribe(new SimpleObserver<>() {
                     @Override
                     public void onNext(@NotNull BookShelf value) {
-                        WebBookModelImpl.getInstance().getChapterList(value).subscribe(new SimpleObserver<>() {
+                        WebBookModelImpl.getInstance().getChapterList(value)
+                                .subscribe(new SimpleObserver<>() {
                             @Override
                             public void onNext(WebChapter<BookShelf> bookShelfWebChapter) {
                                 mBookShelf = bookShelfWebChapter.data;
@@ -153,7 +158,6 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
 
     @Override
     public void addToBookShelf() {
-        //todo 存在问题，remove后紧接着add，无效，且只添加了部分
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
                         try (var query = ObjectBoxManager.INSTANCE.getBookShelfBox().query(BookShelf_.noteUrl.equal(mBookShelf.noteUrl)).build()) {
@@ -193,7 +197,6 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
 
     @Override
     public void removeFromBookShelf() {
-        //todo 存在问题
         if (mBookShelf != null) {
             Observable.create((ObservableOnSubscribe<Boolean>) e -> {
                         Box<BookShelf> bookShelfBox = ObjectBoxManager.INSTANCE.getBookShelfBox();
@@ -205,16 +208,18 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                             if (bookShelf != null) {
                                 var bookInfo = bookShelf.bookInfo.getTarget();
                                 if (bookInfo != null) {
-                                    for (var chapterList : bookInfo.chapterlist) {
-                                        var bookContent = chapterList.bookContent.getTarget();
-                                        if (bookContent != null && bookContent.getId() != 0L) {
-                                            bookContentBox.remove(bookContent);
+                                    var chapterList = bookInfo.chapterList;
+                                    if (chapterList != null) {
+                                        for (var chapter : chapterList) {
+                                            var bookContent = chapter.bookContent.getTarget();
+                                            if (bookContent != null && bookContent.getId() != 0L) {
+                                                bookContentBox.remove(bookContent);
+                                            }
                                         }
+                                        chapterListBox.remove(chapterList);
                                     }
-                                    chapterListBox.remove(bookInfo.chapterlist);
                                     bookInfoBox.remove(bookInfo);
                                 }
-                                Log.e(TAG, "removeFromBookShelf: " + bookShelf.getId());
                                 bookShelfBox.remove(bookShelf);
                             }
                         }

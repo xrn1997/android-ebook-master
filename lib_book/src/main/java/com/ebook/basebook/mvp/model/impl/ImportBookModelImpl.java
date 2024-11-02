@@ -92,7 +92,7 @@ public class ImportBookModelImpl extends MBaseModelImpl implements ImportBookMod
                         .order(ChapterList_.durChapterIndex)
                         .build()) {
                     for (ChapterList chapterList : query.find()) {
-                        bookShelf.getBookInfo().getTarget().chapterlist.add(chapterList);
+                        bookShelf.getBookInfo().getTarget().chapterList.add(chapterList);
                     }
                 }
                 bookShelfBox.put(bookShelf);

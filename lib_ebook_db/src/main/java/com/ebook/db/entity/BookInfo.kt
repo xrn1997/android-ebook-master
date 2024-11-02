@@ -64,18 +64,18 @@ data class BookInfo(
      */
     @IgnoredOnParcel
     @Backlink(to = "bookInfo")
-    lateinit var chapterlist: ToMany<ChapterList>
+    lateinit var chapterList: ToMany<ChapterList>
 
     fun clone(): BookInfo {
         val bookInfo = this.copy()
         //将对象与数据库进行关联，不然无法初始化ToMany。
         ObjectBoxManager.bookInfoBox.attach(bookInfo)
-        bookInfo.chapterlist = ToMany(bookInfo, BookInfo_.chapterlist)
+        bookInfo.chapterList = ToMany(bookInfo, BookInfo_.chapterList)
 
         //数据保存到数据库之前如果调用了clone，需要手动处理一下关系。
-        if (this::chapterlist.isInitialized && bookInfo.chapterlist.isEmpty()) {
-            for (chapter in chapterlist) {
-                bookInfo.chapterlist.add(chapter.clone())
+        if (this::chapterList.isInitialized && bookInfo.chapterList.isEmpty()) {
+            for (chapter in chapterList) {
+                bookInfo.chapterList.add(chapter.clone())
             }
         }
         return bookInfo

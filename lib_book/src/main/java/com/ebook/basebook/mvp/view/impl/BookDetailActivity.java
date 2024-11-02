@@ -116,8 +116,8 @@ public class BookDetailActivity extends BaseActivity<IBookDetailPresenter> imple
                     .apply(bitmapTransform(new BlurTransformation(6)))
                     .into(ivBlurCover);
             if (mPresenter.getInBookShelf()) {
-                if (!bookInfo.chapterlist.isEmpty())
-                    tvChapter.setText(String.format(getString(R.string.tv_read_durprogress), bookInfo.chapterlist.get(bookShelf.durChapter).getDurChapterName()));
+                if (!bookInfo.chapterList.isEmpty())
+                    tvChapter.setText(String.format(getString(R.string.tv_read_durprogress), bookInfo.chapterList.get(bookShelf.durChapter).getDurChapterName()));
                 else
                     tvChapter.setText("无章节");
                 tvShelf.setText("移出书架");
@@ -127,10 +127,10 @@ public class BookDetailActivity extends BaseActivity<IBookDetailPresenter> imple
                     mPresenter.removeFromBookShelf();
                 });
             } else {
-                if (bookInfo.chapterlist.isEmpty()) {
+                if (bookInfo.chapterList.isEmpty()) {
                     tvChapter.setText("无章节");
                 } else {
-                    tvChapter.setText(String.format(getString(R.string.tv_searchbook_lastest), bookInfo.chapterlist.get(bookInfo.chapterlist.size() - 1).getDurChapterName()));
+                    tvChapter.setText(String.format(getString(R.string.tv_searchbook_lastest), bookInfo.chapterList.get(bookInfo.chapterList.size() - 1).getDurChapterName()));
                 }
                 tvShelf.setText("放入书架");
                 tvRead.setText("开始阅读");

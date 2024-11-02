@@ -128,7 +128,7 @@ public class ChapterListView extends FrameLayout {
         this.itemClickListener = clickListener;
         var bookInfo = bookShelf.getBookInfo().getTarget();
         tvName.setText(bookInfo.getName());
-        tvListCount.setText("共" + bookInfo.chapterlist.size() + "章");
+        tvListCount.setText("共" + bookInfo.chapterList.size() + "章");
         chapterListAdapter = new ChapterListAdapter(bookShelf, index -> {
             if (itemClickListener != null) {
                 itemClickListener.itemClick(index);

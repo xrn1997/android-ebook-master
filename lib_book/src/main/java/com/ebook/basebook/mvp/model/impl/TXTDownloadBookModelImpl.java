@@ -255,7 +255,7 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
 
     private BookInfo analyzeBookInfo(String s, String novelUrl) {
         BookInfo bookInfo = new BookInfo();
-        bookInfo.setNoteUrl(novelUrl);   //id
+        bookInfo.setNoteUrl(novelUrl);
         bookInfo.setTag(TXTDownloadBookService.URL);
         Document doc = Jsoup.parse(s);
         bookInfo.setName(doc.getElementsByClass("info").get(0).getElementsByTag("h1").get(0).text());
@@ -296,7 +296,7 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
             BookInfo bookInfo = bookShelf.getBookInfo().getTarget();
             for (ChapterList chapterList : temp.data) {
                 chapterList.bookInfo.setTarget(bookInfo);
-                bookInfo.chapterlist.add(chapterList);
+                bookInfo.chapterList.add(chapterList);
 
             }
             e.onNext(new WebChapter<>(bookShelf, temp.next));
