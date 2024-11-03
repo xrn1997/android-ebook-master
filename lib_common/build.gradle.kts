@@ -7,8 +7,8 @@ plugins {
 
 android {
     namespace = "com.xrn1997.common"
-    compileSdk = 34
-
+    compileSdk = 35
+    testOptions.targetSdk = 35
     defaultConfig {
         minSdk = 26
 
@@ -30,7 +30,7 @@ android {
         }
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -46,10 +46,21 @@ dependencies {
     api(libs.core.ktx)
     api(libs.appcompat)
     api(libs.material)
+    api(libs.kotlin.reflect)
+    //协程 https://github.com/Kotlin/kotlinx.coroutines
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.android)
+
+    // 输入型dialog https://github.com/afollestad/material-dialogs
+    api(libs.input)
+    api(libs.core)
+    api(libs.bottomsheets)
     //Activity和Fragment
     api(libs.fragment.ktx)
     api(libs.activity.ktx)
-
+    //扁平化布局 https://github.com/androidx/constraintlayout
+    // 教程 https://blog.csdn.net/guolin_blog/article/details/53122387
+    api(libs.constraintlayout)
     //RecyclerView https://developer.android.google.cn/jetpack/androidx/releases/recyclerview?hl=zh_cn
     api(libs.androidx.recyclerview)
     //EventBus  https://github.com/greenrobot/EventBus
@@ -59,6 +70,8 @@ dependencies {
     api(libs.rxkotlin)
     api(libs.rxandroid)
     api(libs.rxjava)
+    //RxBinding https://github.com/JakeWharton/RxBinding
+    api(libs.rxbinding)
     //RxLifecycle  https://github.com/trello/RxLifecycle
     api(libs.rxlifecycle.kotlin)
     api(libs.rxlifecycle.android)
@@ -90,6 +103,8 @@ dependencies {
     api(libs.refresh.footer.classics)    //经典加载
     //Gson https://github.com/google/gson/
     api(libs.gson)
+    //JSON工具
+    api(libs.fastjson2)
     //Retrofit https://square.github.io/retrofit/
     api(libs.adapter.rxjava3)
     api(libs.retrofit)
@@ -131,6 +146,7 @@ dependencies {
     api(libs.androidx.palette)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    //测试依赖
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.androidx.ui.test.junit4)

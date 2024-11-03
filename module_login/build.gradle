@@ -3,73 +3,78 @@ plugins {
     alias(libs.plugins.kotlinKapt)
 }
 if (isLoginModule.toBoolean()) {
-    apply plugin: 'com.android.application'
-    apply plugin: 'therouter'
+    apply plugin: "com.android.application"
+    apply plugin: "therouter"
 } else {
-    apply plugin: 'com.android.library'
+    apply plugin: "com.android.library"
 }
-apply plugin: 'com.google.devtools.ksp'
+apply plugin: "com.google.devtools.ksp"
 android {
 
     defaultConfig {
         //如果是独立模块，则使用当前组件的包名
         if (isLoginModule.toBoolean()) {
-            applicationId "com.ebook.login"
+            applicationId = "com.ebook.login"
         }
-        minSdk 26
-        targetSdk 34
-        compileSdk 34
-        versionCode 4
-        versionName '1.1.6'
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        minSdk = 26
+        targetSdk = 35
+        compileSdk = 35
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
+        getByName("main") {
+            jniLibs.srcDir("src/main/jniLibs")
             if (isLoginModule.toBoolean()) {
-                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+                manifest.srcFile "src/main/module/AndroidManifest.xml"
             } else {
-                manifest.srcFile 'src/main/AndroidManifest.xml'
+                manifest.srcFile "src/main/AndroidManifest.xml"
                 java {
-                    exclude 'debug/**'
+                    exclude "debug/**"
                 }
             }
         }
     }
     buildTypes {
         debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled = false
+            proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+            )
         }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled = false
+            proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+            )
         }
     }
     buildFeatures {
-        dataBinding true
-        viewBinding true
+        dataBinding = true
+        viewBinding = true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace 'com.ebook.login'
+    namespace = "com.ebook.login"
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = "17"
     }
 }
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api project(':lib_book_common')
-    implementation libs.core.ktx
-    implementation libs.androidx.lifecycle.viewmodel.ktx
-    ksp libs.apt
-    implementation libs.router
+    implementation(fileTree(include: ["*.jar"], dir: "libs"))
+    api(project(":lib_book_common"))
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    ksp(libs.apt)
+    implementation(libs.router)
     //Dagger
-    ksp libs.dagger.compiler
+    ksp(libs.dagger.compiler)
 
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }

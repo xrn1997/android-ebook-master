@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
         //https://docs.objectbox.io/kotlin-support
-        classpath libs.objectbox.gradle.plugin
+        classpath(libs.objectbox.gradle.plugin)
     }
 }
 plugins {

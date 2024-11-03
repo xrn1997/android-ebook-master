@@ -1,29 +1,92 @@
-apply from: "../module.build.gradle"
+plugins {
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinKapt)
+}
+if (isModule.toBoolean()) {
+    apply plugin: "com.android.application"
+    apply plugin: "therouter"
+} else {
+    apply plugin: "com.android.library"
+}
+apply plugin: "com.google.devtools.ksp"
 android {
+    compileSdk = 35
+    defaultConfig {
+        minSdk = 26
+        targetSdk = 35
+        compileSdk = 35
 
-    namespace 'com.ebook.me'
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled = false
+            proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+            )
+        }
+        release {
+            minifyEnabled = false
+            proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+            )
+        }
+    }
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+        compose = true
+        buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = "17"
+        freeCompilerArgs = ["-Xjvm-default=all-compatibility"]//添加
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDir("src/main/jniLibs")
+            if (isModule.toBoolean()) {
+                manifest.srcFile("src/main/module/AndroidManifest.xml")
+            } else {
+                manifest.srcFile("src/main/AndroidManifest.xml")
+                java {
+                    exclude("debug/**")
+                }
+            }
+        }
+    }
+    namespace = "com.ebook.me"
+    kotlinOptions {
+        jvmTarget = "17"
     }
     defaultConfig {
         if (isModule.toBoolean()) {
-            applicationId "com.ebook.me"
+            applicationId = "com.ebook.me"
         }
     }
 }
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api project(':lib_book_common')
+    implementation(fileTree(dir: "libs", include: ["*.jar"]))
+    api(project(":lib_book_common"))
     if (!isLoginModule.toBoolean()) {
-        implementation project(":module_login")
+        implementation(project(":module_login"))
     }
-    implementation libs.core.ktx
-    implementation libs.androidx.lifecycle.viewmodel.ktx
-
-    ksp libs.dagger.compiler
-    ksp libs.apt
-    implementation libs.router
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    ksp(libs.dagger.compiler)
+    ksp(libs.apt)
+    implementation(libs.router)
+    ksp(libs.compiler)
+    kapt(libs.androidx.lifecycle.common)
+    //测试依赖
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }
