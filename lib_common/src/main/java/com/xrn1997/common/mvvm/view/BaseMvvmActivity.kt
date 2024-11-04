@@ -1,6 +1,5 @@
 package com.xrn1997.common.mvvm.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -90,15 +89,6 @@ abstract class BaseMvvmActivity<V : ViewDataBinding, VM : BaseViewModel<*>> : Ba
         mViewModel.mUIChangeLiveData.mOnBackPressedEvent.observe(this) {
             onBackPressedDispatcher.onBackPressed()
         }
-    }
-
-
-    private fun startActivity(clz: Class<*>?, bundle: Bundle?) {
-        val intent = Intent(this, clz)
-        if (bundle != null) {
-            intent.putExtras(bundle)
-        }
-        startActivity(intent)
     }
 
     override fun onDestroy() {

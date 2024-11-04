@@ -2,6 +2,7 @@ package com.xrn1997.common.mvvm.view
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -21,9 +23,6 @@ import com.xrn1997.common.databinding.ActivityRootBinding
 import com.xrn1997.common.event.BaseActivityEvent
 import com.xrn1997.common.manager.ActivityManager
 import com.xrn1997.common.mvvm.IBaseView
-import com.xrn1997.common.util.setAndroidNativeLightStatusBar
-import com.xrn1997.common.util.setStatusBarWithBitmap
-import com.xrn1997.common.util.transparentStatusBar
 import com.xrn1997.common.view.LoadingView
 import com.xrn1997.common.view.NetErrorView
 import com.xrn1997.common.view.NoDataView
@@ -65,28 +64,16 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
      */
     open var toolBarTitle: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val mBinding = ActivityRootBinding.inflate(layoutInflater)
         val rootView: View = mBinding.root
         super.setContentView(rootView)
-        //沉浸式状态栏
-        transparentStatusBar()
-        //状态栏字体颜色自适应
-        setStatusBarColor()
         mContentView = findViewById(android.R.id.content)
         EventBus.getDefault().register(this)
         initCommonView(mBinding)
         initData()
         ActivityManager.addActivity(this)
-    }
-
-    /**
-     * 设置系统状态栏颜色,默认状态栏颜色自适应浅/深色模式。
-     *
-     * 如需适配背景图片，请重写该方法并使用[setStatusBarWithBitmap]。
-     */
-    open fun setStatusBarColor() {
-        setAndroidNativeLightStatusBar()
     }
 
     /**
@@ -207,7 +194,7 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
         ActivityManager.removeActivity(this)
     }
 
-    override fun getContext(): Context? {
+    override fun getContext(): Context {
         return this
     }
 
@@ -249,6 +236,14 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
             mNetErrorView?.setNetErrorView(resId)
         }
         mNetErrorView?.show(show)
+    }
+
+    protected fun startActivity(clz: Class<*>?, bundle: Bundle?) {
+        val intent = Intent(this, clz)
+        if (bundle != null) {
+            intent.putExtras(bundle)
+        }
+        startActivity(intent)
     }
 
     /**

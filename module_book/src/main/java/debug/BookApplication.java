@@ -12,7 +12,6 @@ public class BookApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         RetrofitManager.init(this);
-        GreenDaoManager.init(this);
         startService(new Intent(this, DownloadService.class));
     }
 }

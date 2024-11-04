@@ -12,7 +12,7 @@ import com.blankj.utilcode.util.BarUtils.getStatusBarHeight
 import com.blankj.utilcode.util.ScreenUtils.getScreenWidth
 
 /**
- * 设置透明状态栏
+ * 设置透明状态栏。enableEdgeToEdge()只支持ComponentActivity，注意不要混用。
  */
 fun Activity.transparentStatusBar() {
     if (window == null) return

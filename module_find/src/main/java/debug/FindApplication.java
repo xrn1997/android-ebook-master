@@ -9,6 +9,5 @@ public class FindApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         RetrofitManager.init(this);
-        GreenDaoManager.init(this);
     }
 }

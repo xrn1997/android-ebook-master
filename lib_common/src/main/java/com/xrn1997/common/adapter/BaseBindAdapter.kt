@@ -32,9 +32,7 @@ abstract class BaseBindAdapter<T, B : ViewDataBinding>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding: B = DataBindingUtil.inflate(
-            LayoutInflater.from(context), getLayoutItemId(
-                viewType
-            ), parent, false
+            LayoutInflater.from(context), getLayoutItemId(viewType), parent, false
         )
         return BaseBindingViewHolder(binding.root)
     }
@@ -44,9 +42,8 @@ abstract class BaseBindAdapter<T, B : ViewDataBinding>(
         items[position]?.let { onBindItem(binding!!, it, position) }
     }
 
-    class BaseBindingViewHolder internal constructor(itemView: View?) : RecyclerView.ViewHolder(
-        itemView!!
-    )
+    class BaseBindingViewHolder internal constructor(itemView: View) :
+        RecyclerView.ViewHolder(itemView)
 
     /**
      * 获得item的布局id

@@ -65,8 +65,8 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
      */
     open var toolBarTitle: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
         setContent {
             InitCommonView()
@@ -115,7 +115,7 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
         ActivityManager.removeActivity(this)
     }
 
-    override fun getContext(): Context? {
+    override fun getContext(): Context {
         return this
     }
 
