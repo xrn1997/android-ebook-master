@@ -8,10 +8,9 @@ plugins {
 android {
     namespace = "com.xrn1997.common"
     compileSdk = 35
-    testOptions.targetSdk = 35
     defaultConfig {
         minSdk = 26
-
+        testOptions.targetSdk = 35
         consumerProguardFiles("consumer-rules.pro")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +41,6 @@ android {
 }
 
 dependencies {
-
     api(libs.core.ktx)
     api(libs.appcompat)
     api(libs.material)

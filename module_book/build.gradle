@@ -10,6 +10,7 @@ if (isModule.toBoolean()) {
 }
 apply plugin: "com.google.devtools.ksp"
 android {
+    namespace = "com.ebook.book"
     compileSdk = 35
     defaultConfig {
         if (isModule.toBoolean()) {
@@ -44,19 +45,6 @@ android {
         buildConfig = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     sourceSets {
         named("main") {
             jniLibs.srcDir("src/main/jniLibs")
@@ -70,8 +58,16 @@ android {
             }
         }
     }
-
-    namespace = "com.ebook.book"
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {

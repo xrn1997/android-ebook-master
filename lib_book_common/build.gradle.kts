@@ -5,18 +5,19 @@ plugins {
     alias(libs.plugins.kotlinKsp)
 }
 android {
-
+    namespace = "com.ebook.common"
+    compileSdk = 35
     defaultConfig {
         minSdk = 26
         testOptions.targetSdk = 35
-        compileSdk = 35
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        getByName("debug") {
+        debug {
             buildConfigField("boolean", "IS_DEBUG", "true")
         }
-        getByName("release") {
+        release {
             buildConfigField("boolean", "IS_DEBUG", "false")
         }
     }
@@ -32,14 +33,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace = "com.ebook.common"
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     api(project(":lib_common"))
     api(project(":lib_ebook_api"))
     api(project(":lib_ebook_db"))

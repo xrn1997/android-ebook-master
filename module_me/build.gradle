@@ -10,12 +10,14 @@ if (isModule.toBoolean()) {
 }
 apply plugin: "com.google.devtools.ksp"
 android {
+    namespace = "com.ebook.me"
     compileSdk = 35
     defaultConfig {
+        if (isModule.toBoolean()) {
+            applicationId = "com.ebook.me"
+        }
         minSdk = 26
         targetSdk = 35
-        compileSdk = 35
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -40,19 +42,9 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = ["-Xjvm-default=all-compatibility"]//添加
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+
     sourceSets {
-        getByName("main") {
+        named("main") {
             jniLibs.srcDir("src/main/jniLibs")
             if (isModule.toBoolean()) {
                 manifest.srcFile("src/main/module/AndroidManifest.xml")
@@ -64,18 +56,18 @@ android {
             }
         }
     }
-    namespace = "com.ebook.me"
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
     kotlinOptions {
         jvmTarget = "17"
     }
-    defaultConfig {
-        if (isModule.toBoolean()) {
-            applicationId = "com.ebook.me"
-        }
-    }
 }
 dependencies {
-    implementation(fileTree(dir: "libs", include: ["*.jar"]))
     api(project(":lib_book_common"))
     if (!isLoginModule.toBoolean()) {
         implementation(project(":module_login"))

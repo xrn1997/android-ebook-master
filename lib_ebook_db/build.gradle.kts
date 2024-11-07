@@ -5,16 +5,16 @@ plugins {
     id("io.objectbox")
 }
 android {
-
+    namespace = "com.ebook.db"
+    compileSdk = 35
     defaultConfig {
         minSdk = 26
         testOptions.targetSdk = 35
-        compileSdk = 35
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("proguard-rules.pro")
     }
     sourceSets {
-        getByName("main") {
+        named("main") {
             jniLibs.srcDir("src/main/jniLibs")
         }
     }
@@ -31,17 +31,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace = "com.ebook.db"
     kotlinOptions {
         jvmTarget = "17"
     }
-
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     api(libs.appcompat)
-
     implementation(libs.core.ktx)
 
     testImplementation(libs.junit)

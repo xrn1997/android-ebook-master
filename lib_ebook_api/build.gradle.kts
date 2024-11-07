@@ -4,16 +4,12 @@ plugins {
 }
 
 android {
-
+    namespace = "com.ebook.api"
+    compileSdk = 35
     defaultConfig {
         minSdk = 26
         testOptions.targetSdk = 35
-        compileSdk = 35
-    }
-    sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("src/main/jniLibs")
-        }
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -29,14 +25,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace = "com.ebook.api"
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     api(libs.appcompat)
     api(libs.annotations)
 

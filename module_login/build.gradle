@@ -10,7 +10,8 @@ if (isLoginModule.toBoolean()) {
 }
 apply plugin: "com.google.devtools.ksp"
 android {
-
+    namespace = "com.ebook.login"
+    compileSdk = 35
     defaultConfig {
         //如果是独立模块，则使用当前组件的包名
         if (isLoginModule.toBoolean()) {
@@ -18,13 +19,10 @@ android {
         }
         minSdk = 26
         targetSdk = 35
-        compileSdk = 35
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("src/main/jniLibs")
+        named("main") {
             if (isLoginModule.toBoolean()) {
                 manifest.srcFile "src/main/module/AndroidManifest.xml"
             } else {
@@ -59,13 +57,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    namespace = "com.ebook.login"
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 dependencies {
-    implementation(fileTree(include: ["*.jar"], dir: "libs"))
     api(project(":lib_book_common"))
     implementation(libs.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

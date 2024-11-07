@@ -10,8 +10,13 @@ if (isModule.toBoolean()) {
 }
 apply plugin: "com.google.devtools.ksp"
 android {
+    namespace = "com.ebook.main"
     compileSdk = 35
     defaultConfig {
+        //如果是独立模块，则使用当前组件的包名
+        if (isModule.toBoolean()) {
+            applicationId = "com.ebook.main"
+        }
         minSdk = 26
         targetSdk = 35
         compileSdk = 35
@@ -40,20 +45,8 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = ["-Xjvm-default=all-compatibility"]//添加
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
     sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("src/main/jniLibs")
+        named("main") {
             if (isModule.toBoolean()) {
                 manifest.srcFile("src/main/module/AndroidManifest.xml")
             } else {
@@ -64,19 +57,18 @@ android {
             }
         }
     }
-    namespace = "com.ebook.main"
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
     kotlinOptions {
         jvmTarget = "17"
     }
-    defaultConfig {
-        //如果是独立模块，则使用当前组件的包名
-        if (isModule.toBoolean()) {
-            applicationId = "com.ebook.main"
-        }
-    }
 }
 dependencies {
-    implementation(fileTree(dir: "libs", include: ["*.jar"]))
     api(project(":lib_book"))
     implementation(libs.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
