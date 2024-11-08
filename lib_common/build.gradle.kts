@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.kotlinKapt)
-    alias(libs.plugins.kotlinKsp)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -41,8 +41,8 @@ android {
 }
 
 dependencies {
-    api(libs.core.ktx)
-    api(libs.appcompat)
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.appcompat)
     api(libs.material)
     api(libs.kotlin.reflect)
     //协程 https://github.com/Kotlin/kotlinx.coroutines
@@ -50,15 +50,15 @@ dependencies {
     api(libs.kotlinx.coroutines.android)
 
     // 输入型dialog https://github.com/afollestad/material-dialogs
-    api(libs.input)
-    api(libs.core)
-    api(libs.bottomsheets)
+    api(libs.afollestad.material.input)
+    api(libs.afollestad.material.core)
+    api(libs.afollestad.material.bottomsheets)
     //Activity和Fragment
-    api(libs.fragment.ktx)
-    api(libs.activity.ktx)
+    api(libs.androidx.fragment.ktx)
+    api(libs.androidx.activity.ktx)
     //扁平化布局 https://github.com/androidx/constraintlayout
     // 教程 https://blog.csdn.net/guolin_blog/article/details/53122387
-    api(libs.constraintlayout)
+    api(libs.androidx.constraintlayout)
     //RecyclerView https://developer.android.google.cn/jetpack/androidx/releases/recyclerview?hl=zh_cn
     api(libs.androidx.recyclerview)
     //EventBus  https://github.com/greenrobot/EventBus
@@ -71,25 +71,25 @@ dependencies {
     //RxBinding https://github.com/JakeWharton/RxBinding
     api(libs.rxbinding)
     //RxLifecycle  https://github.com/trello/RxLifecycle
-    api(libs.rxlifecycle.kotlin)
-    api(libs.rxlifecycle.android)
-    api(libs.rxlifecycle.android.lifecycle)
-    api(libs.rxlifecycle.android.lifecycle.kotlin)
-    api(libs.rxlifecycle.components)
-    api(libs.rxlifecycle.components.preference)
+    api(libs.trello.rxlifecycle.kotlin)
+    api(libs.trello.rxlifecycle.android)
+    api(libs.trello.rxlifecycle.android.lifecycle)
+    api(libs.trello.rxlifecycle.android.lifecycle.kotlin)
+    api(libs.trello.rxlifecycle.components)
+    api(libs.trello.rxlifecycle.components.preference)
     // ViewModel https://github.com/androidx/androidx/tree/androidx-main/lifecycle
     // 官网 https://developer.android.google.cn/jetpack/androidx/releases/lifecycle
     api(libs.androidx.lifecycle.viewmodel.ktx)
-    api(libs.androidx.lifecycle.viewmodel.compose)
+    api(libs.androidx.lifecycle.viewModelCompose)
     api(libs.androidx.lifecycle.livedata.ktx)
-    api(libs.lifecycle.runtime.ktx)
-    api(libs.lifecycle.viewmodel.savedstate)
+    api(libs.androidx.lifecycle.runtime.ktx)
+    api(libs.androidx.lifecycle.viewmodel.savedstate)
     kapt(libs.androidx.lifecycle.common)
     //Android 工具类 https://github.com/Blankj/AndroidUtilCode
     api(libs.utilcodex)
     //Glide https://muyangmin.github.io/glide-docs-cn/
-    api(libs.glide)
-    ksp(libs.compiler)
+    api(libs.glide.core)
+    ksp(libs.glide.compiler)
     //刷新加载控件 https://github.com/scwang90/SmartRefreshLayout/tree/main
     api(libs.refresh.layout.kernel)      //核心必须依赖
     api(libs.refresh.header.classics)    //经典刷新头
@@ -104,10 +104,10 @@ dependencies {
     //JSON工具
     api(libs.fastjson2)
     //Retrofit https://square.github.io/retrofit/
-    api(libs.adapter.rxjava3)
-    api(libs.retrofit)
-    api(libs.converter.gson)
-    api(libs.converter.scalars)
+    api(libs.retrofit.adapter.rxjava3)
+    api(libs.retrofit.core)
+    api(libs.retrofit.converter.gson)
+    api(libs.retrofit.converter.scalars)
     //第三方日志打印框架 https://github.com/ihsanbal/LoggingInterceptor/
     api(libs.ihsanbal.logging.intercepter) {
         exclude(group = "org.json", module = "json")
@@ -127,28 +127,28 @@ dependencies {
     api(libs.permissionx)
     //Compose
     api(libs.androidx.activity.compose)
-    api(libs.androidx.lifecycle.viewmodel.compose)
-    api(libs.androidx.ui)
-    api(libs.androidx.ui.graphics)
-    api(libs.androidx.ui.tooling.preview)
-    api(libs.androidx.material3)
+    api(libs.androidx.lifecycle.viewModelCompose)
+    api(libs.androidx.compose.ui)
+    api(libs.androidx.compose.ui.graphics)
+    api(libs.androidx.compose.ui.tooling.preview)
+    api(libs.androidx.compose.material3)
     api(libs.androidx.foundation)
     api(libs.runtime.livedata)
     api(platform(libs.androidx.compose.bom))
     //Navigation
-    api(libs.androidx.navi.compose)
-    api(libs.androidx.navi.fragment.ktx)
-    api(libs.androidx.navi.ui.ktx)
-    api(libs.androidx.navi.dynamic.features.fragment)
+    api(libs.androidx.navigation.compose)
+    api(libs.androidx.navigation.fragment.ktx)
+    api(libs.androidx.navigation.ui.ktx)
+    api(libs.androidx.navigation.dynamic.features.fragment)
     //Palette
     api(libs.androidx.palette)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.testManifest)
     //测试依赖
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
 }

@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -32,12 +32,12 @@ android {
 
 dependencies {
     api(project(":lib_book_common"))
-    api(libs.appcompat)
-    implementation(libs.core.ktx)
+    api(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     //权限 Permission x
     api(libs.permissionx)
     implementation(libs.tinypinyin)

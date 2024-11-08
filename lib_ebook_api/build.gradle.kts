@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -31,33 +31,33 @@ android {
 }
 
 dependencies {
-    api(libs.appcompat)
+    api(libs.androidx.appcompat)
     api(libs.annotations)
 
     //network
-    api(libs.converter.scalars)
-    api(libs.adapter.rxjava3)
-    api(libs.converter.gson)
-    api(libs.logging.interceptor)
+    api(libs.retrofit.converter.scalars)
+    api(libs.retrofit.adapter.rxjava3)
+    api(libs.retrofit.converter.gson)
+    api(libs.okhttp.logging)
 
     //json解析
     api(libs.gson)
     api(libs.fastjson2)
     //rx管理View的生命周期
-    api(libs.rxlifecycle) {
+    api(libs.trello.rxlifecycle) {
         exclude(group = "com.android.support")
     }
-    api(libs.rxlifecycle.components) {
+    api(libs.trello.rxlifecycle.components) {
         exclude(group = "com.android.support")
     }
-    api(libs.rxlifecycle.android) {
+    api(libs.trello.rxlifecycle.android) {
         exclude(group = "com.android.support")
     }
-    implementation(libs.core.ktx)
+    implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 
-    api(libs.converter.scalars)
+    api(libs.retrofit.converter.scalars)
 }

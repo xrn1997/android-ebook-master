@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.kotlinKapt)
-    alias(libs.plugins.kotlinKsp)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
 }
 android {
     namespace = "com.ebook.common"
@@ -43,11 +43,11 @@ dependencies {
     api(project(":lib_ebook_api"))
     api(project(":lib_ebook_db"))
     api(libs.androidx.legacy.support.v4)
-    api(libs.appcompat)
-    api(libs.constraintlayout)
+    api(libs.androidx.appcompat)
+    api(libs.androidx.constraintlayout)
     api(libs.material)
 
-    implementation(libs.core.ktx)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.apt)
     api(libs.router)
@@ -61,10 +61,10 @@ dependencies {
         exclude(group = "com.android.support")
     }
     //glide图片加载
-    api(libs.glide) {
+    api(libs.glide.core) {
         exclude(group = "com.android.support")
     }
-    ksp(libs.compiler)
+    ksp(libs.glide.compiler)
 
     api(libs.androidx.lifecycle.extensions)
     kapt(libs.androidx.lifecycle.common.java8)
@@ -77,8 +77,8 @@ dependencies {
     api(libs.multi.image.selector)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     // 安卓工具类 https://github.com/Blankj/AndroidUtilCode
     api(libs.utilcodex)
 
@@ -91,18 +91,18 @@ dependencies {
     //删除粒子效果
     api(libs.explosionfield)
     //View简易动画
-    api(libs.library) { artifact { type = "aar" } }
-    api(libs.androidanimations.library) { artifact { type = "aar" } }
+    api(libs.daimajia.easing.library) { artifact { type = "aar" } }
+    api(libs.daimajia.androidanimations.library) { artifact { type = "aar" } }
     //CircleImageView
-    api(libs.circleimageview)
+    api(libs.hdodenhof.circleimageview)
     //SwitchButton
     api(libs.switchbutton.library)
-    api(libs.lib)
+    api(libs.victor.lib)
     //RxBus
     api(libs.rxbus) {
         exclude(group = "com.jakewharton.timber", module = "timber")
     }
-    api(libs.converter.scalars)
+    api(libs.retrofit.converter.scalars)
     api(libs.juniversalchardet)
 
 //    debugApi(libs.leakcanary.android)

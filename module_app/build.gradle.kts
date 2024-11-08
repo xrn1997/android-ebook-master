@@ -1,8 +1,9 @@
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.kotlinKapt)
-    alias(libs.plugins.kotlinKsp)
+    alias(libs.plugins.xrn1997.android.application)
+    alias(libs.plugins.xrn1997.android.application.compose)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
     id("therouter")
 }
 val isLoginModule: String by project
@@ -40,7 +41,7 @@ android {
 
 dependencies {
     api(project(":lib_book"))
-    implementation(libs.core.ktx)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     //相关模块均为lib时才能导入
     if (!isModule.toBoolean() && !isLoginModule.toBoolean()) {
@@ -52,6 +53,9 @@ dependencies {
     }
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+}
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
 }

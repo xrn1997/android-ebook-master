@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kapt)
 }
 if (isModule.toBoolean()) {
     apply plugin: "com.android.application"
@@ -74,16 +74,16 @@ dependencies {
     implementation(fileTree("libs") { include("*.jar") })
     api(project(":lib_book_common"))
     implementation(project(":lib_book"))
-    implementation(libs.core.ktx)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.apt)
     implementation(libs.router)
 
     // Dagger
     ksp(libs.dagger.compiler)
-    ksp(libs.compiler)
+    ksp(libs.glide.compiler)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

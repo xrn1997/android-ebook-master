@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("io.objectbox")
 }
@@ -37,10 +37,10 @@ android {
 }
 
 dependencies {
-    api(libs.appcompat)
-    implementation(libs.core.ktx)
+    api(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }
