@@ -1,14 +1,8 @@
 plugins {
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xrn1997.android.component)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
 }
-if (isModule.toBoolean()) {
-    apply plugin: "com.android.application"
-    apply plugin: "therouter"
-} else {
-    apply plugin: "com.android.library"
-}
-apply plugin: "com.google.devtools.ksp"
 android {
     namespace = "com.ebook.book"
     compileSdk = 35
@@ -76,7 +70,7 @@ dependencies {
     implementation(project(":lib_book"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    ksp(libs.apt)
+    ksp(libs.router)
     implementation(libs.router)
 
     // Dagger

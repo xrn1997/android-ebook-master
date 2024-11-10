@@ -1,12 +1,9 @@
 plugins {
     alias(libs.plugins.xrn1997.android.application)
-    alias(libs.plugins.xrn1997.android.application.compose)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     id("therouter")
 }
-val isLoginModule: String by project
 val isModule: String by project
 android {
     namespace = "com.ebook"
@@ -44,7 +41,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     //相关模块均为lib时才能导入
-    if (!isModule.toBoolean() && !isLoginModule.toBoolean()) {
+    if (!isModule.toBoolean()) {
         implementation(project(":module_main"))
         implementation(project(":module_find"))
         implementation(project(":module_me"))

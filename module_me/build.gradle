@@ -1,14 +1,8 @@
 plugins {
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xrn1997.android.component)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
 }
-if (isModule.toBoolean()) {
-    apply plugin: "com.android.application"
-    apply plugin: "therouter"
-} else {
-    apply plugin: "com.android.library"
-}
-apply plugin: "com.google.devtools.ksp"
 android {
     namespace = "com.ebook.me"
     compileSdk = 35
@@ -69,11 +63,9 @@ android {
 }
 dependencies {
     api(project(":lib_book_common"))
-    if (!isLoginModule.toBoolean()) {
-        implementation(project(":module_login"))
-    }
+    implementation(project(":module_login"))
     ksp(libs.dagger.compiler)
-    ksp(libs.apt)
+    ksp(libs.router)
     implementation(libs.router)
     ksp(libs.glide.compiler)
     kapt(libs.androidx.lifecycle.common)

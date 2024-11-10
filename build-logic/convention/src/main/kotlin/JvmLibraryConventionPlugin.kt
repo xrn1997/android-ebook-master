@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import com.xrn1997.convertion.configureKotlinJvm
+import com.xrn1997.convention.configureKotlinJvm
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

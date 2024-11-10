@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.xrn1997.convertion
+package com.xrn1997.convention
 
 /**
  * This is shared between :app and :benchmarks module to provide configurations type safety.

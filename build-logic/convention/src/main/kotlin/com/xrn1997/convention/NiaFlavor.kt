@@ -1,4 +1,4 @@
-package com.xrn1997.convertion
+package com.xrn1997.convention
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationProductFlavor

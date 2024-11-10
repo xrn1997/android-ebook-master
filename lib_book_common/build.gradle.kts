@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xrn1997.android.library)
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
 }
@@ -49,7 +48,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    ksp(libs.apt)
+    ksp(libs.router)
     api(libs.router)
     //rxjava
     api(libs.rxjava)

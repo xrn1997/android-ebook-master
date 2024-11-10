@@ -15,7 +15,7 @@
  */
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.xrn1997.convertion.configureFlavors
+import com.xrn1997.convention.configureFlavors
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

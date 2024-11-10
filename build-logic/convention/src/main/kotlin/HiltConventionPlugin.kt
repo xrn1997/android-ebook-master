@@ -15,7 +15,7 @@
  */
 
 import com.android.build.gradle.api.AndroidBasePlugin
-import com.xrn1997.convertion.libs
+import com.xrn1997.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies

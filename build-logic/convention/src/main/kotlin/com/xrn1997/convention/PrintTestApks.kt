@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.xrn1997.convertion
+package com.xrn1997.convention
 
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.AndroidComponentsExtension

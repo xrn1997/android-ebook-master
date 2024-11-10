@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `kotlin-dsl`
@@ -23,7 +22,6 @@ kotlin {
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.android.tools.common)
-    compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     implementation(libs.truth)
@@ -38,25 +36,13 @@ tasks {
 
 gradlePlugin {
     plugins {
-        register("androidApplicationCompose") {
-            id = "xrn1997.android.application.compose"
-            implementationClass = "AndroidApplicationComposeConventionPlugin"
-        }
         register("androidApplication") {
             id = "xrn1997.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
-        register("androidLibraryCompose") {
-            id = "xrn1997.android.library.compose"
-            implementationClass = "AndroidLibraryComposeConventionPlugin"
-        }
         register("androidLibrary") {
             id = "xrn1997.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
-        }
-        register("androidFeature") {
-            id = "xrn1997.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
         }
         register("androidTest") {
             id = "xrn1997.android.test"
@@ -77,6 +63,10 @@ gradlePlugin {
         register("jvmLibrary") {
             id = "xrn1997.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
+        }
+        register("androidComponent") {
+            id = "xrn1997.android.component"
+            implementationClass = "AndroidComponentConventionPlugin"
         }
     }
 }

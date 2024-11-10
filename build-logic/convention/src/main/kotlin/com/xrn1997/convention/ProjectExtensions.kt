@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.xrn1997.convertion
+package com.xrn1997.convention
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog

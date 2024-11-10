@@ -1,20 +1,14 @@
 plugins {
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xrn1997.android.component)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
 }
-if (isLoginModule.toBoolean()) {
-    apply plugin: "com.android.application"
-    apply plugin: "therouter"
-} else {
-    apply plugin: "com.android.library"
-}
-apply plugin: "com.google.devtools.ksp"
 android {
     namespace = "com.ebook.login"
     compileSdk = 35
     defaultConfig {
         //如果是独立模块，则使用当前组件的包名
-        if (isLoginModule.toBoolean()) {
+        if (isModule.toBoolean()) {
             applicationId = "com.ebook.login"
         }
         minSdk = 26
@@ -23,7 +17,7 @@ android {
     }
     sourceSets {
         named("main") {
-            if (isLoginModule.toBoolean()) {
+            if (isModule.toBoolean()) {
                 manifest.srcFile "src/main/module/AndroidManifest.xml"
             } else {
                 manifest.srcFile "src/main/AndroidManifest.xml"
@@ -65,7 +59,7 @@ dependencies {
     api(project(":lib_book_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    ksp(libs.apt)
+    ksp(libs.router)
     implementation(libs.router)
     //Dagger
     ksp(libs.dagger.compiler)

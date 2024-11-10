@@ -17,10 +17,10 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.gradle.BaseExtension
-import com.xrn1997.convertion.configureBadgingTasks
-import com.xrn1997.convertion.configureGradleManagedDevices
-import com.xrn1997.convertion.configureKotlinAndroid
-import com.xrn1997.convertion.configurePrintApksTask
+import com.xrn1997.convention.configureBadgingTasks
+import com.xrn1997.convention.configureGradleManagedDevices
+import com.xrn1997.convention.configureKotlinAndroid
+import com.xrn1997.convention.configurePrintApksTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -38,7 +38,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = 34
+                defaultConfig.targetSdk = 35
                 @Suppress("UnstableApiUsage")
                 testOptions.animationsDisabled = true
                 configureGradleManagedDevices(this)

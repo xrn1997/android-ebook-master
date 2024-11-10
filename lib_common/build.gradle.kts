@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xrn1997.android.library)
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
 }
@@ -84,7 +83,7 @@ dependencies {
     api(libs.androidx.lifecycle.livedata.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.lifecycle.viewmodel.savedstate)
-    kapt(libs.androidx.lifecycle.common)
+    ksp(libs.androidx.lifecycle.common)
     //Android 工具类 https://github.com/Blankj/AndroidUtilCode
     api(libs.utilcodex)
     //Glide https://muyangmin.github.io/glide-docs-cn/

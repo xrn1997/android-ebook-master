@@ -49,11 +49,11 @@ jsoup = "1.17.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 juniversalchardet = "1.0.3"
-kotlin = "2.0.21"
+kotlin = "1.9.22"
 kotlinxCoroutines = "1.9.0"
 kotlinxDatetime = "0.6.1"
 kotlinxSerializationJson = "1.6.3"
-ksp = "2.0.21-1.0.26"
+ksp = "1.9.22-1.0.16"
 kyleduoLibrary = "2.1.0"
 leakcanaryAndroid = "2.14"
 legacySupportV4 = "1.0.0"
@@ -69,7 +69,7 @@ objectboxGradlePlugin = "4.0.2"
 okhttp = "4.12.0"
 paletteVersion = "1.0.0"
 permissionx = "1.8.1"
-plugin = "1.2.2"
+router = "1.2.2"
 protobuf = "4.26.1"
 recyclerview = "1.3.2"
 retrofit = "2.11.0"
@@ -171,7 +171,6 @@ androidx-window-core = { group = "androidx.window", name = "window-core", versio
 androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidxWork" }
 annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
-apt = { module = "cn.therouter:apt", version.ref = "plugin" }
 autofittextview = { module = "me.grantland:autofittextview", version.ref = "autofittextview" }
 coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
@@ -238,7 +237,7 @@ retrofit-kotlin-serialization = { group = "com.squareup.retrofit2", name = "conv
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
 
-router = { module = "cn.therouter:router", version.ref = "plugin" }
+router = { module = "cn.therouter:router", version.ref = "router" }
 runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedataVersion" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxbinding = { module = "com.jakewharton.rxbinding4:rxbinding", version.ref = "rxbinding" }
@@ -263,16 +262,15 @@ victor-lib = { module = "com.victor:lib", version.ref = "victorLib" }
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
-compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+router-gradlePlugin = { group = "cn.therouter.agp8", name = "cn.therouter.agp8.gradle.plugin", version.ref = "router" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxMacroBenchmark" }
-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dependencyGuard" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
@@ -281,16 +279,14 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "moduleGraph" }
-therouter = { id = "cn.therouter.agp8", version.ref = "plugin" }
+therouter = { id = "cn.therouter.agp8", version.ref = "router" }
 
 # Plugins defined by this project
 xrn1997-android-application = { id = "xrn1997.android.application" }
-xrn1997-android-application-compose = { id = "xrn1997.android.application.compose" }
 xrn1997-android-application-flavors = { id = "xrn1997.android.application.flavors" }
-xrn1997-android-feature = { id = "xrn1997.android.feature" }
 xrn1997-android-library = { id = "xrn1997.android.library" }
-xrn1997-android-library-compose = { id = "xrn1997.android.library.compose" }
 xrn1997-android-lint = { id = "xrn1997.android.lint" }
 xrn1997-android-test = { id = "xrn1997.android.test" }
-xrn1997-hilt = { id = "nowinandroid.hilt" }
+xrn1997-hilt = { id = "xrn1997.hilt" }
 xrn1997-jvm-library = { id = "xrn1997.jvm.library" }
+xrn1997-android-component = { id = "xrn1997.android.component" }

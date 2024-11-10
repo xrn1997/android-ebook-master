@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.xrn1997.convertion
+package com.xrn1997.convention
 
 import com.android.SdkConstants
 import com.android.build.api.artifact.SingleArtifact
@@ -40,7 +40,6 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.process.ExecOperations
 import java.io.File
-import java.util.Locale
 import javax.inject.Inject
 
 @CacheableTask
