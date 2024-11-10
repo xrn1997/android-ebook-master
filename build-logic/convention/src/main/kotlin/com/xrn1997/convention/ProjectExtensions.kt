@@ -14,18 +14,12 @@
  *   limitations under the License.
  */
 
-import com.xrn1997.convertion.configureKotlinJvm
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+package com.xrn1997.convertion
 
-class JvmLibraryConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            with(pluginManager) {
-                apply("org.jetbrains.kotlin.jvm")
-                apply("xrn1997.android.lint")
-            }
-            configureKotlinJvm()
-        }
-    }
-}
+import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.kotlin.dsl.getByType
+
+val Project.libs
+    get(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")

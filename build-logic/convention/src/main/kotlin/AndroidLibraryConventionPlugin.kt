@@ -16,12 +16,12 @@
 
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
-import com.xrn1997.build.logic.convertion.configureFlavors
-import com.xrn1997.build.logic.convertion.configureGradleManagedDevices
-import com.xrn1997.build.logic.convertion.configureKotlinAndroid
-import com.xrn1997.build.logic.convertion.configurePrintApksTask
-import com.xrn1997.build.logic.convertion.disableUnnecessaryAndroidTests
-import com.xrn1997.build.logic.convertion.libs
+import com.xrn1997.convertion.configureFlavors
+import com.xrn1997.convertion.configureGradleManagedDevices
+import com.xrn1997.convertion.configureKotlinAndroid
+import com.xrn1997.convertion.configurePrintApksTask
+import com.xrn1997.convertion.disableUnnecessaryAndroidTests
+import com.xrn1997.convertion.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

@@ -15,8 +15,8 @@
  */
 
 import com.android.build.gradle.LibraryExtension
-import com.xrn1997.build.logic.convertion.configureGradleManagedDevices
-import com.xrn1997.build.logic.convertion.libs
+import com.xrn1997.convertion.configureGradleManagedDevices
+import com.xrn1997.convertion.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
