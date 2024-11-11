@@ -236,7 +236,7 @@ retrofit-adapter-rxjava3 = { group = "com.squareup.retrofit2", name = "adapter-r
 retrofit-kotlin-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
-
+router-apt = { module = "cn.therouter:apt", version.ref = "router" }
 router = { module = "cn.therouter:router", version.ref = "router" }
 runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedataVersion" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }

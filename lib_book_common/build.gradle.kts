@@ -48,7 +48,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    ksp(libs.router)
+    ksp(libs.router.apt)
     api(libs.router)
     //rxjava
     api(libs.rxjava)
@@ -66,7 +66,7 @@ dependencies {
     ksp(libs.glide.compiler)
 
     api(libs.androidx.lifecycle.extensions)
-    kapt(libs.androidx.lifecycle.common.java8)
+    ksp(libs.androidx.lifecycle.common.java8)
 
     api(libs.dagger)
     ksp(libs.dagger.compiler)

@@ -65,10 +65,10 @@ dependencies {
     api(project(":lib_book_common"))
     implementation(project(":module_login"))
     ksp(libs.dagger.compiler)
-    ksp(libs.router)
+    ksp(libs.router.apt)
     implementation(libs.router)
     ksp(libs.glide.compiler)
-    kapt(libs.androidx.lifecycle.common)
+    ksp(libs.androidx.lifecycle.common)
     //测试依赖
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

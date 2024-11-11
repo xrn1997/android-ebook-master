@@ -67,7 +67,7 @@ dependencies {
     implementation(project(":lib_book"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    ksp(libs.router)
+    ksp(libs.router.apt)
     implementation(libs.router)
     //Dagger
     ksp(libs.dagger.compiler)
