@@ -4,12 +4,6 @@ plugins {
 
 android {
     namespace = "com.ebook.api"
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 26
-        testOptions.targetSdk = 35
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
     buildTypes {
         release {
             isMinifyEnabled = false

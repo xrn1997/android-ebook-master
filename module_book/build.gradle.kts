@@ -4,48 +4,36 @@ plugins {
     alias(libs.plugins.ksp)
 }
 android {
-    namespace = "com.ebook.login"
-    compileSdk = 35
+    namespace = "com.ebook.book"
     defaultConfig {
-        //如果是独立模块，则使用当前组件的包名
-        if (isModule.toBoolean()) {
-            applicationId = "com.ebook.login"
-        }
-        minSdk = 26
-        targetSdk = 35
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    sourceSets {
-        named("main") {
-            if (isModule.toBoolean()) {
-                manifest.srcFile "src/main/module/AndroidManifest.xml"
-            } else {
-                manifest.srcFile "src/main/AndroidManifest.xml"
-                java {
-                    exclude "debug/**"
-                }
-            }
-        }
-    }
+
     buildTypes {
-        debug {
-            minifyEnabled = false
+        named("debug") {
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
         }
-        release {
-            minifyEnabled = false
+        named("release") {
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
         }
     }
+
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        compose = true
+        buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -55,14 +43,19 @@ android {
         jvmTarget = "17"
     }
 }
+
 dependencies {
+    implementation(fileTree("libs") { include("*.jar") })
     api(project(":lib_book_common"))
+    implementation(project(":lib_book"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.router.apt)
     implementation(libs.router)
-    //Dagger
+
+    // Dagger
     ksp(libs.dagger.compiler)
+    ksp(libs.glide.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

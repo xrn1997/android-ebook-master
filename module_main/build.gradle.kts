@@ -5,28 +5,19 @@ plugins {
 }
 android {
     namespace = "com.ebook.main"
-    compileSdk = 35
     defaultConfig {
-        //如果是独立模块，则使用当前组件的包名
-        if (isModule.toBoolean()) {
-            applicationId = "com.ebook.main"
-        }
-        minSdk = 26
-        targetSdk = 35
-        compileSdk = 35
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
-            minifyEnabled = false
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
         }
         release {
-            minifyEnabled = false
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
@@ -38,18 +29,6 @@ android {
         viewBinding = true
         compose = true
         buildConfig = true
-    }
-    sourceSets {
-        named("main") {
-            if (isModule.toBoolean()) {
-                manifest.srcFile("src/main/module/AndroidManifest.xml")
-            } else {
-                manifest.srcFile("src/main/AndroidManifest.xml")
-                java {
-                    exclude("debug/**")
-                }
-            }
-        }
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.10"
@@ -69,10 +48,7 @@ dependencies {
     ksp(libs.router.apt)
     implementation(libs.router)
     ksp(libs.dagger.compiler)
-    if(!isModule.toBoolean()){
-        implementation project(":module_login")
-    }
-
+    implementation( project(":module_login"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

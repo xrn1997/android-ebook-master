@@ -5,13 +5,6 @@ plugins {
 }
 android {
     namespace = "com.ebook.common"
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 26
-        testOptions.targetSdk = 35
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
     buildTypes {
         debug {
             buildConfigField("boolean", "IS_DEBUG", "true")

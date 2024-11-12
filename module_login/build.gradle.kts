@@ -4,26 +4,20 @@ plugins {
     alias(libs.plugins.ksp)
 }
 android {
-    namespace = "com.ebook.find"
-    compileSdk = 35
+    namespace = "com.ebook.login"
     defaultConfig {
-        if (isModule.toBoolean()) {
-            applicationId = "com.ebook.find"
-        }
-        minSdk = 26
-        targetSdk = 35
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
-            minifyEnabled = false
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
         }
         release {
-            minifyEnabled = false
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
@@ -33,25 +27,6 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
-        compose = true
-        buildConfig = true
-    }
-
-    sourceSets {
-        named("main") {
-            jniLibs.srcDir("src/main/jniLibs")
-            if (isModule.toBoolean()) {
-                manifest.srcFile("src/main/module/AndroidManifest.xml")
-            } else {
-                manifest.srcFile("src/main/AndroidManifest.xml")
-                java {
-                    exclude("debug/**")
-                }
-            }
-        }
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -62,9 +37,7 @@ android {
     }
 }
 dependencies {
-    implementation(fileTree(dir: "libs", include: ["*.jar"]))
     api(project(":lib_book_common"))
-    implementation(project(":lib_book"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.router.apt)

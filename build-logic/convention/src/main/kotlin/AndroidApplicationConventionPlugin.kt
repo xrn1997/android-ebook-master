@@ -39,6 +39,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = 35
+                //默认情况下让applicationId 等于 namespace
+                defaultConfig.applicationId = namespace
                 @Suppress("UnstableApiUsage")
                 testOptions.animationsDisabled = true
                 configureGradleManagedDevices(this)

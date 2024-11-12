@@ -4,26 +4,20 @@ plugins {
     alias(libs.plugins.ksp)
 }
 android {
-    namespace = "com.ebook.me"
-    compileSdk = 35
+    namespace = "com.ebook.find"
     defaultConfig {
-        if (isModule.toBoolean()) {
-            applicationId = "com.ebook.me"
-        }
-        minSdk = 26
-        targetSdk = 35
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
-            minifyEnabled = false
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
         }
         release {
-            minifyEnabled = false
+            isMinifyEnabled = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
@@ -35,20 +29,6 @@ android {
         viewBinding = true
         compose = true
         buildConfig = true
-    }
-
-    sourceSets {
-        named("main") {
-            jniLibs.srcDir("src/main/jniLibs")
-            if (isModule.toBoolean()) {
-                manifest.srcFile("src/main/module/AndroidManifest.xml")
-            } else {
-                manifest.srcFile("src/main/AndroidManifest.xml")
-                java {
-                    exclude("debug/**")
-                }
-            }
-        }
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.10"
@@ -62,14 +42,16 @@ android {
     }
 }
 dependencies {
+    implementation(fileTree("libs") { include("*.jar") })
     api(project(":lib_book_common"))
-    implementation(project(":module_login"))
-    ksp(libs.dagger.compiler)
+    implementation(project(":lib_book"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.router.apt)
     implementation(libs.router)
-    ksp(libs.glide.compiler)
-    ksp(libs.androidx.lifecycle.common)
-    //测试依赖
+    //Dagger
+    ksp(libs.dagger.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

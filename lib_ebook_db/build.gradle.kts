@@ -5,11 +5,7 @@ plugins {
 }
 android {
     namespace = "com.ebook.db"
-    compileSdk = 35
     defaultConfig {
-        minSdk = 26
-        testOptions.targetSdk = 35
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("proguard-rules.pro")
     }
     sourceSets {
