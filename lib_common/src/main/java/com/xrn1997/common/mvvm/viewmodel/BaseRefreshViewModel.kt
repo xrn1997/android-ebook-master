@@ -113,7 +113,7 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
         return false
     }
 
-    /***
+    /**
      * 是否启用下拉刷新
      * @return Boolean 默认true
      */

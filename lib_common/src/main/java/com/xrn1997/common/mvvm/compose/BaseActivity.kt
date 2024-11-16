@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -15,6 +16,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -24,6 +26,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
 import com.blankj.utilcode.util.NetworkUtils
 import com.trello.rxlifecycle4.components.support.RxAppCompatActivity
 import com.xrn1997.common.R
@@ -161,6 +165,11 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
      */
     @Composable
     open fun InitCommonView() {
+        val windowInsets = if (enableFitsSystemWindows()) {
+            ScaffoldDefaults.contentWindowInsets
+        } else {
+            WindowInsets(0.dp)
+        }
         MyApplicationTheme {
             Scaffold(
                 topBar = {
@@ -169,6 +178,7 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
                     }
                 },
                 bottomBar = { OnBindBottomBarLayout() },
+                contentWindowInsets = windowInsets,
                 modifier = Modifier.fillMaxSize()
             ) { innerPadding ->
                 HomePage(
@@ -178,6 +188,15 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
                 )
             }
         }
+    }
+
+    /**
+     * 是否让界面自动适配系统栏，即不延伸到系统栏，默认true
+     * 注意，如果根布局延伸到了系统栏，请手动使用[ViewCompat.setOnApplyWindowInsetsListener]
+     * 控制一些特定布局的偏移，防止可操作区域进入系统栏，产生交互冲突。
+     */
+    open fun enableFitsSystemWindows(): Boolean {
+        return true
     }
 
     /**

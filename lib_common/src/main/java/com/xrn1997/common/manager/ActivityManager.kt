@@ -142,8 +142,7 @@ object ActivityManager {
     fun appExit(context: Context, isBackground: Boolean?) {
         try {
             finishAllActivity()
-            val activityMgr =
-                context.getSystemService(android.app.ActivityManager::class.java)
+            val activityMgr = context.getSystemService(android.app.ActivityManager::class.java)
             activityMgr.killBackgroundProcesses(context.packageName)
         } catch (e: Exception) {
             Log.e(TAG, "appExit: ", e)

@@ -46,6 +46,7 @@ fun ScrollableList(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp)
     ) {

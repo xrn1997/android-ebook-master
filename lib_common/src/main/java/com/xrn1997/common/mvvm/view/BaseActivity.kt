@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.NetworkUtils
@@ -101,7 +102,9 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     }
 
     /**
-     * 给根布局设置fitsSystemWindows，默认true
+     * 是否让界面自动适配系统栏，即不延伸到系统栏，默认true
+     * 注意，如果根布局延伸到了系统栏，请手动使用[ViewCompat.setOnApplyWindowInsetsListener]
+     * 控制一些特定布局的偏移，防止可操作区域进入系统栏，产生交互冲突。
      */
     open fun enableFitsSystemWindows(): Boolean {
         return true
