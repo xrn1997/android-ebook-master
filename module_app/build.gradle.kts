@@ -36,18 +36,13 @@ dependencies {
     api(project(":lib_book"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    //todo 相关模块均为lib时才能导入
     implementation(project(":module_main"))
     implementation(project(":module_find"))
     implementation(project(":module_me"))
     implementation(project(":module_book"))
     implementation(project(":module_login"))
 
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
-}
-dependencyGuard {
-    configuration("releaseRuntimeClasspath")
 }

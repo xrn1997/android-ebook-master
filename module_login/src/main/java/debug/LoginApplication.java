@@ -2,7 +2,7 @@ package debug;
 
 import com.ebook.api.RetrofitManager;
 import com.ebook.common.BaseApplication;
-import com.ebook.login.interceptor.LoginInterceptor;
+import com.ebook.common.interceptor.LoginInterceptor;
 import com.therouter.router.NavigatorKt;
 
 public class LoginApplication extends BaseApplication {

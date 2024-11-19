@@ -1,8 +1,8 @@
 package com.ebook;
 
 import com.ebook.api.RetrofitManager;
+import com.ebook.common.interceptor.LoginInterceptor;
 import com.ebook.db.ObjectBoxManager;
-import com.ebook.login.interceptor.LoginInterceptor;
 import com.therouter.router.NavigatorKt;
 import com.xrn1997.common.BaseApplication;
 

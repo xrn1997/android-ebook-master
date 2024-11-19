@@ -43,11 +43,9 @@ android {
 }
 dependencies {
     api(project(":lib_book_common"))
-    //todo 相关模块均为lib时才能导入
-    implementation(project(":module_login"))
     ksp(libs.dagger.compiler)
-    ksp(libs.router.apt)
     implementation(libs.router)
+    ksp(libs.router.apt)
     ksp(libs.glide.compiler)
     ksp(libs.androidx.lifecycle.common)
     //测试依赖

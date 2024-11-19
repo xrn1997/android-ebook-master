@@ -33,7 +33,6 @@ coil = "2.7.0"
 constraintlayout = "2.2.0"
 dagger = "2.52"
 daimajiaLibraryVersion = "2.4"
-dependencyGuard = "0.5.0"
 explosionfield = "1.0.1"
 fastjson2 = "2.0.53"
 foundation = "1.7.5"
@@ -271,7 +270,6 @@ android-application = { id = "com.android.application", version.ref = "androidGr
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxMacroBenchmark" }
-dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dependencyGuard" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

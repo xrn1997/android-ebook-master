@@ -1,4 +1,4 @@
-package com.ebook.login.interceptor
+package com.ebook.common.interceptor
 
 import android.util.Log
 import com.blankj.utilcode.util.SPUtils

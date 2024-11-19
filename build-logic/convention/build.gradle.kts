@@ -24,6 +24,7 @@ dependencies {
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.router.gradlePlugin)
     implementation(libs.truth)
 }
 
