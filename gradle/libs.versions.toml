@@ -7,7 +7,7 @@ androidTools = "31.7.2"
 androidxActivity = "1.9.3"
 androidxAppCompat = "1.7.0"
 androidxBrowser = "1.8.0"
-androidxComposeBom = "2024.10.01"
+androidxComposeBom = "2024.11.00"
 androidxCore = "1.15.0"
 androidxCoreSplashscreen = "1.0.1"
 androidxDataStore = "1.1.1"
@@ -16,7 +16,7 @@ androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.8.7"
 androidxMacroBenchmark = "1.3.3"
 androidxMetrics = "1.0.0-beta01"
-androidxNavigation = "2.8.3"
+androidxNavigation = "2.8.4"
 androidxProfileinstaller = "1.4.1"
 androidxTestCore = "1.6.1"
 androidxTestExt = "1.2.1"
@@ -63,7 +63,6 @@ logginginterceptorVersion = "3.1.0"
 material = "1.12.0"
 moduleGraph = "2.7.1"
 multiimageselector = "1.2"
-navigationCompose = "2.8.3"
 objectboxGradlePlugin = "4.0.2"
 okhttp = "4.12.0"
 paletteVersion = "1.0.0"
@@ -74,7 +73,6 @@ recyclerview = "1.3.2"
 retrofit = "2.11.0"
 robolectric = "4.12.2"
 roborazzi = "1.7.0"
-room = "2.6.1"
 refreshFooterClassics = "2.1.0"
 runtimeLivedataVersion = "1.7.5"
 rxandroid = "3.0.2"
@@ -151,7 +149,7 @@ androidx-metrics = { group = "androidx.metrics", name = "metrics-performance", v
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "androidxNavigation" }
-androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationCompose" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidxNavigation" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxNavigation" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidxNavigation" }
 
@@ -256,7 +254,7 @@ trello-rxlifecycle-components-preference = { module = "com.trello.rxlifecycle4:r
 trello-rxlifecycle-kotlin = { module = "com.trello.rxlifecycle4:rxlifecycle-kotlin", version.ref = "rxlifecycleKotlin" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
-utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+blankj-utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 victor-lib = { module = "com.victor:lib", version.ref = "victorLib" }
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }

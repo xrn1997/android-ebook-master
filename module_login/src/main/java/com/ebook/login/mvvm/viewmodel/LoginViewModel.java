@@ -57,7 +57,7 @@ public class LoginViewModel extends BaseViewModel<LoginModel> {
             return;
         }
 
-        mModel.login(username, password).subscribe(new Observer<>() {
+        LoginModel.login(username, password).subscribe(new Observer<>() {
             @Override
             public void onSubscribe(Disposable d) {
                 //  postShowInitLoadViewEvent(true);

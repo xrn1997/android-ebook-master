@@ -25,7 +25,6 @@ public class BookCommentsModel extends BaseModel {
     /**
      * 添加评论
      */
-    @SuppressWarnings("unchecked")
     public Observable<RespDTO<Comment>> addComment(Comment comment) {
         return commentService.addComment(RetrofitManager.getInstance().TOKEN, comment)
                 .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())
@@ -35,7 +34,6 @@ public class BookCommentsModel extends BaseModel {
     /**
      * 获得章节评论
      */
-    @SuppressWarnings("unchecked")
     public Observable<RespDTO<List<Comment>>> getChapterComments(String chapterUrl) {
         return commentService.getChapterComments(RetrofitManager.getInstance().TOKEN, chapterUrl)
                 .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())
@@ -45,7 +43,6 @@ public class BookCommentsModel extends BaseModel {
     /**
      * 删除评论
      */
-    @SuppressWarnings("unchecked")
     public Observable<RespDTO<Integer>> deleteComment(Long id) {
         return commentService.deleteComment(RetrofitManager.getInstance().TOKEN, id)
                 .compose(RxJavaAdapter.INSTANCE.schedulersTransformer())

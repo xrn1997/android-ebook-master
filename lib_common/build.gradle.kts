@@ -81,7 +81,7 @@ dependencies {
     api(libs.androidx.lifecycle.viewmodel.savedstate)
     ksp(libs.androidx.lifecycle.common)
     //Android 工具类 https://github.com/Blankj/AndroidUtilCode
-    api(libs.utilcodex)
+    api(libs.blankj.utilcodex)
     //Glide https://muyangmin.github.io/glide-docs-cn/
     api(libs.glide.core)
     ksp(libs.glide.compiler)

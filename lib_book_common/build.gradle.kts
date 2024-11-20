@@ -72,7 +72,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     // 安卓工具类 https://github.com/Blankj/AndroidUtilCode
-    api(libs.utilcodex)
+    api(libs.blankj.utilcodex)
 
     //JSOUP
     api(libs.jsoup)

@@ -1,10 +1,6 @@
 package com.ebook.api;
 
 
-import android.annotation.SuppressLint;
-import android.app.Application;
-import android.content.Context;
-
 import com.ebook.api.config.API;
 import com.ebook.api.service.CommentService;
 import com.ebook.api.service.UserService;
@@ -16,9 +12,7 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-@SuppressLint("StaticFieldLeak")
 public class RetrofitManager {
-    public static Context mContext;
     private volatile static RetrofitManager retrofitManager;
     private final Retrofit mRetrofit;
     public String TOKEN;
@@ -38,10 +32,6 @@ public class RetrofitManager {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
-    }
-
-    public static void init(Application application) {
-        mContext = application;
     }
 
     public static RetrofitManager getInstance() {

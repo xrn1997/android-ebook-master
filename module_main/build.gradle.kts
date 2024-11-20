@@ -45,10 +45,10 @@ dependencies {
     api(project(":lib_book"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.core.splashscreen)
     ksp(libs.router.apt)
     implementation(libs.router)
     ksp(libs.dagger.compiler)
-    implementation( project(":module_login"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
