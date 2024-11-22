@@ -40,10 +40,10 @@ abstract class BaseMvvmRefreshActivity<VM : BaseRefreshViewModel<*, *>> : BaseMv
             autoLoadData()
         }
         mViewModel.mUIChangeRefreshLiveData.mStopRefreshLiveEvent.observe(this) { success ->
-            stopRefresh(success!!)
+            stopRefresh(success)
         }
         mViewModel.mUIChangeRefreshLiveData.mStopLoadMoreLiveEvent.observe(this) { success ->
-            stopLoadMore(success!!)
+            stopLoadMore(success)
         }
     }
 

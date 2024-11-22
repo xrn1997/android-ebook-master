@@ -34,7 +34,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding> {
 
     @Override
     public void initView() {
-        Button mExitButton = findViewById(R.id.btn_exit);
+        Button mExitButton = getBinding().btnExit;
         mExitButton.setOnClickListener(v -> {
             SPUtils.getInstance().clear();
             RetrofitManager.getInstance().TOKEN = "";

@@ -17,7 +17,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ebook.api.config.API;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.event.RxBusTag;
-import com.ebook.common.view.SettingBarView;
 import com.ebook.common.view.profilePhoto.CircleImageView;
 import com.ebook.me.R;
 import com.ebook.me.databinding.FragmentMeMainBinding;
@@ -104,19 +103,16 @@ public class MainMeFragment extends BaseFragment<FragmentMeMainBinding> {
 
     @Override
     public void initView() {
-        SettingBarView mSetComment = getBinding().viewMyComment;
-        SettingBarView mSetInform = getBinding().viewMyInform;
         mButton = getBinding().btnLogin;
-        SettingBarView mSetting = getBinding().viewSetting;
         mCircleImageView = getBinding().viewUserImage;
         mTextView = getBinding().viewUserName;
-        mSetComment.setOnClickSettingBarViewListener(() -> TheRouter.build(KeyCode.Me.COMMENT_PATH)
+        getBinding().viewMyComment.setOnClickSettingBarViewListener(() -> TheRouter.build(KeyCode.Me.COMMENT_PATH)
                 .navigation(getActivity()));
-        mSetInform.setOnClickSettingBarViewListener(() -> TheRouter.build(KeyCode.Me.MODIFY_PATH)
+        getBinding().viewMyInform.setOnClickSettingBarViewListener(() -> TheRouter.build(KeyCode.Me.MODIFY_PATH)
                 .navigation(getActivity()));
         mButton.setOnClickListener(v -> TheRouter.build(KeyCode.Login.LOGIN_PATH)
                 .navigation());
-        mSetting.setOnClickSettingBarViewListener(() -> TheRouter.build(KeyCode.Me.SETTING_PATH)
+        getBinding().viewSetting.setOnClickSettingBarViewListener(() -> TheRouter.build(KeyCode.Me.SETTING_PATH)
                 .navigation(getActivity()));
     }
 
