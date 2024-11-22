@@ -15,6 +15,9 @@ import com.trello.rxlifecycle4.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle4.components.support.RxFragment
 import com.xrn1997.common.R
 import com.xrn1997.common.databinding.FragmentRootBinding
+import com.xrn1997.common.databinding.StubLoadingBinding
+import com.xrn1997.common.databinding.StubNetErrorBinding
+import com.xrn1997.common.databinding.StubNoDataBinding
 import com.xrn1997.common.event.BaseFragmentEvent
 import com.xrn1997.common.mvvm.IBaseView
 import com.xrn1997.common.view.LoadingView
@@ -168,7 +171,7 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
     override fun showLoadingView(show: Boolean) {
         if (mLoadingView == null) {
             val view: View = mViewStubLoading.inflate()
-            mLoadingView = view.findViewById(R.id.view_loading)
+            mLoadingView = StubLoadingBinding.bind(view).root
         }
         mLoadingView?.show(show)
     }
@@ -176,7 +179,7 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
     override fun showNoDataView(show: Boolean, resId: Int?) {
         if (mNetErrorView == null) {
             val view: View = mViewStubNoData.inflate()
-            mNoDataView = view.findViewById(R.id.ndv_no_data)
+            mNoDataView = StubNoDataBinding.bind(view).root
         }
         if (resId != null) {
             mNoDataView?.setNoDataView(resId)
@@ -187,7 +190,7 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
     override fun showNetWorkErrView(show: Boolean, resId: Int?) {
         if (mNetErrorView == null) {
             val view: View = mViewStubError.inflate()
-            mNetErrorView = view.findViewById(R.id.nev_net_error)
+            mNetErrorView = StubNetErrorBinding.bind(view).root
             mNetErrorView?.setRefreshBtnClickListener {
                 NetworkUtils.isAvailableAsync {
                     if (it) {

@@ -7,7 +7,6 @@ class AndroidComponentConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         val isModule = target.findProperty("isModule")?.toString()?.toBoolean() ?: false
-        println(target.name)
         with(target) {
             with(pluginManager) {
                 if (isModule) {

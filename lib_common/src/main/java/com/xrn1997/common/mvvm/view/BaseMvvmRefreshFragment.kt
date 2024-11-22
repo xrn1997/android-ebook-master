@@ -35,9 +35,9 @@ abstract class BaseMvvmRefreshFragment<V : ViewDataBinding, VM : BaseRefreshView
         mViewModel.mUIChangeRefreshLiveData.mAutoRefreshLiveEvent
             .observe(this) { autoLoadData() }
         mViewModel.mUIChangeRefreshLiveData.mStopRefreshLiveEvent
-            .observe(this) { success -> stopRefresh(success!!) }
+            .observe(this) { success -> stopRefresh(success) }
         mViewModel.mUIChangeRefreshLiveData.mStopLoadMoreLiveEvent
-            .observe(this) { success -> stopLoadMore(success!!) }
+            .observe(this) { success -> stopLoadMore(success) }
     }
 
     abstract fun getRefreshLayout(): RefreshLayout

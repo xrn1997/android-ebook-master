@@ -21,6 +21,9 @@ import com.blankj.utilcode.util.NetworkUtils
 import com.trello.rxlifecycle4.components.support.RxAppCompatActivity
 import com.xrn1997.common.R
 import com.xrn1997.common.databinding.ActivityRootBinding
+import com.xrn1997.common.databinding.StubLoadingBinding
+import com.xrn1997.common.databinding.StubNetErrorBinding
+import com.xrn1997.common.databinding.StubNoDataBinding
 import com.xrn1997.common.event.BaseActivityEvent
 import com.xrn1997.common.manager.ActivityManager
 import com.xrn1997.common.mvvm.IBaseView
@@ -204,7 +207,7 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     override fun showLoadingView(show: Boolean) {
         if (mLoadingView == null) {
             val view: View = mViewStubLoading.inflate()
-            mLoadingView = view.findViewById(R.id.view_loading)
+            mLoadingView = StubLoadingBinding.bind(view).root
         }
         mLoadingView?.visibility = if (show) View.VISIBLE else View.GONE
         mLoadingView?.show(show)
@@ -214,7 +217,7 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     override fun showNoDataView(show: Boolean, resId: Int?) {
         if (mNoDataView == null) {
             val view = mViewStubNoData.inflate()
-            mNoDataView = view.findViewById(R.id.ndv_no_data)
+            mNoDataView = StubNoDataBinding.bind(view).root
         }
         if (resId != null) {
             mNoDataView?.setNoDataView(resId)
@@ -225,7 +228,7 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     override fun showNetWorkErrView(show: Boolean, resId: Int?) {
         if (mNetErrorView == null) {
             val view = mViewStubError.inflate()
-            mNetErrorView = view.findViewById(R.id.nev_net_error)
+            mNetErrorView = StubNetErrorBinding.bind(view).root
             mNetErrorView?.setRefreshBtnClickListener {
                 NetworkUtils.isAvailableAsync {
                     if (it) {

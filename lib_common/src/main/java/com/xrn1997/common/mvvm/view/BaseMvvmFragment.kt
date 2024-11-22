@@ -71,16 +71,16 @@ abstract class BaseMvvmFragment<V : ViewDataBinding, VM : BaseViewModel<*>> : Ba
 
     protected open fun initBaseViewObservable() {
         mViewModel.mUIChangeLiveData.mShowLoadingViewEvent.observe(this) { show ->
-            showLoadingView(show!!)
+            showLoadingView(show)
         }
         mViewModel.mUIChangeLiveData.mShowNoDataViewEvent.observe(this) { show ->
-            showNoDataView(show!!)
+            showNoDataView(show)
         }
         mViewModel.mUIChangeLiveData.mShowNetWorkErrViewEvent.observe(this) { show ->
-            showNetWorkErrView(show!!)
+            showNetWorkErrView(show)
         }
         mViewModel.mUIChangeLiveData.mStartActivityEvent.observe(this) { params ->
-            val clz = params!![BaseViewModel.Companion.ParameterField.CLASS] as Class<*>?
+            val clz = params[BaseViewModel.Companion.ParameterField.CLASS] as Class<*>?
             val bundle: Bundle? = params[BaseViewModel.Companion.ParameterField.BUNDLE] as Bundle?
             startActivity(clz, bundle)
         }

@@ -43,11 +43,6 @@
                     app:linearLayoutManager="@{viewModel.orientation}" />
             </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="bottom"
-                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -64,8 +59,9 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
                 android:layout_weight="2"
+                android:autofillHints=""
                 android:background="@drawable/editext_selector"
-                android:hint="说点什么吧！"
+                android:hint="@string/say_something"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:text="@={viewModel.comments}"
@@ -79,7 +75,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/btn_selector"
                 android:onClick="@{()->viewModel.addComment()}"
-                android:text="发送"
+                android:text="@string/send"
                 android:textColor="?colorOnPrimary" />
         </LinearLayout>
     </FrameLayout>
