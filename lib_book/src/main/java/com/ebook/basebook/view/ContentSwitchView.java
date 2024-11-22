@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.ebook.common.util.DisplayUtil;
 import com.ebook.common.util.ScreenUtils;
 import com.ebook.db.event.DBCode;
+import com.xrn1997.common.util.DisplayUtil;
 
 import java.util.ArrayList;
 import java.util.List;

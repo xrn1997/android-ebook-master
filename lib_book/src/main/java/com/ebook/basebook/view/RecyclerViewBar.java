@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ebook.basebook.R;
-import com.ebook.common.util.DisplayUtil;
+import com.xrn1997.common.util.DisplayUtil;
 
 import java.util.Objects;
 

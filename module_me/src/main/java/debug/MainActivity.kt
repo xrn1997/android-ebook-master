@@ -11,7 +11,7 @@ import com.xrn1997.common.mvvm.view.BaseActivity
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initView() {
-        val mMeFragment = TheRouter.get(IMeProvider::class.java)?.getMainMeFragment()
+        val mMeFragment = TheRouter.get(IMeProvider::class.java)?.mainMeFragment
         val transaction = supportFragmentManager.beginTransaction()
         if (mMeFragment != null) {
             if (!mMeFragment.isAdded) {

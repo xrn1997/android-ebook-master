@@ -31,16 +31,19 @@ android {
         jvmTarget = "17"
     }
 }
-
+val isModule = project.findProperty("isModule").toString().toBoolean()
 dependencies {
     api(project(":lib_book"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(project(":module_main"))
-    implementation(project(":module_find"))
-    implementation(project(":module_me"))
-    implementation(project(":module_book"))
-    implementation(project(":module_login"))
+    if (!isModule) {
+        implementation(project(":module_main"))
+        implementation(project(":module_find"))
+        implementation(project(":module_me"))
+        implementation(project(":module_book"))
+        implementation(project(":module_login"))
+    }
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

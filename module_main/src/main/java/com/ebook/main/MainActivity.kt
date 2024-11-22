@@ -52,9 +52,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 else -> false
             }
         }
-        mBookFragment = TheRouter.get(IBookProvider::class.java)?.getMainBookFragment()
-        mFindFragment = TheRouter.get(IFindProvider::class.java)?.getMainFindFragment()
-        mMeFragment = TheRouter.get(IMeProvider::class.java)?.getMainMeFragment()
+        mBookFragment = TheRouter.get(IBookProvider::class.java)?.mainBookFragment
+        mFindFragment = TheRouter.get(IFindProvider::class.java)?.mainFindFragment
+        mMeFragment = TheRouter.get(IMeProvider::class.java)?.mainMeFragment
         mCurrFragment = mBookFragment
         if (mBookFragment != null) {
             supportFragmentManager.beginTransaction()

@@ -329,7 +329,7 @@ public class SearchActivity extends BaseActivity<ISearchPresenter> implements IS
     private void openKeyBoard() {
         InputMethodManager imm = getSystemService(InputMethodManager.class);
         edtContent.requestFocus();
-        imm.showSoftInput(edtContent, InputMethodManager.RESULT_UNCHANGED_SHOWN);
+        imm.showSoftInput(edtContent, InputMethodManager.SHOW_IMPLICIT);
             /*
             由于思路是通过软键盘改变“屏幕大小”来控制是否显示搜索历史的，
             因此即便是在打开软键盘失败的情况下，也依旧应该兼容显示搜索历史，

@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.ebook.basebook.R;
-import com.ebook.common.util.DisplayUtil;
+import com.xrn1997.common.util.DisplayUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

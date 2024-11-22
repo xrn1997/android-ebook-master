@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xrn1997.android.library)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
 }
 android {
@@ -14,7 +13,6 @@ android {
         }
     }
     buildFeatures {
-        dataBinding = true
         viewBinding = true
         buildConfig = true
     }
@@ -65,8 +63,6 @@ dependencies {
     ksp(libs.dagger.compiler)
 
     api(libs.stetho)
-
-    api(libs.multi.image.selector)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

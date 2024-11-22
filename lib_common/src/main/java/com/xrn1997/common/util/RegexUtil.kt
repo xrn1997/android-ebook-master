@@ -31,12 +31,23 @@ object RegexUtil {
         "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"
 
     /**
+     * QQ号
+     */
+    const val QQ_PATTEN = "^[1-9](\\d){4,9}$"
+
+    /**
+     * 邮箱
+     */
+    const val EMAIL_PATTEN = "[a-zA-Z0-9_.]{1,}@(([a-zA-z0-9]-*){1,}\\.){1,3}[a-zA-z\\-]{1,}"
+
+    /**
      * 检查是否符合正则表达式
      * @date 2022/2/24 20:50
      * @param str 待检测的字符串
      * @param regex  正则表达式
      * @return boolean
      */
+    @JvmStatic
     fun checkRegex(regex: String, str: String): Boolean {
         val pattern = Regex(regex)
         return pattern.matches(str)
@@ -47,6 +58,7 @@ object RegexUtil {
      * @param phone String
      * @return Boolean
      */
+    @JvmStatic
     fun checkPhone(phone: String): Boolean {
         return checkRegex(PHONE_PATTERN, phone)
     }
@@ -56,6 +68,7 @@ object RegexUtil {
      * @param video String
      * @return Boolean
      */
+    @JvmStatic
     fun checkVideo(video: String): Boolean {
         return checkRegex(VIDEO_PATTERN, video.lowercase())
     }
@@ -65,6 +78,7 @@ object RegexUtil {
      * @param picture String
      * @return Boolean
      */
+    @JvmStatic
     fun checkPicture(picture: String): Boolean {
         return checkRegex(PICTURE_PATTERN, picture.lowercase())
     }
@@ -74,7 +88,22 @@ object RegexUtil {
      * @param url String
      * @return Boolean
      */
+    @JvmStatic
     fun checkUrl(url: String): Boolean {
         return checkRegex(URL_PATTERN, url)
+    }
+
+    /**
+     * 检查是否符合QQ号格式
+     */
+    fun checkQQ(qq: String): Boolean {
+        return checkRegex(QQ_PATTEN, qq)
+    }
+
+    /**
+     * 检测是否符合邮箱格式
+     */
+    fun checkEmail(email: String): Boolean {
+        return checkRegex(EMAIL_PATTEN, email)
     }
 }

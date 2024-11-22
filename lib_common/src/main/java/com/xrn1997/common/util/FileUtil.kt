@@ -46,6 +46,7 @@ object FileUtil {
      * @param path String
      * @return ByteArray?
      */
+    @JvmStatic
     fun getFileByte(path: String): ByteArray? {
         val f = File(path)
         if (!f.exists()) {
@@ -81,11 +82,11 @@ object FileUtil {
      * 根据Uri返回文件绝对路径
      * 兼容了file:///开头的 和 content://开头的情况
      * @param context Context
-     * @param uri Uri?
+     * @param uri Uri
      * @return String?
      */
-    fun getRealFilePathFromUri(context: Context, uri: Uri?): String? {
-        if (null == uri) return null
+    @JvmStatic
+    fun getRealFilePathFromUri(context: Context, uri: Uri): String? {
         val scheme = uri.scheme
         var data: String? = null
         if (scheme == null) {
@@ -118,6 +119,7 @@ object FileUtil {
      * @param dirPath String
      * @return String
      */
+    @JvmStatic
     fun checkDirPath(dirPath: String): String {
         val dir = File(dirPath)
         if (!dir.exists()) {
@@ -131,6 +133,7 @@ object FileUtil {
      * @param filePath 被删除文件的文件名
      * @return 文件删除成功返回true,否则返回false
      */
+    @JvmStatic
     fun deleteFile(filePath: String): Boolean {
         val file = File(filePath)
         return if (file.isFile && file.exists()) {
@@ -143,6 +146,7 @@ object FileUtil {
      * @param filePath 被删除目录的文件路径
      * @return 目录删除成功返回true,否则返回false
      */
+    @JvmStatic
     fun deleteDirectory(filePath: String): Boolean {
 
         var flag: Boolean
@@ -179,6 +183,7 @@ object FileUtil {
      * @param type String 文件后缀名(不带点)
      * @return String 文件名
      */
+    @JvmStatic
     fun getFileName(type: String): String {
         return SimpleDateFormat.getDateTimeInstance().format(Date()) + "." + type
     }
@@ -192,6 +197,7 @@ object FileUtil {
      * @param displayName String 文件名
      * @return ContentValues
      */
+    @JvmStatic
     fun getFileContentValues(
         mimeType: String,
         directory: String? = "",
@@ -220,6 +226,7 @@ object FileUtil {
      * @param uri Uri
      * @return List<Uri>?
      */
+    @JvmStatic
     fun queryImageFromUri(
         context: Context,
         uri: Uri
@@ -254,6 +261,7 @@ object FileUtil {
      * @param systemDirectory String
      * @return Uri?
      */
+    @JvmStatic
     fun getImageFileUri(
         context: Context,
         displayName: String,
@@ -276,6 +284,7 @@ object FileUtil {
      * @param systemDirectory String
      * @return Uri?
      */
+    @JvmStatic
     fun getVideoFileUri(
         context: Context,
         displayName: String,
@@ -298,6 +307,7 @@ object FileUtil {
      * @param systemDirectory String
      * @return Uri?
      */
+    @JvmStatic
     fun getAudioFileUri(
         context: Context,
         displayName: String,
@@ -310,5 +320,22 @@ object FileUtil {
             getFileContentValues(mimeType, directory, systemDirectory, displayName)
         )
     }
+
+    /**
+     * 私有目录创建文件
+     */
+    fun getPrivateFileUri(context: Context, fileName: String): Uri {
+        // 获取应用的私有文件目录
+        val fileDir = context.filesDir // 私有内部存储
+        // 创建文件对象
+        val file = File(fileDir, fileName)
+
+        // 确保文件已创建
+        file.createNewFile() // 如果文件已存在，不会重新创建
+
+        // 返回文件的 Uri
+        return Uri.fromFile(file)
+    }
+
 
 }

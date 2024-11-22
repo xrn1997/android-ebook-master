@@ -1,6 +1,5 @@
 package com.ebook.me;
 
-import static com.ebook.common.util.FileUtil.getRealFilePathFromUri;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import com.hwangjr.rxbus.thread.EventThread;
 import com.therouter.TheRouter;
 import com.therouter.router.Route;
 import com.xrn1997.common.mvvm.view.BaseMvvmActivity;
+import com.xrn1997.common.util.FileUtil;
 
 @Route(path = KeyCode.Me.MODIFY_PATH, params = {"needLogin", "true"})
 public class ModifyInformationActivity extends BaseMvvmActivity<ViewDataBinding, ModifyViewModel> {
@@ -103,7 +103,7 @@ public class ModifyInformationActivity extends BaseMvvmActivity<ViewDataBinding,
     public void uploadHeadImage() {
         PhotoCutDialog photoCutDialog = PhotoCutDialog.newInstance();
         photoCutDialog.setOnClickListener(uri -> {
-            String cropImagePath = getRealFilePathFromUri(getApplicationContext(), uri);
+            String cropImagePath = FileUtil.getRealFilePathFromUri(getApplicationContext(), uri);
             mViewModel.modifyProfilePhoto(cropImagePath);
             // Bitmap bitMap = BitmapFactory.decodeFile(cropImagePath);
         });

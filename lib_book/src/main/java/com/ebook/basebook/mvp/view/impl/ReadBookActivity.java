@@ -38,7 +38,6 @@ import com.ebook.basebook.view.popupwindow.ReadBookMenuMorePop;
 import com.ebook.basebook.view.popupwindow.WindowLightPop;
 import com.ebook.common.event.KeyCode;
 import com.ebook.common.event.RxBusTag;
-import com.ebook.common.util.DisplayUtil;
 import com.ebook.db.entity.ChapterList;
 import com.ebook.db.entity.DownloadChapter;
 import com.ebook.db.entity.DownloadChapterList;
@@ -46,6 +45,7 @@ import com.ebook.db.event.DBCode;
 import com.hwangjr.rxbus.RxBus;
 import com.permissionx.guolindev.PermissionX;
 import com.therouter.TheRouter;
+import com.xrn1997.common.util.DisplayUtil;
 
 import java.util.ArrayList;
 import java.util.List;

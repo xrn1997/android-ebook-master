@@ -159,6 +159,7 @@ object AutoStartUtil {
             }
         }
 
+    @JvmStatic
     fun startToAutoStartSetting(context: Context) {
         Log.d(TAG, "******************当前手机型号为：" + Build.MANUFACTURER)
         val entries: MutableSet<MutableMap.MutableEntry<String?, List<String?>?>> = hashMap.entries
