@@ -81,7 +81,7 @@ public class CommentViewModel extends BaseRefreshViewModel<Comment, CommentModel
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtil.showShort(getApplication().getApplicationContext(),"删除成功！");
+                    ToastUtil.showShort(getApplication().getApplicationContext(), "删除成功！");
                     refreshData();
                 } else {
                     Log.e(TAG, "error: " + integerRespDTO.error);

@@ -37,7 +37,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         } else {
             val context = mContext?.get()
             if (context != null) {
-                ToastUtil.showShort(context,"发生异常，已重启应用")
+                ToastUtil.showShort(context, "发生异常，已重启应用")
                 val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
                 intent?.apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -56,7 +56,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         val context = mContext?.get() ?: return false
         Thread {
             Looper.prepare()
-            ToastUtil.showShort(context,"程序异常，请重启应用")
+            ToastUtil.showShort(context, "程序异常，请重启应用")
             Looper.loop()
         }.start()
         collectCrashDeviceInfo(context)

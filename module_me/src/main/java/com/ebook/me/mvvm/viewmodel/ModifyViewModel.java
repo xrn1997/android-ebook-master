@@ -43,7 +43,7 @@ public class ModifyViewModel extends BaseViewModel<ModifyModel> {
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtil.showShort(getApplication().getApplicationContext(),"修改成功");
+                    ToastUtil.showShort(getApplication().getApplicationContext(), "修改成功");
                     SPUtils.getInstance().put(KeyCode.Login.SP_NICKNAME, nickname.get());
                     RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME, new Object());
                     postFinishActivityEvent();
@@ -80,7 +80,7 @@ public class ModifyViewModel extends BaseViewModel<ModifyModel> {
             @Override
             public void onNext(RespDTO<String> stringRespDTO) {
                 if (stringRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtil.showShort(getApplication().getApplicationContext(),"头像修改成功");
+                    ToastUtil.showShort(getApplication().getApplicationContext(), "头像修改成功");
                     String url = stringRespDTO.data;
                     SPUtils.getInstance().put(KeyCode.Login.SP_IMAGE, url);
                     Log.e(TAG, "url: " + url);

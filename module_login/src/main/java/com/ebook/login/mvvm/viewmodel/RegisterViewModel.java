@@ -33,19 +33,19 @@ public class RegisterViewModel extends BaseViewModel<RegisterModel> {
     public void register() {
 
         if (TextUtils.isEmpty(username.get())) {//用户名为空
-            ToastUtil.showShort(getApplication().getApplicationContext(),"用户名不能为空");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "用户名不能为空");
             return;
         }
         if (TextUtils.getTrimmedLength(username.get()) < 11) { // 手机号码不足11位
-            ToastUtil.showShort(getApplication().getApplicationContext(),"请输入正确的手机号");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "请输入正确的手机号");
             return;
         }
         if (TextUtils.isEmpty(password_1.get()) || TextUtils.isEmpty((password_2.get()))) {
-            ToastUtil.showShort(getApplication().getApplicationContext(),"密码未填写完整");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "密码未填写完整");
             return;
         }
         if (!TextUtils.equals(password_1.get(), password_2.get())) {//两次密码不一致
-            ToastUtil.showShort(getApplication().getApplicationContext(),"两次密码不一致");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "两次密码不一致");
             return;
         }
         mModel.register(username.get(), password_1.get()).subscribe(new Observer<>() {
@@ -57,7 +57,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterModel> {
             @Override
             public void onNext(RespDTO<LoginDTO> loginDTORespDTO) {
                 if (loginDTORespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtil.showShort(getApplication().getApplicationContext(),"注册成功");
+                    ToastUtil.showShort(getApplication().getApplicationContext(), "注册成功");
                     postFinishActivityEvent();
                 } else {
                     Log.v(TAG, "error:" + loginDTORespDTO.error);

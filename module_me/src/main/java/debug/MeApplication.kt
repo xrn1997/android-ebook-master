@@ -2,9 +2,7 @@ package debug
 
 import com.ebook.common.BaseApplication
 import com.ebook.common.event.KeyCode
-import com.ebook.common.interceptor.LoginInterceptor
 import com.therouter.router.addPathReplaceInterceptor
-import com.therouter.router.addRouterReplaceInterceptor
 import com.therouter.router.interceptor.PathReplaceInterceptor
 
 

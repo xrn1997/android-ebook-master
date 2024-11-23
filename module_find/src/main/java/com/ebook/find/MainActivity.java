@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     public void exit() {
         if ((System.currentTimeMillis() - exitTime) > 2000) {
-            ToastUtil.showShort(this,"再按一次退出程序");
+            ToastUtil.showShort(this, "再按一次退出程序");
             exitTime = System.currentTimeMillis();
         } else {
             finish();

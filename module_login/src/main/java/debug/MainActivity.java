@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withString("msg", "TheRouter传递过来的需要登录的参数msg")
                     .navigation();
         } else if (id == R.id.btn_exit) { // 退出登录
-            ToastUtil.showShort(this,"退出登录成功");
+            ToastUtil.showShort(this, "退出登录成功");
             SPUtils.getInstance().remove(KeyCode.Login.SP_IS_LOGIN);
         }
     }

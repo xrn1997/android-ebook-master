@@ -56,7 +56,7 @@ class LoginActivity : BaseActivity() {
             spUtils.put(KeyCode.Login.SP_NICKNAME, user.nickname)
             spUtils.put(KeyCode.Login.SP_USER_ID, user.id)
             spUtils.put(KeyCode.Login.SP_IMAGE, user.image)
-            ToastUtil.showShort(this,"登录成功")
+            ToastUtil.showShort(this, "登录成功")
         }
     }
 
