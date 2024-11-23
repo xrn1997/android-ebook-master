@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.Looper
 import android.os.Process
 import android.util.Log
-import com.blankj.utilcode.util.ToastUtils
+import com.xrn1997.common.util.ToastUtil
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintWriter
@@ -35,10 +35,9 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         if (!handleException(ex) && mDefaultHandler != null) {
             mDefaultHandler?.uncaughtException(thread, ex)
         } else {
-            ToastUtils.showShort("发生异常，已重启应用")
-
             val context = mContext?.get()
             if (context != null) {
+                ToastUtil.showShort(context,"发生异常，已重启应用")
                 val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
                 intent?.apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -54,14 +53,12 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         if (ex == null) {
             return false
         }
-
+        val context = mContext?.get() ?: return false
         Thread {
             Looper.prepare()
-            ToastUtils.showShort("程序异常，请重启应用")
+            ToastUtil.showShort(context,"程序异常，请重启应用")
             Looper.loop()
         }.start()
-
-        val context = mContext?.get() ?: return false
         collectCrashDeviceInfo(context)
         saveCrashInfoToFile(ex)
 

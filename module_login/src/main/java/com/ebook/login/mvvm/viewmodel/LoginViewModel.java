@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.api.RetrofitManager;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.LoginDTO;
@@ -21,6 +20,7 @@ import com.hwangjr.rxbus.RxBus;
 import com.therouter.TheRouter;
 import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel;
+import com.xrn1997.common.util.ToastUtil;
 
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -44,16 +44,16 @@ public class LoginViewModel extends BaseViewModel<LoginModel> {
 
     public void login(String username, String password) {
         if (TextUtils.isEmpty(username)) {//用户名为空
-            ToastUtils.showShort("用户名不能为空");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "用户名不能为空");
             //  Log.d(TAG, "login: " + username);
             return;
         }
         if (username.length() < 11) { // 手机号码不足11位
-            ToastUtils.showShort("请输入正确的手机号");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "请输入正确的手机号");
             return;
         }
         if (TextUtils.isEmpty(password)) {//密码为空
-            ToastUtils.showShort("密码不能为空");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "密码不能为空");
             return;
         }
 
@@ -107,7 +107,7 @@ public class LoginViewModel extends BaseViewModel<LoginModel> {
             postShowLoadingViewEvent(false);
             toAimActivity();
             postFinishActivityEvent();
-            ToastUtils.showShort("登录成功");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "登录成功");
             // Log.d(TAG, "onNext: finish");
         }
     }

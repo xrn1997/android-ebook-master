@@ -8,7 +8,6 @@ import androidx.databinding.ObservableField;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.Comment;
 import com.ebook.api.entity.User;
@@ -18,6 +17,7 @@ import com.ebook.common.util.DateUtil;
 import com.xrn1997.common.event.SingleLiveEvent;
 import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel;
+import com.xrn1997.common.util.ToastUtil;
 
 import java.util.List;
 
@@ -118,7 +118,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
                 }
             });
         } else {
-            ToastUtils.showShort("不能为空哦！");
+            ToastUtil.showShort(getApplication().getApplicationContext(), "不能为空哦！");
         }
 
     }
@@ -133,7 +133,7 @@ public class BookCommentsViewModel extends BaseRefreshViewModel<Comment, BookCom
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtils.showShort("删除成功！");
+                    ToastUtil.showShort(getApplication().getApplicationContext(), "删除成功！");
                     refreshData();
                 } else {
                     Log.e(TAG, "error: " + integerRespDTO.error);

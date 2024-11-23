@@ -23,6 +23,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         transaction.commit()
     }
 
+    override fun enableToolbar(): Boolean {
+        return false
+    }
+
     override fun initData() {}
     override fun onBindViewBinding(
         inflater: LayoutInflater,

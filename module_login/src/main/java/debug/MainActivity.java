@@ -6,10 +6,10 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.common.event.KeyCode;
 import com.ebook.login.R;
 import com.therouter.TheRouter;
+import com.xrn1997.common.util.ToastUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,11 +38,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withString("msg", "TheRouter传递过来的不需要登录的参数msg")
                     .navigation();
         } else if (id == R.id.btn_interrupt) { // 拦截测试
-            TheRouter.build(KeyCode.Login.TEST_PATH)
+            TheRouter.build(KeyCode.Login.TEST_INTERRUPT_PATH)
                     .withString("msg", "TheRouter传递过来的需要登录的参数msg")
                     .navigation();
         } else if (id == R.id.btn_exit) { // 退出登录
-            ToastUtils.showShort("退出登录成功");
+            ToastUtil.showShort(this,"退出登录成功");
             SPUtils.getInstance().remove(KeyCode.Login.SP_IS_LOGIN);
         }
     }

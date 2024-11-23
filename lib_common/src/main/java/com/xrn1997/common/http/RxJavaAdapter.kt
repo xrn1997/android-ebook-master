@@ -1,10 +1,11 @@
 package com.xrn1997.common.http
 
 import android.util.Log
-import com.blankj.utilcode.util.ToastUtils
+import com.xrn1997.common.BaseApplication.Companion.context
 import com.xrn1997.common.constant.ErrorCode
 import com.xrn1997.common.dto.RespDTO
 import com.xrn1997.common.http.ExceptionHandler.handleException
+import com.xrn1997.common.util.ToastUtil
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableTransformer
@@ -69,7 +70,7 @@ object RxJavaAdapter {
             Log.d(TAG, "应用通用处理")
             val respDTO: RespDTO<*> = o as RespDTO<*>
             if (respDTO.code != ErrorCode.SUCCESS.code) {
-                ToastUtils.showShort(respDTO.message)
+                ToastUtil.showShort(context, respDTO.message)
             }
             return o
         }

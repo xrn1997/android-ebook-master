@@ -19,7 +19,6 @@ import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.basebook.base.activity.BaseActivity;
 import com.ebook.basebook.base.impl.BasePresenterImpl;
 import com.ebook.basebook.base.manager.BitIntentDataManager;
@@ -40,6 +39,7 @@ import com.ebook.db.event.DBCode;
 import com.hwangjr.rxbus.RxBus;
 import com.trello.rxlifecycle4.android.ActivityEvent;
 import com.xrn1997.common.event.SimpleObserver;
+import com.xrn1997.common.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -128,7 +128,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                         Log.e(TAG, "onError: ", e);
                                         mView.dimissLoadBook();
                                         mView.loadLocationBookError();
-                                        ToastUtils.showShort("文本打开失败！");
+                                        ToastUtil.showShort(context, "文本打开失败！");
                                     }
                                 });
                     }
@@ -138,7 +138,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                         Log.e(TAG, "onError: ", e);
                         mView.dimissLoadBook();
                         mView.loadLocationBookError();
-                        ToastUtils.showShort("文本打开失败！");
+                        ToastUtil.showShort(context, "文本打开失败！");
                     }
                 });
     }

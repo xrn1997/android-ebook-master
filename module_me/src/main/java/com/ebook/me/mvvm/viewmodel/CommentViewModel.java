@@ -5,13 +5,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.api.dto.RespDTO;
 import com.ebook.api.entity.Comment;
 import com.ebook.common.util.DateUtil;
 import com.ebook.me.mvvm.model.CommentModel;
 import com.xrn1997.common.http.ExceptionHandler;
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel;
+import com.xrn1997.common.util.ToastUtil;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class CommentViewModel extends BaseRefreshViewModel<Comment, CommentModel
             @Override
             public void onNext(RespDTO<Integer> integerRespDTO) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    ToastUtils.showShort("删除成功！");
+                    ToastUtil.showShort(getApplication().getApplicationContext(),"删除成功！");
                     refreshData();
                 } else {
                     Log.e(TAG, "error: " + integerRespDTO.error);

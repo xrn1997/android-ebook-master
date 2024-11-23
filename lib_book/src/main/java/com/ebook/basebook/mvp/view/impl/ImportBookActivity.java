@@ -1,5 +1,7 @@
 package com.ebook.basebook.mvp.view.impl;
 
+import static com.xrn1997.common.BaseApplication.context;
+
 import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
@@ -21,7 +23,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.ebook.basebook.R;
 import com.ebook.basebook.base.activity.BaseActivity;
 import com.ebook.basebook.mvp.presenter.IImportBookPresenter;
@@ -31,6 +32,7 @@ import com.ebook.basebook.mvp.view.adapter.ImportBookAdapter;
 import com.ebook.basebook.view.modialog.MoProgressHUD;
 import com.permissionx.guolindev.PermissionX;
 import com.victor.loading.rotate.RotateLoading;
+import com.xrn1997.common.util.ToastUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -199,7 +201,7 @@ public class ImportBookActivity extends BaseActivity<IImportBookPresenter> imple
         rlLoading.setVisibility(View.INVISIBLE);
         if (importBookAdapter.getFileList().isEmpty()) {
             tvScan.setVisibility(View.VISIBLE);
-            ToastUtils.showShort("未发现本地书籍");
+            ToastUtil.showShort(context, "未发现本地书籍");
         } else {
             tvCount.setText(String.format(getResources().getString(R.string.tv_importbook_count), importBookAdapter.getItemCount()));
             importBookAdapter.setCanCheck(true);
