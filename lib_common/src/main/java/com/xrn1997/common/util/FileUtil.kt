@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.content.FileProvider
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -86,32 +87,48 @@ object FileUtil {
      * @return String?
      */
     @JvmStatic
-    fun getRealFilePathFromUri(context: Context, uri: Uri): String? {
+    fun getRealPathFromUri(context: Context, uri: Uri): String? {
+        var filePath: String? = null
         val scheme = uri.scheme
-        var data: String? = null
-        if (scheme == null) {
-            data = uri.path
-        } else if (ContentResolver.SCHEME_FILE.equals(scheme, ignoreCase = true)) {
-            data = uri.path
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme, ignoreCase = true)) {
-            val cursor = context.contentResolver.query(
-                uri,
-                arrayOf(MediaStore.Images.Media._ID),
-                null,
-                null,
-                null
-            )
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    val index = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-                    if (index > -1) {
-                        data = cursor.getString(index)
+
+        when {
+            // 处理无 scheme 的情况
+            scheme.isNullOrEmpty() -> filePath = uri.path
+
+            // 处理 File 类型的 Uri
+            ContentResolver.SCHEME_FILE.equals(scheme, ignoreCase = true) -> filePath = uri.path
+
+            // 处理 Content 类型的 Uri
+            ContentResolver.SCHEME_CONTENT.equals(scheme, ignoreCase = true) -> {
+                // 通过 ContentResolver 获取数据
+                val projection = arrayOf(MediaStore.Images.Media.DATA)
+                context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        val columnIndex = cursor.getColumnIndexOrThrow(projection[0])
+                        filePath = cursor.getString(columnIndex)
                     }
                 }
-                cursor.close()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                        inputStream.bufferedReader().use { reader ->
+                            //todo android10以上的真实路径很难搞，需要另谋出路
+                        }
+                    }
+                } else {
+                    // 如果第一次查询没有结果，尝试查询非媒体类型的 Uri
+                    if (filePath.isNullOrEmpty()) {
+                        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                            if (cursor.moveToFirst()) {
+                                val columnIndex = cursor.getColumnIndexOrThrow("_data")
+                                filePath = cursor.getString(columnIndex)
+                            }
+                        }
+                    }
+                }
             }
         }
-        return data
+
+        return filePath
     }
 
     /**
@@ -324,18 +341,37 @@ object FileUtil {
     /**
      * 私有目录创建文件
      */
-    fun getPrivateFileUri(context: Context, fileName: String): Uri {
-        // 获取应用的私有文件目录
-        val fileDir = context.filesDir // 私有内部存储
-        // 创建文件对象
+    fun getPrivateFile(
+        context: Context,
+        fileName: String,
+        useExternalStorage: Boolean = true
+    ): Uri {
+        // 根据 useExternalStorage 参数决定使用内部存储还是外部存储
+        val fileDir = if (useExternalStorage) {
+            File(context.getExternalFilesDir(null), "Shared")
+        } else {
+            File(context.filesDir, "Shared")
+        }
+
+        // 检查并创建 Shared 目录
+        if (!fileDir.exists()) {
+            fileDir.mkdirs()
+        }
+
+        // 在 Shared 目录下创建文件
         val file = File(fileDir, fileName)
-
-        // 确保文件已创建
-        file.createNewFile() // 如果文件已存在，不会重新创建
-
-        // 返回文件的 Uri
-        return Uri.fromFile(file)
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+        // 通过 FileProvider 获取 content:// URI
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider.file",  // 与 AndroidManifest 中的 authorities 匹配
+            file
+        )
     }
 
 
 }
+
+class FileUtilProvider : FileProvider()

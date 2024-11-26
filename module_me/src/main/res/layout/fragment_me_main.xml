@@ -52,7 +52,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
                 android:text="@string/xiaoming"
-                android:textColor="@color/black"
+                android:textColor="?colorOnSurfaceVariant"
                 android:textSize="18sp"
                 android:visibility="gone" />
         </RelativeLayout>
@@ -66,29 +66,23 @@
         android:id="@+id/view_my_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
         app:set_left_icon="@drawable/me_icon_comment"
         app:set_left_icon_visible="true"
         app:set_right_icon="@drawable/ic_angle_brackets"
         app:set_right_icon_visible="true"
         app:set_title="我的评论" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp" />
-
     <com.ebook.common.view.SettingBarView
         android:id="@+id/view_my_inform"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
         app:set_left_icon="@drawable/me_icon_inform"
         app:set_left_icon_visible="true"
         app:set_right_icon="@drawable/ic_angle_brackets"
         app:set_right_icon_visible="true"
         app:set_title="编辑资料" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp" />
 
     <com.ebook.common.view.SettingBarView
         android:id="@+id/view_setting"

@@ -136,9 +136,9 @@ class ClipViewLayout @JvmOverloads constructor(
      * step 2: 将图片缩放 移动到imageView 中间
      */
     fun initSrcPic(uri: Uri) {
-        //  Log.d("evan", "**********clip_view uri*******  " + uri);
-        val path = FileUtil.getRealFilePathFromUri(context, uri) ?: return
-        //   Log.d("evan", "**********clip_view path*******  " + path);
+        Log.e("evan", "**********clip_view uri*******  $uri")
+        val path = FileUtil.getRealPathFromUri(context, uri) ?: return
+        Log.e("evan", "**********clip_view path*******  $path")
 
         //这里decode出720*1280 左右的照片,防止OOM
         var bitmap = decodeSampledBitmap(path, 720, 1280)

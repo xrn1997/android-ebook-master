@@ -47,5 +47,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/usecar_list_icon_into" />
+        app:srcCompat="@drawable/icon_into" />
 </RelativeLayout>

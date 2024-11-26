@@ -85,11 +85,11 @@ class SettingBarView(context: Context, attrs: AttributeSet?) :
         })
     }
 
-    fun setOnClickRightImgListener(onClickRightImgListener: OnClickRightImgListener?) {
+    fun setOnClickRightImgListener(onClickRightImgListener: OnClickRightImgListener) {
         mOnClickRightImgListener = onClickRightImgListener
     }
 
-    fun setOnClickSettingBarViewListener(onClickSettingBarViewListener: OnClickSettingBarViewListener?) {
+    fun setOnClickSettingBarViewListener(onClickSettingBarViewListener: OnClickSettingBarViewListener) {
         mOnClickSettingBarViewListener = onClickSettingBarViewListener
     }
 

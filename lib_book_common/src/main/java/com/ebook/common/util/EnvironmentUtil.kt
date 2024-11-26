@@ -106,12 +106,12 @@ object EnvironmentUtil {
      */
     object Package {
         /**
-         * 安装 APK 文件
+         * 安装 APK 文件，注意，文件必须满足FileProvider中的路径设置
          */
         @JvmStatic
         fun installApp(context: Context, file: File) {
             val fileUri =
-                FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+                FileProvider.getUriForFile(context, "${context.packageName}.provider.apk", file)
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(fileUri, "application/vnd.android.package-archive")
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

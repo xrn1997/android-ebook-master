@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-files-path
+        name="ExternalShared"
+        path="Shared/" />
+    <files-path
+        name="PrivateShared"
+        path="Shared/" />
+</paths>

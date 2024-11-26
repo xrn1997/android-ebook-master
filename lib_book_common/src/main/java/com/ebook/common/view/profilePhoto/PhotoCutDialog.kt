@@ -17,7 +17,7 @@ import com.xrn1997.common.util.FileUtil
 
 class PhotoCutDialog : BottomSheetDialogFragment(), View.OnClickListener {
     private var mOnClickListener: OnPhotoClickListener? = null
-    private var mPhotoUri: Uri = FileUtil.getPrivateFileUri(requireContext(), "profile.jpeg")
+    private lateinit var mPhotoUri: Uri
 
     // 注册用于接收 activity 结果的启动器
     private lateinit var selectLauncher: ActivityResultLauncher<PickVisualMediaRequest>
@@ -25,6 +25,8 @@ class PhotoCutDialog : BottomSheetDialogFragment(), View.OnClickListener {
     private lateinit var cropPhotoLauncher: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //todo,未来这个Uri应该作为参数传入
+        mPhotoUri = FileUtil.getPrivateFile(requireContext(), "profile.jpeg")
         selectLauncher =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
