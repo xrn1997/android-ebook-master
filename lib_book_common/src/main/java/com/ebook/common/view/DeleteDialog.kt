@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import com.ebook.common.R
+import com.ebook.common.databinding.FragmentDeleteDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class DeleteDialog : BottomSheetDialogFragment(), View.OnClickListener {
+class DeleteDialog : BottomSheetDialogFragment() {
     private var mOnClickListener: (() -> Unit)? = null
 
     fun setOnClickListener(onDeleteClickListener: () -> Unit) {
@@ -19,25 +18,17 @@ class DeleteDialog : BottomSheetDialogFragment(), View.OnClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_delete_dialog, container, false)
-        val btnDelete = view.findViewById<Button>(R.id.btn_delete)
-        val btnCancel = view.findViewById<Button>(R.id.btn_cancel)
-        btnDelete.setOnClickListener(this)
-        btnCancel.setOnClickListener(this)
-        return view
-    }
-
-    override fun onClick(v: View) {
-        val i = v.id
-        if (i == R.id.btn_delete) {
+    ): View {
+        val binding = FragmentDeleteDialogBinding.inflate(inflater, container, false)
+        binding.btnDelete.setOnClickListener {
             mOnClickListener?.invoke()
             dismiss()
-        } else if (i == R.id.btn_cancel) {
+        }
+        binding.btnCancel.setOnClickListener {
             dismiss()
         }
+        return binding.root
     }
-
     companion object {
         private val TAG: String = DeleteDialog::class.java.simpleName
 

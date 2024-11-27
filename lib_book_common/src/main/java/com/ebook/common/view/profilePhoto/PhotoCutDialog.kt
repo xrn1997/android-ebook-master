@@ -7,16 +7,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import com.ebook.common.R
+import com.ebook.common.databinding.FragmentPhotoSelectBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.xrn1997.common.util.FileUtil
 
-class PhotoCutDialog : BottomSheetDialogFragment(), View.OnClickListener {
-    private var mOnClickListener: OnPhotoClickListener? = null
+class PhotoCutDialog : BottomSheetDialogFragment() {
+    private var mOnClickListener: ((uri: Uri) -> Unit)? = null
     private lateinit var mPhotoUri: Uri
 
     // 注册用于接收 activity 结果的启动器
@@ -44,14 +43,15 @@ class PhotoCutDialog : BottomSheetDialogFragment(), View.OnClickListener {
         cropPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val uri = result.data?.data
-                    mOnClickListener?.onScreenPhotoClick(uri)
+                    result.data?.data?.let {
+                        mOnClickListener?.invoke(it)
+                    }
                     dismiss()
                 }
             }
     }
 
-    fun setOnClickListener(onPhotoClickListener: OnPhotoClickListener?) {
+    fun setOnClickListener(onPhotoClickListener: (uri: Uri) -> Unit) {
         mOnClickListener = onPhotoClickListener
     }
 
@@ -59,34 +59,18 @@ class PhotoCutDialog : BottomSheetDialogFragment(), View.OnClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_photo_select, container, false)
-        val btnSelectPhoto = view.findViewById<Button>(R.id.btn_select_photo)
-        val btnTakePhoto = view.findViewById<Button>(R.id.btn_take_photo)
-        val btnCancel = view.findViewById<Button>(R.id.btn_cancel)
-
-        btnSelectPhoto.setOnClickListener(this)
-        btnTakePhoto.setOnClickListener(this)
-        btnCancel.setOnClickListener(this)
-        return view
-    }
-
-    override fun onClick(v: View) {
-        val i = v.id
-        when (i) {
-            R.id.btn_take_photo -> {
-                takePhotoLauncher.launch(mPhotoUri)
-            }
-
-            R.id.btn_select_photo -> {
-                selectLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-
-            R.id.btn_cancel -> {
-                dismiss()
-            }
+    ): View {
+        val binding = FragmentPhotoSelectBinding.inflate(inflater, container, false)
+        binding.btnSelectPhoto.setOnClickListener {
+            selectLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+        binding.btnTakePhoto.setOnClickListener {
+            takePhotoLauncher.launch(mPhotoUri)
+        }
+        binding.btnCancel.setOnClickListener { dismiss() }
+        return binding.root
     }
+
 
     /**
      * 打开截图界面
@@ -102,15 +86,8 @@ class PhotoCutDialog : BottomSheetDialogFragment(), View.OnClickListener {
         cropPhotoLauncher.launch(intent)
     }
 
-    interface OnPhotoClickListener {
-        fun onScreenPhotoClick(uri: Uri?)
-    }
-
     companion object {
         private val TAG: String = PhotoCutDialog::class.java.simpleName
-
-        //请求截图
-        private const val REQUEST_CROP_PHOTO = 102
 
         @JvmStatic
         fun newInstance(): PhotoCutDialog {

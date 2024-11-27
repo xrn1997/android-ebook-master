@@ -1,9 +1,7 @@
 package com.ebook.me
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.SPUtils
@@ -14,7 +12,6 @@ import com.ebook.common.event.KeyCode
 import com.ebook.common.event.RxBusTag
 import com.ebook.common.view.profilePhoto.CircleImageView
 import com.ebook.common.view.profilePhoto.PhotoCutDialog.Companion.newInstance
-import com.ebook.common.view.profilePhoto.PhotoCutDialog.OnPhotoClickListener
 import com.ebook.me.databinding.ActivityModifyInformationBinding
 import com.ebook.me.mvvm.factory.MeViewModelFactory
 import com.ebook.me.mvvm.viewmodel.ModifyViewModel
@@ -94,20 +91,14 @@ class ModifyInformationActivity :
      */
     private fun uploadHeadImage() {
         val photoCutDialog = newInstance()
-        photoCutDialog.setOnClickListener(object : OnPhotoClickListener {
-            override fun onScreenPhotoClick(uri: Uri?) {
-                if (uri == null) {
-                    Log.e(TAG, "uploadHeadImage: 图片uri为空")
-                    return
-                }
+        photoCutDialog.setOnClickListener { uri ->
                 val cropImagePath = getRealPathFromUri(
                     applicationContext, uri
                 )
                 if (cropImagePath != null) {
                     mViewModel.modifyProfilePhoto(cropImagePath)
                 }
-            }
-        })
+        }
         photoCutDialog.show(supportFragmentManager, "photoDialog")
     }
 
