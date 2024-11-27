@@ -11,5 +11,5 @@ class LibraryKindBookList {
     var kindUrl: String = String()
 
     @JvmField
-    var books: List<SearchBook>? = null
+    var books: List<SearchBook> = mutableListOf()
 }

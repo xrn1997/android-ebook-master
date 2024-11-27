@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.databinding.ObservableField
 import com.blankj.utilcode.util.SPUtils
-import com.ebook.api.RetrofitManager
 import com.ebook.api.dto.RespDTO
 import com.ebook.api.entity.LoginDTO
 import com.ebook.api.entity.User
@@ -16,6 +15,7 @@ import com.ebook.login.mvvm.model.LoginModel
 import com.hwangjr.rxbus.RxBus
 import com.therouter.TheRouter.build
 import com.xrn1997.common.http.ExceptionHandler
+import com.xrn1997.common.manager.RetrofitManager
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
 import com.xrn1997.common.util.ToastUtil.showShort
 import io.reactivex.rxjava3.core.Observer
@@ -58,7 +58,7 @@ class LoginViewModel(application: Application, model: LoginModel) :
             override fun onNext(loginDTORespDTO: RespDTO<LoginDTO>) {
                 when (loginDTORespDTO.code) {
                     ExceptionHandler.AppError.SUCCESS -> {
-                        RetrofitManager.getInstance().TOKEN =
+                        RetrofitManager.TOKEN =
                             "Bearer " + loginDTORespDTO.data?.token
                         val user = loginDTORespDTO.data?.user
                         if (user == null) {
