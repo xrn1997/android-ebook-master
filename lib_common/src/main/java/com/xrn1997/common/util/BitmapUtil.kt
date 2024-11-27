@@ -1,7 +1,6 @@
 package com.xrn1997.common.util
 
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -25,6 +24,7 @@ import kotlin.math.ceil
  *@author xrn1997
  *@date 2021/3/16
  */
+@Suppress("unused")
 object BitmapUtil {
     /**
      * 将Bitmap以指定格式保存到指定路径(应用私有目录)
@@ -127,7 +127,7 @@ object BitmapUtil {
      * 合并标题与View生成Bitmap，适合分享用途。
      */
     @JvmStatic
-    fun combineBitmapTitle(context: Context, titleStr: String, view: View): Bitmap {
+    fun combineBitmapTitle(titleStr: String, view: View): Bitmap {
         val bitmap =
             if (view is ScrollView) convertViewToBitmap(view) else convertViewToBitmap(view)
 

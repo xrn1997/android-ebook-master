@@ -75,11 +75,11 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
             user.id = SPUtils.getInstance().getLong(KeyCode.Login.SP_USER_ID)
             comment.user = user
             comment.comment = comments.get()
-            mModel.addComment(comment).subscribe(object : Observer<RespDTO<Comment?>> {
+            mModel.addComment(comment).subscribe(object : Observer<RespDTO<Comment>> {
                 override fun onSubscribe(d: Disposable) {
                 }
 
-                override fun onNext(commentRespDTO: RespDTO<Comment?>) {
+                override fun onNext(commentRespDTO: RespDTO<Comment>) {
                     if (commentRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                         getMVoidSingleLiveEvent().call()
                         refreshData()
