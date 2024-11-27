@@ -9,9 +9,9 @@ import com.ebook.common.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class DeleteDialog : BottomSheetDialogFragment(), View.OnClickListener {
-    private var mOnClickListener: OnDeleteClickListener? = null
+    private var mOnClickListener: (() -> Unit)? = null
 
-    fun setOnClickListener(onDeleteClickListener: OnDeleteClickListener?) {
+    fun setOnClickListener(onDeleteClickListener: () -> Unit) {
         mOnClickListener = onDeleteClickListener
     }
 
@@ -31,21 +31,15 @@ class DeleteDialog : BottomSheetDialogFragment(), View.OnClickListener {
     override fun onClick(v: View) {
         val i = v.id
         if (i == R.id.btn_delete) {
-            if (mOnClickListener != null) {
-                mOnClickListener!!.onItemClick()
-            }
+            mOnClickListener?.invoke()
             dismiss()
         } else if (i == R.id.btn_cancel) {
             dismiss()
         }
     }
 
-    interface OnDeleteClickListener {
-        fun onItemClick()
-    }
-
     companion object {
-        val TAG: String = DeleteDialog::class.java.simpleName
+        private val TAG: String = DeleteDialog::class.java.simpleName
 
         @JvmStatic
         fun newInstance(): DeleteDialog {

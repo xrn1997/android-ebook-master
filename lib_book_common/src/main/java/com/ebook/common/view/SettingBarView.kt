@@ -7,39 +7,43 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.ebook.common.R
+import com.ebook.common.databinding.ViewSettingBarBinding
 import com.xrn1997.common.adapter.binding.BindingCommand
 
+@Suppress("unused")
 class SettingBarView(context: Context, attrs: AttributeSet?) :
     RelativeLayout(context, attrs) {
-    private val imgLeftIcon: ImageView?
-    private val txtSetContent: EditText?
+    private val imgLeftIcon: ImageView
+    private val imgRightIcon: ImageView
+    private val txtSetContent: EditText
     private val layoutSettingBar: RelativeLayout
-    private var mOnClickSettingBarViewListener: OnClickSettingBarViewListener? = null
-    private var mOnClickRightImgListener: OnClickRightImgListener? = null
+    private var mOnClickSettingBarViewListener: ((v: View) -> Unit)? = null
+    private var mOnClickRightImgListener: ((v: View) -> Unit)? = null
     private var isEdit = false //是否需要编辑
-    private var mOnViewChangeListener: OnViewChangeListener? = null
-
+    private var mOnViewChangeListener: (() -> Unit)? = null
+    private val binding: ViewSettingBarBinding
     init {
-        inflate(context, R.layout.view_setting_bar, this)
-        layoutSettingBar = findViewById(R.id.layout_setting_bar)
-        imgLeftIcon = findViewById(R.id.img_start_icon)
-        val txtSetTitle = findViewById<TextView>(R.id.txt_set_title)
-        txtSetContent = findViewById(R.id.txt_set_content)
-        val imgRightIcon = findViewById<ImageView>(R.id.img_end_icon)
+        val inflater = LayoutInflater.from(context)
+        binding = ViewSettingBarBinding.inflate(inflater, this, true)
+        layoutSettingBar = binding.root
+        imgLeftIcon = binding.imgLeftIcon
+        imgRightIcon = binding.imgRightIcon
+        txtSetContent = binding.txtSetContent
 
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SettingBarView)
-        val isVisibleLeftIcon =
+        val isLeftIconVisible =
             typedArray.getBoolean(R.styleable.SettingBarView_set_left_icon_visible, false)
-        val isVisibleRightIcon =
+        val isRightIconVisible =
             typedArray.getBoolean(R.styleable.SettingBarView_set_right_icon_visible, false)
         val title = typedArray.getString(R.styleable.SettingBarView_set_title)
         val hint = typedArray.getString(R.styleable.SettingBarView_set_content_hint)
@@ -48,26 +52,22 @@ class SettingBarView(context: Context, attrs: AttributeSet?) :
         val leftIcon = typedArray.getResourceId(R.styleable.SettingBarView_set_left_icon, 0)
         typedArray.recycle()
 
-        imgLeftIcon.visibility = if (isVisibleLeftIcon) VISIBLE else GONE
-        txtSetTitle.text = title
+        imgLeftIcon.visibility = if (isLeftIconVisible) VISIBLE else GONE
+        binding.txtSetTitle.text = title
         txtSetContent.hint = hint
         txtSetContent.setText(content)
-        imgRightIcon.visibility = if (isVisibleRightIcon) VISIBLE else GONE
+        imgRightIcon.visibility = if (isRightIconVisible) VISIBLE else GONE
         if (leftIcon > 0) {
             imgLeftIcon.setImageResource(leftIcon)
         }
         if (rightIcon > 0) {
             imgRightIcon.setImageResource(rightIcon)
         }
-        imgRightIcon.setOnClickListener {
-            if (mOnClickRightImgListener != null) {
-                mOnClickRightImgListener!!.onClick()
-            }
+        imgRightIcon.setOnClickListener { v ->
+            mOnClickRightImgListener?.invoke(v)
         }
-        layoutSettingBar.setOnClickListener {
-            if (mOnClickSettingBarViewListener != null) {
-                mOnClickSettingBarViewListener!!.onClick()
-            }
+        layoutSettingBar.setOnClickListener { v ->
+            mOnClickSettingBarViewListener?.invoke(v)
         }
         txtSetContent.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -75,9 +75,7 @@ class SettingBarView(context: Context, attrs: AttributeSet?) :
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 Log.v(TAG, "onTextChanged start....")
-                if (mOnViewChangeListener != null) {
-                    mOnViewChangeListener!!.onChange()
-                }
+                mOnViewChangeListener?.invoke()
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -85,42 +83,39 @@ class SettingBarView(context: Context, attrs: AttributeSet?) :
         })
     }
 
-    fun setOnClickRightImgListener(onClickRightImgListener: OnClickRightImgListener) {
+    fun setOnClickRightImgListener(onClickRightImgListener: (v: View) -> Unit) {
         mOnClickRightImgListener = onClickRightImgListener
     }
 
-    fun setOnClickSettingBarViewListener(onClickSettingBarViewListener: OnClickSettingBarViewListener) {
+    fun setOnClickSettingBarViewListener(onClickSettingBarViewListener: (v: View) -> Unit) {
         mOnClickSettingBarViewListener = onClickSettingBarViewListener
     }
 
-    var content: String?
+    var content: String
         get() {
-            if (txtSetContent != null) {
-                return txtSetContent.text.toString()
-            }
-            return null
+            return txtSetContent.text.toString()
         }
         set(value) {
-            if (txtSetContent != null && !TextUtils.isEmpty(value)) {
+            if (!TextUtils.isEmpty(value)) {
                 txtSetContent.setText(value)
             }
         }
 
-    private fun setViewChangeListener(listener: OnViewChangeListener?) {
+    private fun setViewChangeListener(listener: () -> Unit) {
         this.mOnViewChangeListener = listener
     }
 
     fun setEnableEditContext(b: Boolean) {
         isEdit = b
-        if (txtSetContent != null) {
-            txtSetContent.isEnabled = b
-        }
+        txtSetContent.isEnabled = b
     }
 
     fun showImgLeftIcon(show: Boolean) {
-        if (imgLeftIcon != null) {
-            imgLeftIcon.visibility = if (show) VISIBLE else GONE
-        }
+        imgLeftIcon.visibility = if (show) VISIBLE else GONE
+    }
+
+    fun showImgRightIcon(show: Boolean) {
+        imgRightIcon.visibility = if (show) VISIBLE else GONE
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -132,33 +127,21 @@ class SettingBarView(context: Context, attrs: AttributeSet?) :
         return layoutSettingBar.onTouchEvent(event)
     }
 
-    interface OnClickSettingBarViewListener {
-        fun onClick()
-    }
-
-    interface OnClickRightImgListener {
-        fun onClick()
-    }
-
-    private interface OnViewChangeListener {
-        fun onChange()
-    }
-
     companion object {
-        const val TAG: String = "SettingBarView"
+        private val TAG: String = SettingBarView::class.java.simpleName
 
         @BindingAdapter(value = ["content"], requireAll = false)
         fun setContent(view: SettingBarView, value: String) {
             if (!TextUtils.isEmpty(view.content) && view.content == value) {
                 return
             }
-            if (view.txtSetContent != null && !TextUtils.isEmpty(value)) {
+            if (!TextUtils.isEmpty(value)) {
                 view.txtSetContent.setText(value)
             }
         }
 
         @InverseBindingAdapter(attribute = "content", event = "contentAttrChanged")
-        fun getContent(view: SettingBarView): String? {
+        fun getContent(view: SettingBarView): String {
             return view.content
         }
 
@@ -168,18 +151,7 @@ class SettingBarView(context: Context, attrs: AttributeSet?) :
             inverseBindingListener: InverseBindingListener?
         ) {
             Log.d(TAG, "setDisplayAttrChanged")
-
-            if (inverseBindingListener == null) {
-                view.setViewChangeListener(null)
-                Log.d(TAG, "setViewChangeListener(null)")
-            } else {
-                view.setViewChangeListener(object : OnViewChangeListener {
-                    override fun onChange() {
-                        Log.d(TAG, "setDisplayAttrChanged -> onChange")
-                        inverseBindingListener.onChange()
-                    }
-                })
-            }
+            view.setViewChangeListener { inverseBindingListener?.onChange() }
         }
 
         @BindingAdapter(value = ["onClickSettingBarView"], requireAll = false)

@@ -24,7 +24,7 @@ import java.io.IOException
 @Suppress("unused")
 object EnvironmentUtil {
 
-    private const val TAG = "EnvironmentUtil"
+    private val TAG = this::class.java.simpleName
 
     /**
      * 应用相关操作
@@ -146,11 +146,11 @@ object EnvironmentUtil {
          * 检查应用是否已安装
          */
         @JvmStatic
-        fun isAppInstalled(context: Context, packageName: String?): Boolean {
+        fun isAppInstalled(context: Context, packageName: String): Boolean {
             return if (!TextUtils.isEmpty(packageName)) {
                 try {
                     context.packageManager.getApplicationInfo(
-                        packageName!!,
+                        packageName,
                         PackageManager.GET_META_DATA
                     )
                     true

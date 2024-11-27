@@ -142,7 +142,7 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
     }
 
     companion object {
-        const val TAG = "Compose BaseActivity"
+        private val TAG = BaseActivity::class.java.simpleName
     }
 
     /**

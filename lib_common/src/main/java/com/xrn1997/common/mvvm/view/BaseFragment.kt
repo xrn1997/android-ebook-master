@@ -216,6 +216,6 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
     }
 
     companion object {
-        private const val TAG = "BaseActivity"
+        private val TAG = BaseActivity::class.java.simpleName
     }
 }

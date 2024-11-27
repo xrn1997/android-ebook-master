@@ -10,11 +10,9 @@ import io.reactivex.rxjava3.core.Observable
 
 
 @ServiceProvider
-fun login(username: String, password: String): ILoginProvider {
-    return object : ILoginProvider {
-        override fun login(username: String, password: String): Observable<RespDTO<LoginDTO>> {
-            return LoginModel.login(username, password)
-        }
+class LoginProvider : ILoginProvider {
+    override fun login(username: String, password: String): Observable<RespDTO<LoginDTO>> {
+        return LoginModel.login(username, password)
     }
 }
 

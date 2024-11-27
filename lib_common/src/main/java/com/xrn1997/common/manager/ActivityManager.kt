@@ -12,7 +12,7 @@ import kotlin.system.exitProcess
  */
 @Suppress("unused")
 object ActivityManager {
-    private const val TAG = " ActivityManager"
+    private val TAG = ActivityManager::class.java.simpleName
     private var activityStack: Stack<Activity> = Stack()
 
     val isActivityStackEmpty: Boolean
@@ -139,7 +139,7 @@ object ActivityManager {
      * @param context      上下文
      * @param isBackground 是否开开启后台运行
      */
-    fun appExit(context: Context, isBackground: Boolean?) {
+    fun appExit(context: Context, isBackground: Boolean) {
         try {
             finishAllActivity()
             val activityMgr = context.getSystemService(android.app.ActivityManager::class.java)
@@ -148,7 +148,7 @@ object ActivityManager {
             Log.e(TAG, "appExit: ", e)
         } finally {
             // 注意,如果您有后台程序运行,请不要支持此句子
-            if ((!isBackground!!)) {
+            if ((!isBackground)) {
                 exitProcess(0)
             }
         }

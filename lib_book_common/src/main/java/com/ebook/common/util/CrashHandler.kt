@@ -117,7 +117,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
     }
 
     companion object {
-        private const val TAG = "CrashHandler"
+        private val TAG = CrashHandler::class.java.simpleName
         private const val DEBUG = true
 
         @Volatile

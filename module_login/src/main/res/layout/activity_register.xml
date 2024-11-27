@@ -34,7 +34,7 @@
             android:background="@drawable/editext_selector"
             android:hint="@string/print_pwd"
             android:inputType="textWebPassword"
-            android:text="@={viewModel.password_1}" />
+            android:text="@={viewModel.firstPwd}" />
 
         <EditText
             android:id="@+id/id_et_reg_2nd_pwd"
@@ -44,7 +44,7 @@
             android:background="@drawable/editext_selector"
             android:hint="@string/print_pwd_again"
             android:inputType="textWebPassword"
-            android:text="@={viewModel.password_2}" />
+            android:text="@={viewModel.secondPwd}" />
 
 
         <Button

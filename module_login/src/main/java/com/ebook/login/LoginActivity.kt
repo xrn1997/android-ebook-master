@@ -72,7 +72,7 @@ class LoginActivity : BaseMvvmActivity<ActivityLoginBinding, LoginViewModel>() {
         val bundle = this.intent.extras
         var username: String? = ""
         var password: String? = ""
-        if (bundle != null && !bundle.isEmpty()) {
+        if (bundle != null && !bundle.isEmpty) {
             username = bundle.getString("username")
             password = bundle.getString("password")
         }
@@ -82,7 +82,7 @@ class LoginActivity : BaseMvvmActivity<ActivityLoginBinding, LoginViewModel>() {
         }
         if (!TextUtils.isEmpty(path) && mBundle == null) {
             mViewModel.path = path
-            if (bundle != null && !bundle.isEmpty()) {
+            if (bundle != null && !bundle.isEmpty) {
                 mBundle = bundle
                 mViewModel.bundle = mBundle
             }

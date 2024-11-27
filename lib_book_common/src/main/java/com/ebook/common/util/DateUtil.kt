@@ -10,7 +10,7 @@ import kotlin.math.ceil
 
 @Suppress("unused")
 object DateUtil {
-    private const val TAG = "DateUtil"
+    private val TAG = this::class.java.simpleName
 
     @JvmStatic
     fun formatDate(time: String, formatStr: String): String {

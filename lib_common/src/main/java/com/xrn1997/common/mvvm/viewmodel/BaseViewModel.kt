@@ -105,6 +105,7 @@ open class BaseViewModel<M : IBaseModel>(
      * 停止Activity事件
      */
     fun postFinishActivityEvent() {
+        //todo 有问题
         mUIChangeLiveData.mFinishActivityEvent.call()
     }
 

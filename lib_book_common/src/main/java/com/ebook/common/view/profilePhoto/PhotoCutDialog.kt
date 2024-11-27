@@ -107,7 +107,7 @@ class PhotoCutDialog : BottomSheetDialogFragment(), View.OnClickListener {
     }
 
     companion object {
-        val TAG: String = PhotoCutDialog::class.java.simpleName
+        private val TAG: String = PhotoCutDialog::class.java.simpleName
 
         //请求截图
         private const val REQUEST_CROP_PHOTO = 102

@@ -25,7 +25,7 @@ public class BookTypeShowAdapter extends BaseBindAdapter<BookType, AdpaterBookTy
         binding.setBooktype(item);
         binding.viewBooktype.setOnClickListener(v -> {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(item, position);
+                mOnItemClickListener.invoke(item, position);
             }
         });
     }

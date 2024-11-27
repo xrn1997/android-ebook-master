@@ -38,7 +38,7 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
     private val mPending = AtomicBoolean(false)
 
     companion object {
-        private const val TAG = "SingleLiveEvent"
+        private val TAG = SingleLiveEvent::class.java.simpleName
     }
 
     @MainThread

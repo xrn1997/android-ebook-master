@@ -12,7 +12,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ebook.api.config.API
 import com.ebook.common.event.KeyCode
 import com.ebook.common.event.RxBusTag
-import com.ebook.common.view.SettingBarView.OnClickSettingBarViewListener
 import com.ebook.common.view.profilePhoto.CircleImageView
 import com.ebook.common.view.profilePhoto.PhotoCutDialog.Companion.newInstance
 import com.ebook.common.view.profilePhoto.PhotoCutDialog.OnPhotoClickListener
@@ -65,27 +64,18 @@ class ModifyInformationActivity :
 
     override fun initView() {
         imageView = binding.viewProfilePhoto
-        binding.viewModifyProfilePhoto.setOnClickSettingBarViewListener(
-            object : OnClickSettingBarViewListener {
-                override fun onClick() {
-                    uploadHeadImage()
-                }
-            })
-        binding.viewModifyPwd.setOnClickSettingBarViewListener(object :
-            OnClickSettingBarViewListener {
-            override fun onClick() {
+        binding.viewModifyProfilePhoto.setOnClickSettingBarViewListener { uploadHeadImage() }
+        binding.viewModifyPwd.setOnClickSettingBarViewListener {
                 build(KeyCode.Login.MODIFY_PATH).navigation()
-            }
-
-        })
-        binding.viewModifyNickname.setOnClickSettingBarViewListener(object :
-            OnClickSettingBarViewListener {
-            override fun onClick() {
-                startActivity(
-                    Intent(this@ModifyInformationActivity, ModifyNicknameActivity::class.java)
+        }
+        binding.viewModifyNickname.setOnClickSettingBarViewListener {
+            startActivity(
+                Intent(
+                    this@ModifyInformationActivity,
+                    ModifyNicknameActivity::class.java
                 )
+            )
             }
-        })
     }
 
     override fun initData() {
@@ -102,7 +92,7 @@ class ModifyInformationActivity :
     /**
      * 上传头像
      */
-    fun uploadHeadImage() {
+    private fun uploadHeadImage() {
         val photoCutDialog = newInstance()
         photoCutDialog.setOnClickListener(object : OnPhotoClickListener {
             override fun onScreenPhotoClick(uri: Uri?) {
@@ -138,6 +128,6 @@ class ModifyInformationActivity :
     }
 
     companion object {
-        const val TAG: String = "ModifyInformationActivity"
+        private val TAG: String = ModifyInformationActivity::class.java.simpleName
     }
 }

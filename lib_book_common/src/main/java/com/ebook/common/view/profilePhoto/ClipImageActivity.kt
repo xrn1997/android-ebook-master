@@ -97,6 +97,6 @@ class ClipImageActivity : BaseActivity<ActivityClipImageBinding>() {
     }
 
     companion object {
-        private const val TAG = "ClipImageActivity"
+        private val TAG = ClipImageActivity::class.java.simpleName
     }
 }

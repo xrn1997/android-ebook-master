@@ -22,10 +22,10 @@ abstract class BaseBindAdapter<T, B : ViewDataBinding>(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     @JvmField
-    protected var mOnItemClickListener: OnItemClickListener<T>? = null
+    protected var mOnItemClickListener: ((e: T, position: Int) -> Unit)? = null
 
     @JvmField
-    protected var mOnItemLongClickListener: OnItemLongClickListener<T>? = null
+    protected var mOnItemLongClickListener: ((e: T, position: Int) -> Boolean)? = null
     override fun getItemCount(): Int {
         return if (items.size > 0) items.size else 0
     }
@@ -39,7 +39,9 @@ abstract class BaseBindAdapter<T, B : ViewDataBinding>(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding: B? = DataBindingUtil.getBinding(holder.itemView)
-        items[position]?.let { onBindItem(binding!!, it, position) }
+        if (binding != null) {
+            items[position]?.let { onBindItem(binding, it, position) }
+        }
     }
 
     class BaseBindingViewHolder internal constructor(itemView: View) :
@@ -56,29 +58,14 @@ abstract class BaseBindAdapter<T, B : ViewDataBinding>(
     /**
      * item监听
      */
-    open fun setOnItemClickListener(itemClickListener: OnItemClickListener<T>) {
+    open fun setOnItemClickListener(itemClickListener: (e: T, position: Int) -> Unit) {
         mOnItemClickListener = itemClickListener
     }
 
     /**
      * item长按监听
      */
-    open fun setOnItemLongClickListener(onItemLongClickListener: OnItemLongClickListener<T>?) {
+    open fun setOnItemLongClickListener(onItemLongClickListener: (e: T, position: Int) -> Boolean) {
         mOnItemLongClickListener = onItemLongClickListener
     }
-
-    /**
-     * item click监听接口
-     */
-    interface OnItemClickListener<E> {
-        fun onItemClick(e: E, position: Int)
-    }
-
-    /**
-     * item long click监听接口
-     */
-    interface OnItemLongClickListener<E> {
-        fun onItemLongClick(e: E, position: Int): Boolean
-    }
-
 }

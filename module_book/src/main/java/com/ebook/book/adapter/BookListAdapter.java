@@ -42,12 +42,12 @@ public class BookListAdapter extends BaseBindAdapter<BookShelf, AdapterBookListI
         binding.setBookshelf(item);
         binding.viewBookDetail.setOnClickListener(view -> {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(item, position);
+                mOnItemClickListener.invoke(item, position);
             }
         });
         binding.viewBookDetail.setOnLongClickListener(v -> {
             if (mOnItemLongClickListener != null) {
-                mOnItemLongClickListener.onItemLongClick(item, position);
+                mOnItemLongClickListener.invoke(item, position);
             }
             return true;
         });

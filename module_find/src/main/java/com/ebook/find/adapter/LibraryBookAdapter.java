@@ -47,7 +47,7 @@ public class LibraryBookAdapter extends BaseBindAdapter<SearchBook, AdapterLibra
         bookShelf.noteUrl = item.noteUrl;
         binding.ibContent.setOnClickListener(v -> {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(item, position);
+                mOnItemClickListener.invoke(item, position);
             }
         });
     }

@@ -55,12 +55,12 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     private lateinit var mViewStubNoData: ViewStub
     private lateinit var mViewStubError: ViewStub
 
-    private var _binding: V? = null
+    private lateinit var _binding: V
 
     /**
      * 该binding仅用于取代findViewById
      */
-    protected open val binding get() = _binding!!
+    protected open val binding get() = _binding
 
     /**
      * 默认toolBarTitle，并且设置完成后，通过setTitle是无法修改的。
@@ -232,7 +232,7 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
             mNetErrorView?.setRefreshBtnClickListener {
                 NetworkUtils.isAvailableAsync {
                     if (it) {
-                        mNetErrorView!!.visibility = View.GONE
+                        mNetErrorView?.visibility = View.GONE
                         initData()
                     }
                 }
@@ -262,6 +262,6 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     }
 
     companion object {
-        private const val TAG = "BaseActivity"
+        private val TAG = BaseActivity::class.java.simpleName
     }
 }

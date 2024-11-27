@@ -56,9 +56,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         mFindFragment = TheRouter.get(IFindProvider::class.java)?.mainFindFragment
         mMeFragment = TheRouter.get(IMeProvider::class.java)?.mainMeFragment
         mCurrFragment = mBookFragment
-        if (mBookFragment != null) {
+        mCurrFragment?.let {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.frame_content, mBookFragment!!, MainChannel.BOOKSHELF.name).commit()
+                .replace(R.id.frame_content, it, MainChannel.BOOKSHELF.name).commit()
         }
     }
 

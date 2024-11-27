@@ -42,9 +42,9 @@ public class BookCommentsAdapter extends BaseBindAdapter<Comment, AdpaterBookCom
         binding.setComment(item);
         binding.layoutCommentItem.setOnLongClickListener(v -> {
             if (mOnItemLongClickListener != null) {
-                mOnItemLongClickListener.onItemLongClick(item, position);
+                return mOnItemLongClickListener.invoke(item, position);
             }
-            return true;
+            return false;
         });
     }
 }

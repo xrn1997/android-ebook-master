@@ -14,7 +14,6 @@ open class BaseApplication : Application() {
         @SuppressLint("StaticFieldLeak")
         @JvmStatic
         lateinit var context: Context
-        const val TAG = "BaseApplication"
     }
 
     override fun onCreate() {

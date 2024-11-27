@@ -19,7 +19,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 @Suppress("unused")
 object RxJavaAdapter {
 
-    private const val TAG = "RxJavaAdapter"
+    private val TAG = RxJavaAdapter::class.java.simpleName
 
     /**
      * 线程调度器,以上代码均在IO线程中执行,以下代码均在主线程中执行

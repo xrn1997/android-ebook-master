@@ -15,7 +15,7 @@ class LoginInterceptor : RouterReplaceInterceptor() {
     override val priority = 6
 
     companion object {
-        const val TAG = "LoginInterceptor"
+        private val TAG = LoginInterceptor::class.java.simpleName
     }
 
     override fun replace(routeItem: RouteItem?): RouteItem? {

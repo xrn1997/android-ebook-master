@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 @Suppress("unused")
 object ScreenUtils {
-    private const val TAG = "ScreenUtils"
+    private val TAG = this::class.java.simpleName
 
     /**
      * 获得屏幕宽度

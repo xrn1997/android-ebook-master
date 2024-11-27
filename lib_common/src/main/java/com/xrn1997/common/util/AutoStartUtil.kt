@@ -17,7 +17,7 @@ import android.widget.Toast
  */
 @Suppress("unused", "SpellCheckingInspection")
 object AutoStartUtil {
-    private const val TAG = "AutoStartUtil"
+    private val TAG = this::class.java.simpleName
     private val hashMap: HashMap<String?, List<String?>?> =
         object : HashMap<String?, List<String?>?>() {
             init {
@@ -179,7 +179,8 @@ object AutoStartUtil {
                                 } else {
                                     //找不到? 网上的做法都是跳转到设置... 这基本上是没意义的 基本上自启动这个功能是第三方厂商自己写的安全管家类app
                                     //所以我是直接跳转到对应的安全管家/安全中心
-                                    intent = context.packageManager.getLaunchIntentForPackage(act)!!
+                                    intent = context.packageManager.getLaunchIntentForPackage(act)
+                                        ?: return
                                 }
                                 context.startActivity(intent)
                                 has = true

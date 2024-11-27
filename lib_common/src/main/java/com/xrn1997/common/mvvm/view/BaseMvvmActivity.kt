@@ -15,7 +15,7 @@ import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
  */
 abstract class BaseMvvmActivity<V : ViewDataBinding, VM : BaseViewModel<*>> : BaseActivity<V>() {
     companion object {
-        private const val TAG = "BaseMvvmActivity"
+        private val TAG = BaseMvvmActivity::class.java.simpleName
     }
 
     private lateinit var _binding: V

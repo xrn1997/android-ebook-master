@@ -25,7 +25,7 @@ import java.util.Date
  */
 @Suppress("unused")
 object FileUtil {
-    private const val TAG = "FileUtil"
+    private val TAG = this::class.java.simpleName
 
     /**
      * 需要附加类型,如[IMAGE_TYPE]+"jpeg"
@@ -178,9 +178,9 @@ object FileUtil {
             return false
         }
         flag = true
-        val files = dirFile.listFiles()
+        val files = dirFile.listFiles() ?: return true
         //遍历删除文件夹下的所有文件(包括子目录)
-        for (i in files!!.indices) {
+        for (i in files.indices) {
             if (files[i].isFile) {
                 //删除子文件
                 flag = deleteFile(files[i].absolutePath)
@@ -191,8 +191,8 @@ object FileUtil {
                 if (!flag) break
             }
         }
-        return if (!flag) false else dirFile.delete()
         //删除当前空目录
+        return if (!flag) false else dirFile.delete()
     }
 
     /**

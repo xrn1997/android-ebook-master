@@ -20,6 +20,8 @@ import com.therouter.router.Route;
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshActivity;
 import com.xrn1997.common.util.ObservableListUtil;
 
+import kotlin.Unit;
+
 @Route(path = KeyCode.Book.COMMENT_PATH)
 public class BookCommentsActivity extends BaseMvvmRefreshActivity<ActivityBookCommentsBinding, BookCommentsViewModel> {
     private EditText editText;
@@ -66,7 +68,10 @@ public class BookCommentsActivity extends BaseMvvmRefreshActivity<ActivityBookCo
             String username = SPUtils.getInstance().getString(KeyCode.Login.SP_USERNAME);
             if (comment.getUser().getUsername().equals(username)) {
                 DeleteDialog deleteDialog = DeleteDialog.newInstance();
-                deleteDialog.setOnClickListener(() -> mViewModel.deleteComment(comment.getId()));
+                deleteDialog.setOnClickListener(() -> {
+                    mViewModel.deleteComment(comment.getId());
+                    return Unit.INSTANCE;
+                });
                 deleteDialog.show(getSupportFragmentManager(), "deleteDialog");
             }
             return true;

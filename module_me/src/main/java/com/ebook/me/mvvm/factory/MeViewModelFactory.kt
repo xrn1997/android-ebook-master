@@ -22,7 +22,7 @@ object MeViewModelFactory : ViewModelProvider.Factory {
                 ModifyViewModel(mApplication, ModifyModel(mApplication))
             }
 
-            else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName())
+            else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         } as T
     }
 }

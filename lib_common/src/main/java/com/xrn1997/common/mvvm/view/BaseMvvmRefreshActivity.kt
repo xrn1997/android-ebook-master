@@ -2,7 +2,6 @@ package com.xrn1997.common.mvvm.view
 
 import androidx.databinding.ViewDataBinding
 import com.scwang.smart.refresh.layout.api.RefreshLayout
-import com.xrn1997.common.adapter.BaseAdapter
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel
 
 
@@ -16,10 +15,11 @@ abstract class BaseMvvmRefreshActivity<V : ViewDataBinding, VM : BaseRefreshView
     protected lateinit var mRefreshLayout: RefreshLayout
 
     @JvmField
-    protected var mOnItemClickListener: BaseAdapter.OnItemClickListener<V>? = null
+    protected var mOnItemClickListener: ((e: V, position: Int) -> Unit)? = null
 
     @JvmField
-    protected var mOnItemLongClickListener: BaseAdapter.OnItemLongClickListener<V>? = null
+    protected var mOnItemLongClickListener: ((e: V, position: Int) -> Boolean)? = null
+
     override fun initContentView() {
         super.initContentView()
         initRefreshView()
@@ -70,11 +70,11 @@ abstract class BaseMvvmRefreshActivity<V : ViewDataBinding, VM : BaseRefreshView
         mRefreshLayout.autoRefresh()
     }
 
-    open fun setOnItemClickListener(onItemClickListener: BaseAdapter.OnItemClickListener<V>) {
+    open fun setOnItemClickListener(onItemClickListener: (e: V, position: Int) -> Unit) {
         mOnItemClickListener = onItemClickListener
     }
 
-    open fun setOnItemLongClickListener(onItemLongClickListener: BaseAdapter.OnItemLongClickListener<V>) {
+    open fun setOnItemLongClickListener(onItemLongClickListener: (e: V, position: Int) -> Boolean) {
         mOnItemLongClickListener = onItemLongClickListener
     }
 }

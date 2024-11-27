@@ -339,7 +339,7 @@ class ClipViewLayout @JvmOverloads constructor(
 
 
     companion object {
-        const val TAG: String = "ClipViewLayout"
+        private val TAG: String = ClipViewLayout::class.java.simpleName
 
         //动作标志：无
         private const val NONE = 0

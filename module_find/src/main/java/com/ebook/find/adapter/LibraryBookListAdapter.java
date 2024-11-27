@@ -19,6 +19,8 @@ import com.ebook.find.mvp.view.impl.ChoiceBookActivity;
 import com.xrn1997.common.adapter.BaseBindAdapter;
 import com.xrn1997.common.util.ObservableListUtil;
 
+import kotlin.Unit;
+
 
 public class LibraryBookListAdapter extends BaseBindAdapter<LibraryKindBookList, ViewLibraryKindbookBinding> {
 
@@ -51,6 +53,7 @@ public class LibraryBookListAdapter extends BaseBindAdapter<LibraryKindBookList,
             intent.putExtra("from", BookDetailPresenterImpl.FROM_SEARCH);
             intent.putExtra("data", searchBook);
             startActivity(intent);
+            return Unit.INSTANCE;
         });
         binding.rvBooklist.setAdapter(libraryBookAdapter);
     }

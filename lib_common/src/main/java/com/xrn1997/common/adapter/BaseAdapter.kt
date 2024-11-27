@@ -24,10 +24,10 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
     val mList get() = list
 
     @JvmField
-    protected var mOnItemClickListener: OnItemClickListener<E>? = null
+    protected var mOnItemClickListener: ((e: E, position: Int) -> Unit)? = null
 
     @JvmField
-    protected var mOnItemLongClickListener: OnItemLongClickListener<E>? = null
+    protected var mOnItemLongClickListener: ((e: E, position: Int) -> Boolean)? = null
 
     /**
      * 创建并且返回ViewHolder
@@ -43,13 +43,9 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
      */
     override fun onBindViewHolder(holder: VH, position: Int) {
         val e = list[position]
-        if (mOnItemClickListener != null) {
-            holder.itemView.setOnClickListener { mOnItemClickListener!!.onItemClick(e, position) }
-        }
-        if (mOnItemLongClickListener != null) {
-            holder.itemView.setOnLongClickListener {
-                mOnItemLongClickListener!!.onItemLongClick(e, position)
-            }
+        holder.itemView.setOnClickListener { mOnItemClickListener?.invoke(e, position) }
+        holder.itemView.setOnLongClickListener {
+            mOnItemLongClickListener?.invoke(e, position) ?: false
         }
         onBindData(holder, e, position)
     }
@@ -135,14 +131,14 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
     /**
      * item监听
      */
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener<E>?) {
+    fun setOnItemClickListener(onItemClickListener: (e: E, position: Int) -> Unit) {
         mOnItemClickListener = onItemClickListener
     }
 
     /**
      * item长按监听
      */
-    fun setOnItemLongClickListener(onItemLongClickListener: OnItemLongClickListener<E>?) {
+    fun setOnItemLongClickListener(onItemLongClickListener: (e: E, position: Int) -> Boolean) {
         mOnItemLongClickListener = onItemLongClickListener
     }
 
@@ -167,23 +163,4 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
      * @param position 索引
      */
     protected abstract fun onBindData(holder: VH, e: E, position: Int)
-    interface OnItemClickListener<E> {
-        /**
-         * 点按
-         *
-         * @param e        item对象
-         * @param position 索引
-         */
-        fun onItemClick(e: E, position: Int)
-    }
-
-    interface OnItemLongClickListener<E> {
-        /**
-         * 长按
-         *
-         * @param e        item对象
-         * @param position 索引
-         */
-        fun onItemLongClick(e: E, position: Int): Boolean
-    }
 }
