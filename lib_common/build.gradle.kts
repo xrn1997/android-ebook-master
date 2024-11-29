@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.xrn1997.android.library)
+    alias(libs.plugins.xrn1997.android.library.compose)
     alias(libs.plugins.ksp)
 }
 
