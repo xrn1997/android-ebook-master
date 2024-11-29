@@ -2,10 +2,10 @@ package com.ebook.find.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ebook.find.BR
-import com.ebook.find.R
 import com.ebook.find.adapter.BookTypeShowAdapter
 import com.ebook.find.adapter.LibraryBookListAdapter
 import com.ebook.find.databinding.FragmentFindMainBinding
@@ -19,39 +19,11 @@ import com.xrn1997.common.mvvm.view.BaseMvvmRefreshFragment
 
 class MainFindFragment :
     BaseMvvmRefreshFragment<FragmentFindMainBinding, LibraryViewModel>() {
-    override fun getRefreshLayout(): RefreshLayout {
-        return binding.refviewLibrary
-    }
-
-    override fun onBindViewModel(): Class<LibraryViewModel> {
-        return LibraryViewModel::class.java
-    }
-
-    override fun onBindViewModelFactory(): ViewModelProvider.Factory {
-        return FindViewModelFactory
-    }
-
-    override fun initViewObservable() {
-    }
-
-    override fun onBindVariableId(): Int {
-        return BR.viewModel
-    }
-
-
-    override fun onBindLayout(): Int {
-        return R.layout.fragment_find_main
-    }
-
     override fun initView() {
-        val mBookTypeShowAdapter = BookTypeShowAdapter(mActivity, mViewModel.bookTypeList)
-        val mLibraryKindBookAdapter =
-            LibraryBookListAdapter(mActivity, mViewModel.libraryKindBookLists)
-        mViewModel.libraryKindBookLists.addOnListChangedCallback(
-            getListChangedCallback(
-                mLibraryKindBookAdapter
-            )
-        )
+        val mBookTypeShowAdapter = BookTypeShowAdapter(mActivity)
+        mBookTypeShowAdapter.submitList(mViewModel.bookTypeList)
+        val mLibraryKindBookAdapter = LibraryBookListAdapter(mActivity)
+        mViewModel.mList.observe(this) { mLibraryKindBookAdapter.submitList(it) }
         val myRecyclerviewManager = MyRecyclerviewManager(mActivity)
         myRecyclerviewManager.setScrollEnabled(false)
         binding.lkbvKindbooklist.layoutManager = myRecyclerviewManager
@@ -70,6 +42,30 @@ class MainFindFragment :
 
     override fun initData() {
         mViewModel.refreshData()
+    }
+
+    override fun getRefreshLayout(): RefreshLayout {
+        return binding.refviewLibrary
+    }
+
+    override fun onBindViewModel(): Class<LibraryViewModel> {
+        return LibraryViewModel::class.java
+    }
+
+    override fun onBindViewModelFactory(): ViewModelProvider.Factory {
+        return FindViewModelFactory
+    }
+
+    override fun enableLoadMore(): Boolean {
+        return false
+    }
+
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentFindMainBinding {
+        return FragmentFindMainBinding.inflate(inflater, parent, attachToParent)
     }
 
     override var toolBarTitle: String

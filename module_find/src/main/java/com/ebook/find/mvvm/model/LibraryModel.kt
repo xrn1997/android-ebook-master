@@ -21,11 +21,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 @Suppress("unused")
 class LibraryModel(application: Application) : BaseModel(application) {
-    val bookTypeList: List<BookType>
-        //获取书籍类型信息，此处用本地数据。
-        get() {
-            val bookTypeList: MutableList<BookType> =
-                ArrayList()
+    //获取书籍类型信息，此处用本地数据。
+    fun getBookTypeList(): List<BookType> {
+        val bookTypeList: MutableList<BookType> = ArrayList()
             bookTypeList.add(BookType("玄幻小说", Url.xh))
             bookTypeList.add(BookType("修真小说", Url.xz))
             bookTypeList.add(BookType("都市小说", Url.ds))

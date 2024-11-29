@@ -1,20 +1,38 @@
 package com.ebook.find.adapter
 
 import android.content.Context
-import androidx.databinding.ObservableArrayList
-import com.ebook.find.R
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import com.ebook.find.databinding.AdpaterBookTypeItemBinding
 import com.ebook.find.entity.BookType
 import com.xrn1997.common.adapter.BaseBindAdapter
 
-class BookTypeShowAdapter(context: Context, items: ObservableArrayList<BookType>) :
-    BaseBindAdapter<BookType, AdpaterBookTypeItemBinding>(context, items) {
-    override fun getLayoutItemId(viewType: Int): Int {
-        return R.layout.adpater_book_type_item
-    }
+class BookTypeShowAdapter(context: Context) :
+    BaseBindAdapter<BookType, AdpaterBookTypeItemBinding>(context, BookTypeDifferCallback()) {
 
     override fun onBindItem(binding: AdpaterBookTypeItemBinding, item: BookType, position: Int) {
-        binding.booktype = item
+        binding.viewBooktype.text = item.bookType
         binding.viewBooktype.setOnClickListener { mOnItemClickListener?.invoke(item, position) }
+    }
+
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        attachToParent: Boolean,
+        viewType: Int
+    ): AdpaterBookTypeItemBinding {
+        return AdpaterBookTypeItemBinding.inflate(inflater, parent, attachToParent)
+    }
+
+    class BookTypeDifferCallback : DiffUtil.ItemCallback<BookType>() {
+        override fun areItemsTheSame(oldItem: BookType, newItem: BookType): Boolean {
+            return oldItem.url == newItem.url
+        }
+
+        override fun areContentsTheSame(oldItem: BookType, newItem: BookType): Boolean {
+            return oldItem == newItem
+        }
+
     }
 }

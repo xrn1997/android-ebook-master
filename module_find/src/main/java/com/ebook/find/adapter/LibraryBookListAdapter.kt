@@ -2,36 +2,31 @@ package com.ebook.find.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.view.LayoutInflater
 import android.view.View
-import androidx.databinding.ObservableArrayList
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import com.blankj.utilcode.util.ActivityUtils
 import com.ebook.basebook.mvp.presenter.impl.BookDetailPresenterImpl
 import com.ebook.basebook.mvp.view.impl.BookDetailActivity
 import com.ebook.db.entity.LibraryKindBookList
 import com.ebook.db.entity.SearchBook
-import com.ebook.find.R
 import com.ebook.find.databinding.ViewLibraryKindbookBinding
 import com.ebook.find.mvp.view.impl.ChoiceBookActivity
 import com.xrn1997.common.adapter.BaseBindAdapter
-import com.xrn1997.common.util.ObservableListUtil.getListChangedCallback
 
-class LibraryBookListAdapter(context: Context, items: ObservableArrayList<LibraryKindBookList>) :
-    BaseBindAdapter<LibraryKindBookList, ViewLibraryKindbookBinding>(context, items) {
-    override fun getLayoutItemId(viewType: Int): Int {
-        return R.layout.view_library_kindbook
-    }
-
+class LibraryBookListAdapter(context: Context) :
+    BaseBindAdapter<LibraryKindBookList, ViewLibraryKindbookBinding>(
+        context, LibraryKindBookListDifferCallback()
+    ) {
     override fun onBindItem(
         binding: ViewLibraryKindbookBinding,
         item: LibraryKindBookList,
         position: Int
     ) {
-        binding.libraryKindBookList = item
-        val searchBooks = ObservableArrayList<SearchBook>()
-        searchBooks.addAll(item.books)
-        val libraryBookAdapter = LibraryBookAdapter(context, searchBooks)
-
-        searchBooks.addOnListChangedCallback(getListChangedCallback(libraryBookAdapter))
+        binding.tvKindname.text = item.kindName
+        val libraryBookAdapter = LibraryBookAdapter(context)
+        libraryBookAdapter.submitList(item.books)
         if (item.kindUrl.isEmpty()) {
             binding.tvMore.visibility = View.GONE
             binding.tvMore.setOnClickListener(null)
@@ -48,5 +43,30 @@ class LibraryBookListAdapter(context: Context, items: ObservableArrayList<Librar
             ActivityUtils.startActivity(intent)
         }
         binding.rvBooklist.adapter = libraryBookAdapter
+    }
+
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        attachToParent: Boolean,
+        viewType: Int
+    ): ViewLibraryKindbookBinding {
+        return ViewLibraryKindbookBinding.inflate(inflater, parent, attachToParent)
+    }
+
+    class LibraryKindBookListDifferCallback : DiffUtil.ItemCallback<LibraryKindBookList>() {
+        override fun areItemsTheSame(
+            oldItem: LibraryKindBookList,
+            newItem: LibraryKindBookList
+        ): Boolean {
+            return oldItem.kindUrl == newItem.kindUrl
+        }
+
+        override fun areContentsTheSame(
+            oldItem: LibraryKindBookList,
+            newItem: LibraryKindBookList
+        ): Boolean {
+            return oldItem == newItem
+        }
     }
 }

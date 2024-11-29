@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xrn1997.android.component)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
 }
 android {
@@ -25,9 +24,7 @@ android {
         }
     }
     buildFeatures {
-        dataBinding = true
         viewBinding = true
-        compose = true
         buildConfig = true
     }
     composeOptions {
