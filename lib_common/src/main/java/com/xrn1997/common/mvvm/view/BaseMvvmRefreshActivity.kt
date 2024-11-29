@@ -1,16 +1,16 @@
 package com.xrn1997.common.mvvm.view
 
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel
 
 
 /**
- * 基于MVVM DataBinding的可刷新的Activity基类
+ * 基于MVVM ViewBinding的可刷新的Activity基类
  * @author xrn1997
  */
 @Suppress("unused")
-abstract class BaseMvvmRefreshActivity<V : ViewDataBinding, VM : BaseRefreshViewModel<*, *>> :
+abstract class BaseMvvmRefreshActivity<V : ViewBinding, VM : BaseRefreshViewModel<*, *>> :
     BaseMvvmActivity<V, VM>() {
     protected lateinit var mRefreshLayout: RefreshLayout
 
@@ -40,8 +40,46 @@ abstract class BaseMvvmRefreshActivity<V : ViewDataBinding, VM : BaseRefreshView
     }
 
     abstract fun getRefreshLayout(): RefreshLayout
-    private fun initRefreshView() {
+
+    /**
+     * 初始化刷新控件
+     */
+    open fun initRefreshView() {
         mRefreshLayout = getRefreshLayout()
+        mRefreshLayout.setOnRefreshListener { onRefresh() }
+        mRefreshLayout.setOnLoadMoreListener { onLoadMore() }
+        mRefreshLayout.setEnableRefresh(enableRefresh())
+        mRefreshLayout.setEnableLoadMore(enableLoadMore())
+    }
+
+    /**
+     * 下拉刷新事件逻辑
+     */
+    open fun onRefresh() {
+        mViewModel.refreshData()
+    }
+
+    /**
+     * 上拉加载事件逻辑
+     */
+    open fun onLoadMore() {
+        mViewModel.loadMore()
+    }
+
+    /**
+     * 是否启用上拉加载
+     * @return Boolean 默认false
+     */
+    open fun enableLoadMore(): Boolean {
+        return false
+    }
+
+    /**
+     * 是否启用下拉刷新
+     * @return Boolean 默认true
+     */
+    open fun enableRefresh(): Boolean {
+        return true
     }
 
     /**

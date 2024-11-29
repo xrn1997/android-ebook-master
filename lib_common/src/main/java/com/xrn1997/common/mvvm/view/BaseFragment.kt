@@ -1,5 +1,6 @@
 package com.xrn1997.common.mvvm.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,8 +22,6 @@ import com.xrn1997.common.databinding.StubNoDataBinding
 import com.xrn1997.common.event.BaseFragmentEvent
 import com.xrn1997.common.mvvm.IBaseView
 import com.xrn1997.common.view.LoadingView
-import com.xrn1997.common.view.NetErrorView
-import com.xrn1997.common.view.NoDataView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -35,10 +34,28 @@ import org.greenrobot.eventbus.ThreadMode
 @Suppress("unused")
 abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
     protected lateinit var mActivity: RxAppCompatActivity
-    private var mViewStubContent: RelativeLayout? = null
-    protected var mNetErrorView: NetErrorView? = null
-    protected var mNoDataView: NoDataView? = null
-    protected var mLoadingView: LoadingView? = null
+    private lateinit var mViewStubContent: RelativeLayout
+    protected val mNetErrorView by lazy {
+        val view = mViewStubError.inflate()
+        val netErrorView = StubNetErrorBinding.bind(view).root
+        netErrorView.setRefreshBtnClickListener {
+            NetworkUtils.isAvailableAsync {
+                if (it) {
+                    netErrorView.show(false)
+                    initData()
+                }
+            }
+        }
+        netErrorView
+    }
+    protected val mNoDataView by lazy {
+        val view = mViewStubNoData.inflate()
+        StubNoDataBinding.bind(view).root
+    }
+    protected val mLoadingView: LoadingView by lazy {
+        val view: View = mViewStubLoading.inflate()
+        StubLoadingBinding.bind(view).root
+    }
     protected var mToolbar: Toolbar? = null
 
     private lateinit var mViewStubToolbar: ViewStub
@@ -93,6 +110,7 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
             initToolbar(view)
         }
         initContentView(mViewStubContent)
+        initView()
     }
 
     /**
@@ -110,9 +128,8 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
         return R.layout.view_toolbar
     }
 
-    open fun initContentView(root: ViewGroup?) {
+    open fun initContentView(root: ViewGroup) {
         _binding = onBindViewBinding(LayoutInflater.from(mActivity), root, true)
-        initView()
     }
 
     /**
@@ -148,13 +165,13 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
     /**
      * 这个方法返回需要绑定的ViewBinding
      * @param inflater LayoutInflater
-     * @param container ViewGroup? 整合到哪
+     * @param parent ViewGroup? 整合到哪
      * @param attachToParent Boolean  是否整合到Parent上
      * @return V
      */
     abstract fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): V
 
@@ -169,41 +186,30 @@ abstract class BaseFragment<V : ViewBinding> : RxFragment(), IBaseView {
     }
 
     override fun showLoadingView(show: Boolean) {
-        if (mLoadingView == null) {
-            val view: View = mViewStubLoading.inflate()
-            mLoadingView = StubLoadingBinding.bind(view).root
-        }
-        mLoadingView?.show(show)
+        mLoadingView.show(show)
     }
 
+
     override fun showNoDataView(show: Boolean, resId: Int?) {
-        if (mNetErrorView == null) {
-            val view: View = mViewStubNoData.inflate()
-            mNoDataView = StubNoDataBinding.bind(view).root
+        resId?.let {
+            mNoDataView.setNoDataView(it)
         }
-        if (resId != null) {
-            mNoDataView?.setNoDataView(resId)
-        }
-        mNoDataView?.show(show)
+        mNoDataView.show(show)
     }
 
     override fun showNetWorkErrView(show: Boolean, resId: Int?) {
-        if (mNetErrorView == null) {
-            val view: View = mViewStubError.inflate()
-            mNetErrorView = StubNetErrorBinding.bind(view).root
-            mNetErrorView?.setRefreshBtnClickListener {
-                NetworkUtils.isAvailableAsync {
-                    if (it) {
-                        mNetErrorView?.visibility = View.GONE
-                        initData()
-                    }
-                }
-            }
+        resId?.let {
+            mNetErrorView.setNetErrorView(it)
         }
-        if (resId != null) {
-            mNetErrorView?.setNetErrorView(resId)
+        mNetErrorView.show(show)
+    }
+
+    protected fun startActivity(clz: Class<*>?, bundle: Bundle?) {
+        val intent = Intent(mActivity, clz)
+        if (bundle != null) {
+            intent.putExtras(bundle)
         }
-        mNetErrorView?.show(show)
+        startActivity(intent)
     }
 
     /**

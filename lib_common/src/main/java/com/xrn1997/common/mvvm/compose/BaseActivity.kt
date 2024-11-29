@@ -1,6 +1,7 @@
 package com.xrn1997.common.mvvm.compose
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -76,6 +77,7 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
             InitCommonView()
         }
         initContentView()
+        initView()
         initData()
         ActivityManager.addActivity(this)
     }
@@ -88,9 +90,7 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
     /**
      * 初始化需要再onCreate调用的页面
      */
-    open fun initContentView() {
-        initView()
-    }
+    open fun initContentView() {}
 
     /**
      * 是否启用toolbar,默认true
@@ -197,6 +197,14 @@ abstract class BaseActivity : RxAppCompatActivity(), IBaseView {
      */
     open fun enableFitsSystemWindows(): Boolean {
         return true
+    }
+
+    protected fun startActivity(clz: Class<*>?, bundle: Bundle?) {
+        val intent = Intent(this, clz)
+        if (bundle != null) {
+            intent.putExtras(bundle)
+        }
+        startActivity(intent)
     }
 
     /**

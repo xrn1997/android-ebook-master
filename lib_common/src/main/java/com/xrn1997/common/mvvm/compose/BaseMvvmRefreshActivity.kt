@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -48,6 +47,36 @@ abstract class BaseMvvmRefreshActivity<VM : BaseRefreshViewModel<*, *>> : BaseMv
     }
 
     /**
+     * 下拉刷新事件逻辑
+     */
+    open fun onRefresh() {
+        mViewModel.refreshData()
+    }
+
+    /**
+     * 上拉加载事件逻辑
+     */
+    open fun onLoadMore() {
+        mViewModel.loadMore()
+    }
+
+    /**
+     * 是否启用上拉加载
+     * @return Boolean 默认false
+     */
+    open fun enableLoadMore(): Boolean {
+        return false
+    }
+
+    /**
+     * 是否启用下拉刷新
+     * @return Boolean 默认true
+     */
+    open fun enableRefresh(): Boolean {
+        return true
+    }
+
+    /**
      * 完成加载
      * @param success Boolean 数据是否成功刷新 （会影响到上次更新时间的改变）
      * @see RefreshLayout.finishRefresh
@@ -73,11 +102,18 @@ abstract class BaseMvvmRefreshActivity<VM : BaseRefreshViewModel<*, *>> : BaseMv
         mRefreshLayout.autoRefresh()
     }
 
+    open fun setHeaderView(): ClassicsHeader {
+        return ClassicsHeader(getContext())
+    }
+
+    open fun setRooterView(): ClassicsFooter {
+        return ClassicsFooter(getContext())
+    }
+
     @Composable
     override fun HomePage(modifier: Modifier) {
         val state = rememberLazyListState()
         RefreshLayout(
-            viewModel = mViewModel,
             header = { setHeaderView() },
             body = {
                 InitView(state)
@@ -98,17 +134,8 @@ abstract class BaseMvvmRefreshActivity<VM : BaseRefreshViewModel<*, *>> : BaseMv
     final override fun InitView() {
     }
 
-    open fun setHeaderView(): ClassicsHeader {
-        return ClassicsHeader(getContext())
-    }
-
-    open fun setRooterView(): ClassicsFooter {
-        return ClassicsFooter(getContext())
-    }
-
     /**
      * 基于SmartRefreshLayout的Compose调用
-     * @param viewModel 刷新视图模型
      * @param header Compose函数,用于头部视图
      * @param body Compose函数,用于主体视图
      * @param footer Compose函数,用于底部视图
@@ -117,15 +144,12 @@ abstract class BaseMvvmRefreshActivity<VM : BaseRefreshViewModel<*, *>> : BaseMv
      */
     @Composable
     fun RefreshLayout(
-        viewModel: BaseRefreshViewModel<*, *>,
         header: () -> RefreshHeader,
         body: @Composable () -> Unit,
         footer: () -> RefreshFooter,
         modifier: Modifier = Modifier,
         state: LazyListState? = null
     ) {
-        val enableLoadMore by viewModel.enableLoadMore.observeAsState(false)
-        val enableRefresh by viewModel.enableRefresh.observeAsState(false)
         val curContext = LocalContext.current
 
         // 使用ComposeView将Compose布局渲染为Android View
@@ -161,8 +185,8 @@ abstract class BaseMvvmRefreshActivity<VM : BaseRefreshViewModel<*, *>> : BaseMv
         // 使用AndroidView将SmartRefreshLayout添加到Compose布局中
         AndroidView(modifier = modifier.fillMaxSize(), factory = { context ->
             SmartRefreshLayout(context).apply {
-                setOnLoadMoreListener { viewModel.onLoadMoreCommand.execute() }
-                setOnRefreshListener { viewModel.onRefreshCommand.execute() }
+                setOnRefreshListener { onRefresh() }
+                setOnLoadMoreListener { onLoadMore() }
                 setRefreshHeader(header())
                 setRefreshFooter(footer())
                 setRefreshContent(bodyView)
@@ -173,8 +197,8 @@ abstract class BaseMvvmRefreshActivity<VM : BaseRefreshViewModel<*, *>> : BaseMv
                 })
             }
         }, update = { view ->
-            view.setEnableLoadMore(enableLoadMore ?: false)
-            view.setEnableRefresh(enableRefresh ?: false)
+            view.setEnableLoadMore(enableLoadMore())
+            view.setEnableRefresh(enableRefresh())
             mRefreshLayout = view
         }, onReset = {
 

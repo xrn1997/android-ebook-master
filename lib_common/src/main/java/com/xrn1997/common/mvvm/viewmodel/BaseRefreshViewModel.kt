@@ -1,11 +1,7 @@
 package com.xrn1997.common.mvvm.viewmodel
 
 import android.app.Application
-import android.util.Log
-import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.MutableLiveData
-import com.xrn1997.common.adapter.binding.BindingAction
-import com.xrn1997.common.adapter.binding.BindingCommand
 import com.xrn1997.common.event.SingleLiveEvent
 import com.xrn1997.common.mvvm.model.BaseModel
 
@@ -19,16 +15,8 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
     model: M
 ) : BaseViewModel<M>(application, model) {
     @JvmField
-    val mList: ObservableArrayList<T> = ObservableArrayList()
+    val mList = MutableLiveData<List<T>>(listOf())
 
-    @JvmField
-    var orientation: MutableLiveData<Boolean> = MutableLiveData()
-
-    @JvmField
-    var enableLoadMore: MutableLiveData<Boolean> = MutableLiveData()
-
-    @JvmField
-    var enableRefresh: MutableLiveData<Boolean> = MutableLiveData()
     protected var defaultUIChangeRefreshLiveData: UIChangeRefreshLiveData? = null
     val mUIChangeRefreshLiveData: UIChangeRefreshLiveData
         get() {
@@ -40,7 +28,7 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
 
     inner class UIChangeRefreshLiveData {
         private var stopRefreshLiveEvent: SingleLiveEvent<Boolean>? = null
-        private var autoRefreshLiveEvent: SingleLiveEvent<Void>? = null
+        private var autoRefreshLiveEvent: SingleLiveEvent<Unit>? = null
         private var stopLoadMoreLiveEvent: SingleLiveEvent<Boolean>? = null
         val mStopRefreshLiveEvent
             get() = createLiveData(stopRefreshLiveEvent).also { stopRefreshLiveEvent = it }
@@ -74,27 +62,6 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
         mUIChangeRefreshLiveData.mStopLoadMoreLiveEvent.postValue(boolean)
     }
 
-
-    /**
-     * 刷新命令
-     */
-    var onRefreshCommand = BindingCommand(object : BindingAction {
-        override fun call() {
-            Log.d("BRViewModel", "下拉刷新")
-            refreshData()
-        }
-    })
-
-    /**
-     * 加载命令
-     */
-    var onLoadMoreCommand = BindingCommand(object : BindingAction {
-        override fun call() {
-            Log.d("BRViewModel", "上拉加载")
-            loadMore()
-        }
-    })
-
     /**
      * 刷新数据
      */
@@ -104,27 +71,4 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
      * 加载更多
      */
     open fun loadMore() {}
-
-    /**
-     * 是否启用上拉加载
-     * @return Boolean 默认false
-     */
-    open fun enableLoadMore(): Boolean {
-        return false
-    }
-
-    /**
-     * 是否启用下拉刷新
-     * @return Boolean 默认true
-     */
-    open fun enableRefresh(): Boolean {
-        return true
-    }
-
-    init {
-        val loadMore by lazy { enableLoadMore() }
-        enableLoadMore.value = loadMore
-        val refresh by lazy { enableRefresh() }
-        enableRefresh.value = refresh
-    }
 }

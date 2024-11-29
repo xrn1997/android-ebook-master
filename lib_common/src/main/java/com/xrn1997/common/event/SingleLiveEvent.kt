@@ -56,16 +56,17 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
     }
 
     @MainThread
-    override fun setValue(t: T?) {
+    override fun setValue(t: T) {
         mPending.set(true)
         super.setValue(t)
     }
 
     /**
-     * Used for cases where T is Void, to make calls cleaner.
+     * Used for cases where T is Unit, to make calls cleaner.
      */
     @MainThread
+    @Suppress("unchecked_cast")
     fun call() {
-        value = null
+        setValue(Unit as T)
     }
 }

@@ -25,7 +25,7 @@
     <string name="version">当前版本</string>
     <string name="help_use">功能介绍</string>
     <string name="email">联系邮箱</string>
-
+    <string name="status_bar_picture">状态栏图片</string>
 
     <string name="notification_icon_title">通知</string>
     <string name="user_icon_title">我的</string>

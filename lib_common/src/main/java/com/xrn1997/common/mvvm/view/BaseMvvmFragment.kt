@@ -1,28 +1,18 @@
 package com.xrn1997.common.mvvm.view
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import com.xrn1997.common.manager.ActivityManager
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
 
 
 /**
- * 基于MVVM DataBinding的Fragment基类
+ * 基于MVVM ViewBinding的Fragment基类
  * @author xrn1997
  */
-abstract class BaseMvvmFragment<V : ViewDataBinding, VM : BaseViewModel<*>> : BaseFragment<V>() {
-    private lateinit var _binding: V
-
-    /**
-     * MVVM中的V,负责视图显示.
-     * 此属性仅在onCreateView及之后的生命周期有效.
-     */
-    override val binding get() = _binding
+abstract class BaseMvvmFragment<V : ViewBinding, VM : BaseViewModel<*>> : BaseFragment<V>() {
 
     /**
      * MVVM中的VM,负责处理视图的操作功能,与M进行数据交互.
@@ -30,44 +20,23 @@ abstract class BaseMvvmFragment<V : ViewDataBinding, VM : BaseViewModel<*>> : Ba
      */
     protected lateinit var mViewModel: VM
 
-    override fun initContentView(root: ViewGroup?) {
-        initViewModel(root)
-        initView()
+    override fun initContentView(root: ViewGroup) {
+        super.initContentView(root)
+        initViewModel()
         initBaseViewObservable()
-        initViewObservable()
     }
 
-    private fun initViewModel(root: ViewGroup?) {
-        _binding =
-            DataBindingUtil.inflate(LayoutInflater.from(mActivity), onBindLayout(), root, true)
+    private fun initViewModel() {
         mViewModel = createViewModel()
-        val viewModelId = onBindVariableId()
-        _binding.setVariable(viewModelId, mViewModel)
         lifecycle.addObserver(mViewModel)
-    }
-
-    override fun onBindViewBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        attachToParent: Boolean
-    ): V {
-        return binding
     }
 
     open fun createViewModel(): VM {
         return ViewModelProvider(this, onBindViewModelFactory())[onBindViewModel()]
     }
 
-    abstract fun initViewObservable()
-
-    /**
-     * 绑定layout
-     * @return Int
-     */
-    abstract fun onBindLayout(): Int
     abstract fun onBindViewModel(): Class<VM>
     abstract fun onBindViewModelFactory(): ViewModelProvider.Factory
-    abstract fun onBindVariableId(): Int
 
     protected open fun initBaseViewObservable() {
         mViewModel.mUIChangeLiveData.mShowLoadingViewEvent.observe(this) { show ->
@@ -91,13 +60,4 @@ abstract class BaseMvvmFragment<V : ViewDataBinding, VM : BaseViewModel<*>> : Ba
             mActivity.onBackPressedDispatcher.onBackPressed()
         }
     }
-
-    fun startActivity(clz: Class<*>?, bundle: Bundle?) {
-        val intent = Intent(mActivity, clz)
-        if (bundle != null) {
-            intent.putExtras(bundle)
-        }
-        startActivity(intent)
-    }
-
 }

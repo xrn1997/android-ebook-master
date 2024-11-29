@@ -1,72 +1,45 @@
 package com.xrn1997.common.mvvm.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import com.xrn1997.common.manager.ActivityManager
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
 
 /**
- * 基于MVVM DataBinding的Activity基类
+ * 基于MVVM ViewBinding的Activity基类
  * @author xrn1997
  */
-abstract class BaseMvvmActivity<V : ViewDataBinding, VM : BaseViewModel<*>> : BaseActivity<V>() {
-    companion object {
-        private val TAG = BaseMvvmActivity::class.java.simpleName
-    }
-
-    private lateinit var _binding: V
-
-    /**
-     * MVVM中的V,负责视图显示.
-     */
-    override val binding get() = _binding
-
+abstract class BaseMvvmActivity<V : ViewBinding, VM : BaseViewModel<*>> : BaseActivity<V>() {
     /**
      * MVVM中的VM,负责处理视图的操作功能,与M进行数据交互.
      */
     protected lateinit var mViewModel: VM
 
     override fun initContentView() {
+        super.initContentView()
         initViewModel()
-        initView()
         initBaseViewObservable()
-        initViewObservable()
     }
 
     private fun initViewModel() {
-        _binding = DataBindingUtil.setContentView(this, onBindLayout())
         mViewModel = createViewModel()
-        val viewModelId = onBindVariableId()
-        _binding.setVariable(viewModelId, mViewModel)
         lifecycle.addObserver(mViewModel)
-    }
-
-    final override fun onBindViewBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        attachToParent: Boolean
-    ): V {
-        return binding
     }
 
     open fun createViewModel(): VM {
         return ViewModelProvider(this, onBindViewModelFactory())[onBindViewModel()]
     }
 
-    abstract fun initViewObservable()
+    /**
+     * 绑定ViewModel,通常情况返回class即可
+     */
+    abstract fun onBindViewModel(): Class<VM>
 
     /**
-     * 绑定layout
-     * @return Int
+     * 创建ViewModel实例的工厂
      */
-    abstract fun onBindLayout(): Int
-    abstract fun onBindViewModel(): Class<VM>
     abstract fun onBindViewModelFactory(): ViewModelProvider.Factory
-    abstract fun onBindVariableId(): Int
 
     protected open fun initBaseViewObservable() {
         mViewModel.mUIChangeLiveData.mShowLoadingViewEvent.observe(this) { show ->
@@ -89,10 +62,5 @@ abstract class BaseMvvmActivity<V : ViewDataBinding, VM : BaseViewModel<*>> : Ba
         mViewModel.mUIChangeLiveData.mOnBackPressedEvent.observe(this) {
             onBackPressedDispatcher.onBackPressed()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.unbind()
     }
 }

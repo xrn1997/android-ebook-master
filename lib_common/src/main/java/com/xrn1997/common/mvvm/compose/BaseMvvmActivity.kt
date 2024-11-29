@@ -1,6 +1,5 @@
 package com.xrn1997.common.mvvm.compose
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.xrn1997.common.manager.ActivityManager
@@ -16,21 +15,30 @@ abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
      */
     protected lateinit var mViewModel: VM
 
-    open fun createViewModel(): VM {
-        return ViewModelProvider(this, onBindViewModelFactory())[onBindViewModel()]
-    }
-
     override fun initContentView() {
+        super.initContentView()
         initViewModel()
-        initView()
         initBaseViewObservable()
-        initViewObservable()
     }
 
     private fun initViewModel() {
         mViewModel = createViewModel()
         lifecycle.addObserver(mViewModel)
     }
+
+    open fun createViewModel(): VM {
+        return ViewModelProvider(this, onBindViewModelFactory())[onBindViewModel()]
+    }
+
+    /**
+     * 绑定ViewModel,通常情况返回class即可
+     */
+    abstract fun onBindViewModel(): Class<VM>
+
+    /**
+     * 创建ViewModel实例的工厂
+     */
+    abstract fun onBindViewModelFactory(): ViewModelProvider.Factory
 
     protected open fun initBaseViewObservable() {
         mViewModel.mUIChangeLiveData.mShowLoadingViewEvent.observe(this) { show ->
@@ -53,28 +61,5 @@ abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
         mViewModel.mUIChangeLiveData.mOnBackPressedEvent.observe(this) {
             onBackPressedDispatcher.onBackPressed()
         }
-    }
-
-    /**
-     * 初始化观察者,onCreate中执行,在initView之后,initData之前.
-     */
-    abstract fun initViewObservable()
-
-    /**
-     * 绑定ViewModel,通常情况返回class即可
-     */
-    abstract fun onBindViewModel(): Class<VM>
-
-    /**
-     * 创建ViewModel实例的工厂
-     */
-    abstract fun onBindViewModelFactory(): ViewModelProvider.Factory
-
-    private fun startActivity(clz: Class<*>?, bundle: Bundle?) {
-        val intent = Intent(this, clz)
-        if (bundle != null) {
-            intent.putExtras(bundle)
-        }
-        startActivity(intent)
     }
 }

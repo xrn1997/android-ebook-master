@@ -4,68 +4,81 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ObservableArrayList
-import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 
 /**
- * 使用DataBinding的BaseAdapter
+ * 使用ViewBinding的ListAdapter
  * @author xrn1997
  */
 @Suppress("unused")
-abstract class BaseBindAdapter<T, B : ViewDataBinding>(
+abstract class BaseBindAdapter<T, V : ViewBinding>(
     @JvmField
     protected var context: Context,
-    protected var items: ObservableArrayList<T>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    diffCallBack: DiffUtil.ItemCallback<T>
+) : ListAdapter<T, BaseBindAdapter.BaseBindingViewHolder<V>>(diffCallBack) {
 
     @JvmField
     protected var mOnItemClickListener: ((e: T, position: Int) -> Unit)? = null
 
     @JvmField
     protected var mOnItemLongClickListener: ((e: T, position: Int) -> Boolean)? = null
-    override fun getItemCount(): Int {
-        return if (items.size > 0) items.size else 0
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder<V> {
+        val binding: V = onBindViewBinding((LayoutInflater.from(context)), parent, false, viewType)
+        return BaseBindingViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding: B = DataBindingUtil.inflate(
-            LayoutInflater.from(context), getLayoutItemId(viewType), parent, false
-        )
-        return BaseBindingViewHolder(binding.root)
+    override fun onBindViewHolder(holder: BaseBindingViewHolder<V>, position: Int) {
+        holder.binding?.let { onBindItem(it, getItem(position), position) }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val binding: B? = DataBindingUtil.getBinding(holder.itemView)
-        if (binding != null) {
-            items[position]?.let { onBindItem(binding, it, position) }
+    class BaseBindingViewHolder<V : ViewBinding>(view: View) : RecyclerView.ViewHolder(view) {
+        private var _binding: V? = null
+        val binding get() = _binding
+
+        constructor(binding: V) : this(binding.root) {
+            _binding = binding
         }
     }
-
-    class BaseBindingViewHolder internal constructor(itemView: View) :
-        RecyclerView.ViewHolder(itemView)
-
-    /**
-     * 获得item的布局id
-     */
-    @LayoutRes
-    protected abstract fun getLayoutItemId(viewType: Int): Int
-
-    protected abstract fun onBindItem(binding: B, item: T, position: Int)
 
     /**
      * item监听
      */
-    open fun setOnItemClickListener(itemClickListener: (e: T, position: Int) -> Unit) {
-        mOnItemClickListener = itemClickListener
+    fun setOnItemClickListener(onItemClickListener: (e: T, position: Int) -> Unit) {
+        mOnItemClickListener = onItemClickListener
     }
 
     /**
      * item长按监听
      */
-    open fun setOnItemLongClickListener(onItemLongClickListener: (e: T, position: Int) -> Boolean) {
+    fun setOnItemLongClickListener(onItemLongClickListener: (e: T, position: Int) -> Boolean) {
         mOnItemLongClickListener = onItemLongClickListener
     }
+
+    /**
+     * 这个方法返回需要绑定的ViewBinding
+     * @param inflater LayoutInflater
+     * @param parent ViewGroup? 整合到哪
+     * @param attachToParent Boolean  这里返回的是false
+     * @param viewType view类别
+     * @return V
+     */
+    protected abstract fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        attachToParent: Boolean,
+        viewType: Int
+    ): V
+
+    /**
+     * 绑定数据
+     *
+     * @param binding   viewBinding
+     * @param item        item对象
+     * @param position 索引
+     */
+    protected abstract fun onBindItem(binding: V, item: T, position: Int)
 }

@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
  * @author : xrn1997
  */
 @Suppress("unused")
-abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
+abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>(
     @JvmField
     protected val mContext: Context
 ) : RecyclerView.Adapter<VH>() {
-    protected val list: MutableList<E> = ArrayList()
+    protected val list: MutableList<T> = ArrayList()
 
     /**
      * 获取数据列表
@@ -24,10 +24,10 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
     val mList get() = list
 
     @JvmField
-    protected var mOnItemClickListener: ((e: E, position: Int) -> Unit)? = null
+    protected var mOnItemClickListener: ((e: T, position: Int) -> Unit)? = null
 
     @JvmField
-    protected var mOnItemLongClickListener: ((e: E, position: Int) -> Boolean)? = null
+    protected var mOnItemLongClickListener: ((e: T, position: Int) -> Boolean)? = null
 
     /**
      * 创建并且返回ViewHolder
@@ -47,7 +47,7 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
         holder.itemView.setOnLongClickListener {
             mOnItemLongClickListener?.invoke(e, position) ?: false
         }
-        onBindData(holder, e, position)
+        onBindItem(holder, e, position)
     }
 
     /**
@@ -61,7 +61,7 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
      * 添加所有数据,不会清空原有数据
      */
     @SuppressLint("NotifyDataSetChanged")
-    fun addAll(list: List<E>?) {
+    fun addAll(list: List<T>?) {
         if (!list.isNullOrEmpty()) {
             this.list.addAll(list)
             notifyDataSetChanged()
@@ -72,7 +72,7 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
      * 更新数据,会清空原有数据
      */
     @SuppressLint("NotifyDataSetChanged")
-    fun refresh(list: List<E>?) {
+    fun refresh(list: List<T>?) {
         this.list.clear()
         if (!list.isNullOrEmpty()) {
             this.list.addAll(list)
@@ -91,7 +91,7 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
     /**
      * 根据对象删除数据
      */
-    fun remove(e: E) {
+    fun remove(e: T) {
         val p = list.indexOf(e)
         list.remove(e)
         notifyItemRemoved(p)
@@ -100,7 +100,7 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
     /**
      * 根据对象添加数据
      */
-    fun add(e: E, position: Int) {
+    fun add(e: T, position: Int) {
         list.add(position, e)
         notifyItemInserted(position)
     }
@@ -108,14 +108,14 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
     /**
      * 根据对象添加数据（加在最后）
      */
-    fun addLast(e: E) {
+    fun addLast(e: T) {
         add(e, list.size)
     }
 
     /**
      * 根据对象添加数据（加在第一个）
      */
-    fun addFirst(e: E) {
+    fun addFirst(e: T) {
         add(e, 0)
     }
 
@@ -131,14 +131,14 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
     /**
      * item监听
      */
-    fun setOnItemClickListener(onItemClickListener: (e: E, position: Int) -> Unit) {
+    fun setOnItemClickListener(onItemClickListener: (e: T, position: Int) -> Unit) {
         mOnItemClickListener = onItemClickListener
     }
 
     /**
      * item长按监听
      */
-    fun setOnItemLongClickListener(onItemLongClickListener: (e: E, position: Int) -> Boolean) {
+    fun setOnItemLongClickListener(onItemLongClickListener: (e: T, position: Int) -> Boolean) {
         mOnItemLongClickListener = onItemLongClickListener
     }
 
@@ -159,8 +159,8 @@ abstract class BaseAdapter<E, VH : RecyclerView.ViewHolder>(
      * 绑定数据
      *
      * @param holder   viewHolder
-     * @param e        item对象
+     * @param item        item对象
      * @param position 索引
      */
-    protected abstract fun onBindData(holder: VH, e: E, position: Int)
+    protected abstract fun onBindItem(holder: VH, item: T, position: Int)
 }

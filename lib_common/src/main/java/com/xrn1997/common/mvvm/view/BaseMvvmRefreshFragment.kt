@@ -1,17 +1,17 @@
 package com.xrn1997.common.mvvm.view
 
-import androidx.databinding.ViewDataBinding
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.scwang.smart.refresh.layout.api.RefreshLayout
-import com.xrn1997.common.databinding.FragmentRootBinding
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel
 
 
 /**
- * 基于MVVM DataBinding的可刷新的Activity基类
+ * 基于MVVM ViewBinding的可刷新的Activity基类
  * @author xrn1997
  */
 @Suppress("unused")
-abstract class BaseMvvmRefreshFragment<V : ViewDataBinding, VM : BaseRefreshViewModel<*, *>> :
+abstract class BaseMvvmRefreshFragment<V : ViewBinding, VM : BaseRefreshViewModel<*, *>> :
     BaseMvvmFragment<V, VM>() {
     protected lateinit var mRefreshLayout: RefreshLayout
 
@@ -20,8 +20,9 @@ abstract class BaseMvvmRefreshFragment<V : ViewDataBinding, VM : BaseRefreshView
 
     @JvmField
     protected var mOnItemLongClickListener: ((e: V, position: Int) -> Boolean)? = null
-    override fun initCommonView(binding: FragmentRootBinding) {
-        super.initCommonView(binding)
+
+    override fun initContentView(root: ViewGroup) {
+        super.initContentView(root)
         initRefreshView()
     }
 
@@ -40,8 +41,46 @@ abstract class BaseMvvmRefreshFragment<V : ViewDataBinding, VM : BaseRefreshView
     }
 
     abstract fun getRefreshLayout(): RefreshLayout
-    fun initRefreshView() {
+
+    /**
+     * 初始化刷新控件
+     */
+    open fun initRefreshView() {
         mRefreshLayout = getRefreshLayout()
+        mRefreshLayout.setOnRefreshListener { onRefresh() }
+        mRefreshLayout.setOnLoadMoreListener { onLoadMore() }
+        mRefreshLayout.setEnableRefresh(enableRefresh())
+        mRefreshLayout.setEnableLoadMore(enableLoadMore())
+    }
+
+    /**
+     * 下拉刷新事件逻辑
+     */
+    open fun onRefresh() {
+        mViewModel.refreshData()
+    }
+
+    /**
+     * 上拉加载事件逻辑
+     */
+    open fun onLoadMore() {
+        mViewModel.loadMore()
+    }
+
+    /**
+     * 是否启用上拉加载
+     * @return Boolean 默认false
+     */
+    open fun enableLoadMore(): Boolean {
+        return false
+    }
+
+    /**
+     * 是否启用下拉刷新
+     * @return Boolean 默认true
+     */
+    open fun enableRefresh(): Boolean {
+        return true
     }
 
     /**
@@ -49,7 +88,7 @@ abstract class BaseMvvmRefreshFragment<V : ViewDataBinding, VM : BaseRefreshView
      * @param success Boolean 数据是否成功刷新 （会影响到上次更新时间的改变）
      * @see RefreshLayout.finishRefresh
      */
-    fun stopRefresh(success: Boolean) {
+    open fun stopRefresh(success: Boolean) {
         mRefreshLayout.finishRefresh(success)
     }
 
@@ -58,7 +97,7 @@ abstract class BaseMvvmRefreshFragment<V : ViewDataBinding, VM : BaseRefreshView
      * @param success Boolean 数据是否成功
      * @see RefreshLayout.finishLoadMore
      */
-    fun stopLoadMore(success: Boolean) {
+    open fun stopLoadMore(success: Boolean) {
         mRefreshLayout.finishLoadMore(success)
     }
 
@@ -66,7 +105,7 @@ abstract class BaseMvvmRefreshFragment<V : ViewDataBinding, VM : BaseRefreshView
      * 显示刷新动画并且触发刷新事件
      * @see RefreshLayout.autoRefresh
      */
-    fun autoLoadData() {
+    open fun autoLoadData() {
         mRefreshLayout.autoRefresh()
     }
 

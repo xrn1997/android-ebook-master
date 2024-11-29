@@ -45,8 +45,8 @@ open class BaseViewModel<M : IBaseModel>(
         private var showNoDataViewEvent: SingleLiveEvent<Boolean>? = null
         private var showNetWorkErrViewEvent: SingleLiveEvent<Boolean>? = null
         private var startActivityEvent: SingleLiveEvent<Map<String, Any>>? = null
-        private var finishActivityEvent: SingleLiveEvent<Void>? = null
-        private var onBackPressedEvent: SingleLiveEvent<Void>? = null
+        private var finishActivityEvent: SingleLiveEvent<Unit>? = null
+        private var onBackPressedEvent: SingleLiveEvent<Unit>? = null
         val mShowLoadingViewEvent
             get() = createLiveData(showLoadingViewEvent).also {
                 showLoadingViewEvent = it
@@ -105,7 +105,6 @@ open class BaseViewModel<M : IBaseModel>(
      * 停止Activity事件
      */
     fun postFinishActivityEvent() {
-        //todo 有问题
         mUIChangeLiveData.mFinishActivityEvent.call()
     }
 

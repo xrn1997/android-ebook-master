@@ -12,10 +12,8 @@ import android.view.ViewStub
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
-import androidx.databinding.DataBindingUtil
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.NetworkUtils
 import com.trello.rxlifecycle4.components.support.RxAppCompatActivity
@@ -28,8 +26,6 @@ import com.xrn1997.common.event.BaseActivityEvent
 import com.xrn1997.common.manager.ActivityManager
 import com.xrn1997.common.mvvm.IBaseView
 import com.xrn1997.common.view.LoadingView
-import com.xrn1997.common.view.NetErrorView
-import com.xrn1997.common.view.NoDataView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -45,9 +41,27 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     private lateinit var mViewStubContent: RelativeLayout
     private var mToolBarTitle: TextView? = null
 
-    protected var mNetErrorView: NetErrorView? = null
-    protected var mNoDataView: NoDataView? = null
-    protected var mLoadingView: LoadingView? = null
+    protected val mNetErrorView by lazy {
+        val view = mViewStubError.inflate()
+        val netErrorView = StubNetErrorBinding.bind(view).root
+        netErrorView.setRefreshBtnClickListener {
+            NetworkUtils.isAvailableAsync {
+                if (it) {
+                    netErrorView.show(false)
+                    initData()
+                }
+            }
+        }
+        netErrorView
+    }
+    protected val mNoDataView by lazy {
+        val view = mViewStubNoData.inflate()
+        StubNoDataBinding.bind(view).root
+    }
+    protected val mLoadingView: LoadingView by lazy {
+        val view: View = mViewStubLoading.inflate()
+        StubLoadingBinding.bind(view).root
+    }
     protected var mToolbar: Toolbar? = null
 
     private lateinit var mViewStubToolbar: ViewStub
@@ -60,7 +74,7 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     /**
      * 该binding仅用于取代findViewById
      */
-    protected open val binding get() = _binding
+    protected val binding get() = _binding
 
     /**
      * 默认toolBarTitle，并且设置完成后，通过setTitle是无法修改的。
@@ -80,15 +94,6 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
         ActivityManager.addActivity(this)
     }
 
-    /**
-     * 注意，这里重写，是为了让[DataBindingUtil.setContentView]起作用
-     * 大坑，不重写就寄。
-     * @param layoutResID Int
-     */
-    final override fun setContentView(@LayoutRes layoutResID: Int) {
-        initContentView(layoutResID)
-    }
-
     private fun initCommonView(binding: ActivityRootBinding) {
         mViewStubToolbar = binding.vsToolbar
         mViewStubContent = binding.rlContent
@@ -102,6 +107,7 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
             initToolbar(view)
         }
         initContentView()
+        initView()
     }
 
     /**
@@ -123,19 +129,10 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
 
     open fun initContentView() {
         _binding = onBindViewBinding(LayoutInflater.from(this), mViewStubContent, false)
-        initView()
         mViewStubContent.id = android.R.id.content
         mContentView.id = View.NO_ID
         mViewStubContent.removeAllViews()
-        mViewStubContent.addView(binding.root)
-    }
-
-    private fun initContentView(@LayoutRes layoutResID: Int) {
-        val view: View = LayoutInflater.from(this).inflate(layoutResID, mViewStubContent, false)
-        mViewStubContent.id = android.R.id.content
-        mContentView.id = View.NO_ID
-        mViewStubContent.removeAllViews()
-        mViewStubContent.addView(view)
+        mViewStubContent.addView(_binding.root)
     }
 
     /**
@@ -180,13 +177,13 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     /**
      * 这个方法返回需要绑定的ViewBinding
      * @param inflater LayoutInflater
-     * @param container ViewGroup? 整合到哪
+     * @param parent ViewGroup? 整合到哪
      * @param attachToParent Boolean  是否整合到Parent上
      * @return V
      */
     abstract fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): V
 
@@ -205,43 +202,22 @@ abstract class BaseActivity<V : ViewBinding> : RxAppCompatActivity(), IBaseView 
     }
 
     override fun showLoadingView(show: Boolean) {
-        if (mLoadingView == null) {
-            val view: View = mViewStubLoading.inflate()
-            mLoadingView = StubLoadingBinding.bind(view).root
-        }
-        mLoadingView?.visibility = if (show) View.VISIBLE else View.GONE
-        mLoadingView?.show(show)
+        mLoadingView.show(show)
     }
 
 
     override fun showNoDataView(show: Boolean, resId: Int?) {
-        if (mNoDataView == null) {
-            val view = mViewStubNoData.inflate()
-            mNoDataView = StubNoDataBinding.bind(view).root
+        resId?.let {
+            mNoDataView.setNoDataView(it)
         }
-        if (resId != null) {
-            mNoDataView?.setNoDataView(resId)
-        }
-        mNoDataView?.show(show)
+        mNoDataView.show(show)
     }
 
     override fun showNetWorkErrView(show: Boolean, resId: Int?) {
-        if (mNetErrorView == null) {
-            val view = mViewStubError.inflate()
-            mNetErrorView = StubNetErrorBinding.bind(view).root
-            mNetErrorView?.setRefreshBtnClickListener {
-                NetworkUtils.isAvailableAsync {
-                    if (it) {
-                        mNetErrorView?.visibility = View.GONE
-                        initData()
-                    }
-                }
-            }
+        resId?.let {
+            mNetErrorView.setNetErrorView(it)
         }
-        if (resId != null) {
-            mNetErrorView?.setNetErrorView(resId)
-        }
-        mNetErrorView?.show(show)
+        mNetErrorView.show(show)
     }
 
     protected fun startActivity(clz: Class<*>?, bundle: Bundle?) {
