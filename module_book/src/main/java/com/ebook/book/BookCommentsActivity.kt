@@ -1,5 +1,7 @@
 package com.ebook.book
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.SPUtils
@@ -14,7 +16,6 @@ import com.ebook.common.view.DeleteDialog.Companion.newInstance
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.therouter.router.Route
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshActivity
-import com.xrn1997.common.util.ObservableListUtil.getListChangedCallback
 
 @Route(path = KeyCode.Book.COMMENT_PATH)
 class BookCommentsActivity :
@@ -33,24 +34,17 @@ class BookCommentsActivity :
         return BookViewModelFactory
     }
 
-    override fun initViewObservable() {
-        mViewModel.getMVoidSingleLiveEvent().observe(this) {
-            mViewModel.comments.set("")
-            hideSoftInput(this@BookCommentsActivity, editText)
-        }
-    }
-
-    override var toolBarTitle: String
-        get() = "本章评论"
-        set(toolBarTitle) {
-            super.toolBarTitle = toolBarTitle
-        }
 
     override fun initView() {
         editText = binding.textInput
-        val mBookCommentsAdapter = BookCommentsAdapter(this, mViewModel.mList)
-        mViewModel.mList.addOnListChangedCallback(getListChangedCallback(mBookCommentsAdapter))
+        val mBookCommentsAdapter = BookCommentsAdapter(this)
+        mViewModel.mList.observe(this) {
+            mBookCommentsAdapter.submitList(it)
+        }
         binding.viewBookComments.adapter = mBookCommentsAdapter
+        mViewModel.getMVoidSingleLiveEvent().observe(this) {
+            hideSoftInput(this@BookCommentsActivity, editText)
+        }
         mBookCommentsAdapter.setOnItemLongClickListener { comment: Comment, _: Int ->
             val username = SPUtils.getInstance().getString(KeyCode.Login.SP_USERNAME)
             if (comment.user.username == username) {
@@ -61,6 +55,10 @@ class BookCommentsActivity :
                 deleteDialog.show(supportFragmentManager, "deleteDialog")
             }
             true
+        }
+        binding.btnAddComment.setOnClickListener {
+            val comments = binding.textInput.text.toString()
+            mViewModel.addComment(comments)
         }
     }
 
@@ -77,11 +75,15 @@ class BookCommentsActivity :
         }
     }
 
-    override fun onBindVariableId(): Int {
-        return BR.viewModel
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityBookCommentsBinding {
+        return ActivityBookCommentsBinding.inflate(inflater, parent, attachToParent)
     }
 
-    override fun onBindLayout(): Int {
-        return R.layout.activity_book_comments
+    override fun enableLoadMore(): Boolean {
+        return false
     }
 }

@@ -2,6 +2,8 @@ package com.ebook.book.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.lifecycle.ViewModelProvider
 import com.ebook.basebook.base.manager.BitIntentDataManager
@@ -11,8 +13,6 @@ import com.ebook.basebook.mvp.view.impl.BookDetailActivity
 import com.ebook.basebook.mvp.view.impl.ImportBookActivity
 import com.ebook.basebook.mvp.view.impl.ReadBookActivity
 import com.ebook.basebook.view.popupwindow.DownloadListPop
-import com.ebook.book.BR
-import com.ebook.book.R
 import com.ebook.book.adapter.BookListAdapter
 import com.ebook.book.databinding.FragmentBookMainBinding
 import com.ebook.book.mvvm.factory.BookViewModelFactory
@@ -27,7 +27,6 @@ import com.hwangjr.rxbus.annotation.Tag
 import com.hwangjr.rxbus.thread.EventThread
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshFragment
-import com.xrn1997.common.util.ObservableListUtil.getListChangedCallback
 import java.util.Timer
 import java.util.TimerTask
 
@@ -50,23 +49,14 @@ class MainBookFragment :
         return BookViewModelFactory
     }
 
-    override fun initViewObservable() {
-    }
-
-    override fun onBindVariableId(): Int {
-        return BR.viewModel
-    }
-
-    override fun onBindLayout(): Int {
-        return R.layout.fragment_book_main
-    }
-
     override fun initView() {
         downloadListPop = DownloadListPop(mActivity)
         val ibAdd = binding.ibAdd
         ibDownload = binding.ibDownload
-        val mBookListAdapter = BookListAdapter(mActivity, mViewModel.mList)
-        mViewModel.mList.addOnListChangedCallback(getListChangedCallback(mBookListAdapter))
+        val mBookListAdapter = BookListAdapter(mActivity)
+        mViewModel.mList.observe(this) {
+            mBookListAdapter.submitList(it)
+        }
         binding.recview.adapter = mBookListAdapter
         ibDownload.setOnClickListener {
             downloadListPop.showAsDropDown(
@@ -105,6 +95,18 @@ class MainBookFragment :
 
     override fun initData() {
         mViewModel.refreshData()
+    }
+
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentBookMainBinding {
+        return FragmentBookMainBinding.inflate(inflater, parent, attachToParent)
+    }
+
+    override fun enableLoadMore(): Boolean {
+        return false
     }
 
     override fun getRefreshLayout(): RefreshLayout {

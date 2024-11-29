@@ -2,7 +2,6 @@ package com.ebook.book.mvvm.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.SPUtils
 import com.blankj.utilcode.util.StringUtils
 import com.ebook.api.dto.RespDTO
@@ -21,8 +20,6 @@ import io.reactivex.rxjava3.disposables.Disposable
 
 class BookCommentsViewModel(application: Application, model: BookCommentsModel) :
     BaseRefreshViewModel<Comment, BookCommentsModel>(application, model) {
-    @JvmField
-    val comments: MutableLiveData<String> = MutableLiveData()
 
     @JvmField
     var comment: Comment = Comment()
@@ -40,8 +37,7 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
                             val sortedComments = data.sortedByDescending {
                                 DateUtil.parseTime(it.addTime, DateUtil.FormatType.yyyyMMddHHmm)
                             }
-                            mList.clear()
-                            mList.addAll(sortedComments)
+                            mList.value = sortedComments
                         }
                         postStopRefreshEvent(true)
                     } else {
@@ -59,9 +55,7 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
             })
     }
 
-    override fun enableLoadMore(): Boolean {
-        return false
-    }
+
 
     override fun loadMore() {
     }
@@ -69,12 +63,12 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
     /**
      * 添加评论
      */
-    fun addComment() {
-        if (!StringUtils.isEmpty(comments.get())) {
+    fun addComment(comments: String) {
+        if (!StringUtils.isEmpty(comments)) {
             val user = User()
             user.id = SPUtils.getInstance().getLong(KeyCode.Login.SP_USER_ID)
             comment.user = user
-            comment.comment = comments.get()
+            comment.comment = comments
             mModel.addComment(comment).subscribe(object : Observer<RespDTO<Comment>> {
                 override fun onSubscribe(d: Disposable) {
                 }

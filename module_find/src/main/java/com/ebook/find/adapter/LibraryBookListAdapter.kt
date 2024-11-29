@@ -5,10 +5,10 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import com.blankj.utilcode.util.ActivityUtils
 import com.ebook.basebook.mvp.presenter.impl.BookDetailPresenterImpl
 import com.ebook.basebook.mvp.view.impl.BookDetailActivity
+import com.ebook.common.callback.LibraryKindBookListDifferCallback
 import com.ebook.db.entity.LibraryKindBookList
 import com.ebook.db.entity.SearchBook
 import com.ebook.find.databinding.ViewLibraryKindbookBinding
@@ -54,19 +54,4 @@ class LibraryBookListAdapter(context: Context) :
         return ViewLibraryKindbookBinding.inflate(inflater, parent, attachToParent)
     }
 
-    class LibraryKindBookListDifferCallback : DiffUtil.ItemCallback<LibraryKindBookList>() {
-        override fun areItemsTheSame(
-            oldItem: LibraryKindBookList,
-            newItem: LibraryKindBookList
-        ): Boolean {
-            return oldItem.kindUrl == newItem.kindUrl
-        }
-
-        override fun areContentsTheSame(
-            oldItem: LibraryKindBookList,
-            newItem: LibraryKindBookList
-        ): Boolean {
-            return oldItem == newItem
-        }
-    }
 }

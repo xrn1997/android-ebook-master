@@ -3,9 +3,9 @@ package com.ebook.find.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ebook.common.callback.SearchBookDifferCallback
 import com.ebook.db.entity.BookShelf
 import com.ebook.db.entity.SearchBook
 import com.ebook.find.databinding.AdapterLibraryKindbookBinding
@@ -44,16 +44,5 @@ class LibraryBookAdapter(context: Context) :
         viewType: Int
     ): AdapterLibraryKindbookBinding {
         return AdapterLibraryKindbookBinding.inflate(inflater, parent, attachToParent)
-    }
-
-    class SearchBookDifferCallback : DiffUtil.ItemCallback<SearchBook>() {
-        override fun areItemsTheSame(oldItem: SearchBook, newItem: SearchBook): Boolean {
-            return oldItem.noteUrl == newItem.noteUrl
-        }
-
-        override fun areContentsTheSame(oldItem: SearchBook, newItem: SearchBook): Boolean {
-            return oldItem == newItem
-        }
-
     }
 }

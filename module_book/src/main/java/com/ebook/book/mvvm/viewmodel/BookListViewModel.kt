@@ -12,9 +12,8 @@ class BookListViewModel(application: Application, model: BookListModel) :
         mModel.getBookShelfList().subscribe(object : SimpleObserver<List<BookShelf>>() {
 
             override fun onNext(value: List<BookShelf>) {
-                mList.clear()
                 if (value.isNotEmpty()) {
-                    mList.addAll(value)
+                    mList.value = value
                 }
                 postStopRefreshEvent(true)
             }
@@ -29,7 +28,5 @@ class BookListViewModel(application: Application, model: BookListModel) :
     override fun loadMore() {
     }
 
-    override fun enableLoadMore(): Boolean {
-        return false
-    }
+
 }

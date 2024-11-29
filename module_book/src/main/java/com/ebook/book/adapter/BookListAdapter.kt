@@ -3,15 +3,33 @@ package com.ebook.book.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ebook.book.R
 import com.ebook.book.databinding.AdapterBookListItemBinding
+import com.ebook.common.callback.BookShelfDifferCallback
 import com.ebook.db.entity.BookShelf
 import com.xrn1997.common.adapter.BaseBindAdapter
 
 class BookListAdapter(context: Context) :
-    BaseBindAdapter<BookShelf, AdapterBookListItemBinding>(context) {
+    BaseBindAdapter<BookShelf, AdapterBookListItemBinding>(context, BookShelfDifferCallback()) {
 
     override fun onBindItem(binding: AdapterBookListItemBinding, item: BookShelf, position: Int) {
-        binding.bookshelf = item
+        Glide.with(context)
+            .load(item.bookInfo.target.coverUrl)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .dontAnimate()
+            .placeholder(com.ebook.basebook.R.drawable.img_cover_default)
+            .error(com.ebook.basebook.R.drawable.img_cover_default)
+            .fallback(com.ebook.basebook.R.drawable.img_cover_default)
+            .fitCenter()
+            .into(binding.ivCover)
+        binding.txtBookName.text = item.bookInfo.target.name
+        binding.txtBookAuthor.text = item.bookInfo.target.author
+        binding.txtBookStatus.text = String.format(
+            context.resources.getString(R.string.read_to) +
+                    item.bookInfo.target.chapterList[item.durChapter].durChapterName
+        )
         binding.viewBookDetail.setOnClickListener {
             mOnItemClickListener?.invoke(item, position)
         }

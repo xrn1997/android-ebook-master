@@ -41,6 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".BookCommentsActivity"
+            android:label="本章评论"
+            android:theme="@style/ToolbarTheme.BackBar" />
         <service android:name=".service.DownloadService" />
     </application>
 </manifest>

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xrn1997.android.component)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
 }
 android {
@@ -27,13 +26,8 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
         viewBinding = true
-        compose = true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
