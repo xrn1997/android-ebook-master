@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import androidx.databinding.ObservableField
 import com.blankj.utilcode.util.SPUtils
 import com.ebook.api.dto.RespDTO
 import com.ebook.common.event.KeyCode
@@ -23,32 +22,24 @@ import io.reactivex.rxjava3.disposables.Disposable
 
 class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
     BaseViewModel<ModifyPwdModel>(application, model) {
+    /**
+     * 当前该变量仅修改密码使用，注册不用。
+     */
     @JvmField
-    val username: ObservableField<String> = ObservableField()
-
-    @JvmField
-    val verifyCode: ObservableField<String> = ObservableField()
-
-    @JvmField
-    val firstPwd: ObservableField<String> = ObservableField()
-
-    @JvmField
-    val secondPwd: ObservableField<String> = ObservableField()
-
+    var username: String? = null
     @JvmField
     var mVerifyCode: String? = null // 验证码
     private lateinit var mVoidSingleLiveEvent: SingleLiveEvent<Unit>
 
-
-    fun verify() {
-        if (TextUtils.isEmpty(username.get())) { //用户名为空
+    fun verify(username: String, verifyCode: String) {
+        if (TextUtils.isEmpty(username)) { //用户名为空
             showShort(getApplication<Application>().applicationContext, "手机号不能为空")
             return
-        } else if (TextUtils.getTrimmedLength(username.get()) < 11) { // 手机号码不足11位
+        } else if (TextUtils.getTrimmedLength(username) < 11) { // 手机号码不足11位
             showShort(getApplication<Application>().applicationContext, "请输入正确的手机号")
             return
         }
-        if (!TextUtils.equals(verifyCode.get(), mVerifyCode)) {
+        if (!TextUtils.equals(verifyCode, mVerifyCode)) {
             showShort(getApplication<Application>().applicationContext, "请输入正确的验证码")
             return
         }
@@ -58,28 +49,27 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
 
     private fun toFgtPwdActivity() {
         val bundle = Bundle()
-        bundle.putString("username", username.get())
-        Log.e(TAG, "toFgtPwdActivity: username:" + username.get())
+        bundle.putString("username", username)
+        Log.e(TAG, "toFgtPwdActivity: username:$username")
         postStartActivityEvent(ModifyPwdActivity::class.java, bundle)
     }
 
-    fun modify() {
-        if (TextUtils.isEmpty(firstPwd.get()) || TextUtils.isEmpty((secondPwd.get()))) {
+    fun modify(firstPwd: String, secondPwd: String) {
+        if (firstPwd.isEmpty() || secondPwd.isEmpty()) {
             showShort(getApplication<Application>().applicationContext, "密码未填写完整")
             return
         }
-        if (!TextUtils.equals(firstPwd.get(), secondPwd.get())) { //两次密码不一致
+        if (firstPwd != secondPwd) { //两次密码不一致
             showShort(getApplication<Application>().applicationContext, "两次密码不一致")
             return
         }
-        Log.d(TAG, "modify: username: ${username.get()},password: ${firstPwd.get()}")
-        val username = username.get()
-        val password = firstPwd.get()
-        if (username == null || password == null) {
-            Log.e(TAG, "modify: 用户名或密码为null")
+        Log.d(TAG, "modify: username: ${username},password: $firstPwd")
+        val username = this.username
+        if (username == null) {
+            Log.e(TAG, "modify: 用户名为null")
             return
         }
-        mModel.modifyPwd(username, password)
+        mModel.modifyPwd(username, firstPwd)
             .subscribe(object : Observer<RespDTO<Int>> {
                 override fun onSubscribe(d: Disposable) {
                 }
@@ -92,7 +82,7 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
                         RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME)
                         val bundle = Bundle()
                         bundle.putString("username", username)
-                        bundle.putString("password", password)
+                        bundle.putString("password", firstPwd)
                         build(KeyCode.Login.LOGIN_PATH)
                             .with(bundle)
                             .navigation()

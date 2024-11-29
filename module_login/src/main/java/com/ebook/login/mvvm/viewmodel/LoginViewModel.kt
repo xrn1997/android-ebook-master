@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import androidx.databinding.ObservableField
 import com.blankj.utilcode.util.SPUtils
 import com.ebook.api.dto.RespDTO
 import com.ebook.api.entity.LoginDTO
@@ -23,19 +22,10 @@ import io.reactivex.rxjava3.disposables.Disposable
 
 class LoginViewModel(application: Application, model: LoginModel) :
     BaseViewModel<LoginModel>(application, model) {
-    @JvmField
-    val username: ObservableField<String> = ObservableField()
-
-    @JvmField
-    val password: ObservableField<String> = ObservableField()
     var path: String? = null //被拦截的路径
     var bundle: Bundle? = null //被拦截的信息
 
-    @JvmOverloads
-    fun login(username: String? = this.username.get(), password: String? = this.password.get()) {
-        if (username == null || password == null) {
-            return
-        }
+    fun login(username: String, password: String) {
         if (TextUtils.isEmpty(username)) { //用户名为空
             showShort(getApplication<Application>().applicationContext, "用户名不能为空")
             //  Log.d(TAG, "login: " + username);

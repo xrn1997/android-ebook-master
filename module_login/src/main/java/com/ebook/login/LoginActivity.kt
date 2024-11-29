@@ -3,8 +3,8 @@ package com.ebook.login
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.View
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.ebook.common.event.KeyCode
 import com.ebook.login.databinding.ActivityLoginBinding
@@ -32,9 +32,6 @@ class LoginActivity : BaseMvvmActivity<ActivityLoginBinding, LoginViewModel>() {
         RxBus.get().unregister(this)
     }
 
-    override fun onBindLayout(): Int {
-        return R.layout.activity_login
-    }
 
     override fun onBindViewModel(): Class<LoginViewModel> {
         return LoginViewModel::class.java
@@ -42,10 +39,6 @@ class LoginActivity : BaseMvvmActivity<ActivityLoginBinding, LoginViewModel>() {
 
     override fun onBindViewModelFactory(): ViewModelProvider.Factory {
         return LoginViewModelFactory
-    }
-
-    override fun onBindVariableId(): Int {
-        return BR.viewModel
     }
 
     /**
@@ -60,25 +53,36 @@ class LoginActivity : BaseMvvmActivity<ActivityLoginBinding, LoginViewModel>() {
     }
 
     override fun initView() {
-        val mTvRegister = findViewById<View>(R.id.id_tv_register) as TextView
-        val mTvForgetPwd = findViewById<View>(R.id.id_tv_fgt_pwd) as TextView
-        mTvRegister.setOnClickListener { toRegisterActivity() }
-        mTvForgetPwd.setOnClickListener { toForgetPwdActivity() }
+        binding.idTvRegister.setOnClickListener { toRegisterActivity() }
+        binding.idTvFgtPwd.setOnClickListener { toForgetPwdActivity() }
+        binding.idBtnLogin.setOnClickListener {
+            val username = binding.idEtUsername.text.toString()
+            val password = binding.idEtPassword.text.toString()
+            mViewModel.login(username, password)
+        }
     }
 
     override fun initData() {}
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityLoginBinding {
+        return ActivityLoginBinding.inflate(inflater, parent, attachToParent)
+    }
+
     override fun onStart() {
         super.onStart()
         val bundle = this.intent.extras
-        var username: String? = ""
-        var password: String? = ""
+        var username: String? = null
+        var password: String? = null
         if (bundle != null && !bundle.isEmpty) {
             username = bundle.getString("username")
             password = bundle.getString("password")
         }
-        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-            mViewModel.username.set(username)
-            mViewModel.password.set(password)
+        if (username.isNullOrEmpty() && password.isNullOrEmpty()) {
+            binding.idEtUsername.setText(username)
+            binding.idEtPassword.setText(password)
         }
         if (!TextUtils.isEmpty(path) && mBundle == null) {
             mViewModel.path = path
@@ -104,5 +108,4 @@ class LoginActivity : BaseMvvmActivity<ActivityLoginBinding, LoginViewModel>() {
         startActivity(intent)
     }
 
-    override fun initViewObservable() {}
 }
