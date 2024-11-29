@@ -13,12 +13,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingAdapter
-import androidx.databinding.InverseBindingListener
 import com.ebook.common.R
 import com.ebook.common.databinding.ViewSettingBarBinding
-import com.xrn1997.common.adapter.binding.BindingCommand
 
 @Suppress("unused")
 class SettingBarView(context: Context, attrs: AttributeSet?) :
@@ -129,36 +125,5 @@ class SettingBarView(context: Context, attrs: AttributeSet?) :
 
     companion object {
         private val TAG: String = SettingBarView::class.java.simpleName
-
-        @BindingAdapter(value = ["content"], requireAll = false)
-        fun setContent(view: SettingBarView, value: String) {
-            if (!TextUtils.isEmpty(view.content) && view.content == value) {
-                return
-            }
-            if (!TextUtils.isEmpty(value)) {
-                view.txtSetContent.setText(value)
-            }
-        }
-
-        @InverseBindingAdapter(attribute = "content", event = "contentAttrChanged")
-        fun getContent(view: SettingBarView): String {
-            return view.content
-        }
-
-        @BindingAdapter(value = ["contentAttrChanged"], requireAll = false)
-        fun setDisplayAttrChanged(
-            view: SettingBarView,
-            inverseBindingListener: InverseBindingListener?
-        ) {
-            Log.d(TAG, "setDisplayAttrChanged")
-            view.setViewChangeListener { inverseBindingListener?.onChange() }
-        }
-
-        @BindingAdapter(value = ["onClickSettingBarView"], requireAll = false)
-        fun onClickSettingBarView(view: SettingBarView, bindingCommand: BindingCommand?) {
-            view.layoutSettingBar.setOnClickListener {
-                bindingCommand?.execute()
-            }
-        }
     }
 }

@@ -26,8 +26,7 @@ class CommentViewModel(application: Application, model: CommentModel) :
                         val sortedComments = data.sortedByDescending {
                             DateUtil.parseTime(it.addTime, DateUtil.FormatType.yyyyMMddHHmm)
                         }
-                        mList.clear()
-                        mList.addAll(sortedComments)
+                        mList.value = sortedComments
                     }
                 } else {
                     Log.e(TAG, "error: ${listRespDTO.error}")
@@ -45,10 +44,6 @@ class CommentViewModel(application: Application, model: CommentModel) :
     }
 
     override fun loadMore() {
-    }
-
-    override fun enableLoadMore(): Boolean {
-        return false
     }
 
     fun deleteComment(id: Long) {

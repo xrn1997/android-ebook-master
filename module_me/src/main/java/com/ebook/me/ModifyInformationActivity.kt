@@ -2,6 +2,8 @@ package com.ebook.me
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.SPUtils
@@ -40,24 +42,6 @@ class ModifyInformationActivity :
         RxBus.get().unregister(this)
     }
 
-    override fun onBindLayout(): Int {
-        return R.layout.activity_modify_information
-    }
-
-    override fun onBindViewModel(): Class<ModifyViewModel> {
-        return ModifyViewModel::class.java
-    }
-
-    override fun onBindViewModelFactory(): ViewModelProvider.Factory {
-        return MeViewModelFactory
-    }
-
-    override fun initViewObservable() {
-    }
-
-    override fun onBindVariableId(): Int {
-        return BR.viewModel
-    }
 
     override fun initView() {
         imageView = binding.viewProfilePhoto
@@ -72,7 +56,7 @@ class ModifyInformationActivity :
                     ModifyNicknameActivity::class.java
                 )
             )
-            }
+        }
     }
 
     override fun initData() {
@@ -116,6 +100,22 @@ class ModifyInformationActivity :
                 )
             )
             .into(imageView)
+    }
+
+    override fun onBindViewModel(): Class<ModifyViewModel> {
+        return ModifyViewModel::class.java
+    }
+
+    override fun onBindViewModelFactory(): ViewModelProvider.Factory {
+        return MeViewModelFactory
+    }
+
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityModifyInformationBinding {
+        return ActivityModifyInformationBinding.inflate(inflater, parent, attachToParent)
     }
 
     companion object {

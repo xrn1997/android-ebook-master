@@ -90,10 +90,10 @@ class ClipImageActivity : BaseActivity<ActivityClipImageBinding>() {
 
     override fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): ActivityClipImageBinding {
-        return ActivityClipImageBinding.inflate(inflater, container, attachToParent)
+        return ActivityClipImageBinding.inflate(inflater, parent, attachToParent)
     }
 
     companion object {

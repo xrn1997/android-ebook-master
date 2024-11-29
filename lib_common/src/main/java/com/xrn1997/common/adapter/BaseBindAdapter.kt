@@ -17,8 +17,8 @@ import androidx.viewbinding.ViewBinding
 abstract class BaseBindAdapter<T, V : ViewBinding>(
     @JvmField
     protected var context: Context,
-    diffCallBack: DiffUtil.ItemCallback<T>
-) : ListAdapter<T, BaseBindAdapter.BaseBindingViewHolder<V>>(diffCallBack) {
+    diffCallback: DiffUtil.ItemCallback<T>
+) : ListAdapter<T, BaseBindAdapter.BaseBindingViewHolder<V>>(diffCallback) {
 
     @JvmField
     protected var mOnItemClickListener: ((e: T, position: Int) -> Unit)? = null

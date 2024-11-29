@@ -2,7 +2,6 @@ package com.ebook.me.mvvm.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.databinding.ObservableField
 import com.blankj.utilcode.util.SPUtils
 import com.ebook.api.dto.RespDTO
 import com.ebook.common.event.KeyCode
@@ -16,19 +15,15 @@ import com.xrn1997.common.util.ToastUtil.showShort
 
 class ModifyViewModel(application: Application, model: ModifyModel) :
     BaseViewModel<ModifyModel>(application, model) {
-    @JvmField
-    var nickname: ObservableField<String> = ObservableField()
-
     /**
      * 修改昵称
      */
-    fun modifyNickname() {
-        val name = nickname.get() ?: return
+    fun modifyNickname(name:String) {
         mModel.modifyNickname(name).subscribe(object : SimpleObserver<RespDTO<Int>>() {
             override fun onNext(integerRespDTO: RespDTO<Int>) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     showShort(getApplication<Application>().applicationContext, "修改成功")
-                    SPUtils.getInstance().put(KeyCode.Login.SP_NICKNAME, nickname.get())
+                    SPUtils.getInstance().put(KeyCode.Login.SP_NICKNAME, name)
                     RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME, Any())
                     postFinishActivityEvent()
                 } else {

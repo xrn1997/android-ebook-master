@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xrn1997.android.library)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
 }
 
@@ -10,7 +9,6 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
     buildFeatures {
-        dataBinding = true
         viewBinding = true
         compose = true
     }

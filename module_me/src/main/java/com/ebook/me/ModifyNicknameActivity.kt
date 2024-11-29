@@ -1,13 +1,24 @@
 package com.ebook.me
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.ebook.me.databinding.ActivityModifyNicknameBinding
 import com.ebook.me.mvvm.factory.MeViewModelFactory
 import com.ebook.me.mvvm.viewmodel.ModifyViewModel
 import com.xrn1997.common.mvvm.view.BaseMvvmActivity
 
-class ModifyNicknameActivity :
-    BaseMvvmActivity<ActivityModifyNicknameBinding, ModifyViewModel>() {
+class ModifyNicknameActivity : BaseMvvmActivity<ActivityModifyNicknameBinding, ModifyViewModel>() {
+
+    override fun initView() {
+        binding.idBtnRegister.setOnClickListener {
+            mViewModel.modifyNickname(binding.idEtReg1stPwd.text.toString())
+        }
+    }
+
+    override fun initData() {
+    }
+
     override fun onBindViewModel(): Class<ModifyViewModel> {
         return ModifyViewModel::class.java
     }
@@ -16,20 +27,11 @@ class ModifyNicknameActivity :
         return MeViewModelFactory
     }
 
-    override fun initViewObservable() {
-    }
-
-    override fun onBindVariableId(): Int {
-        return BR.viewModel
-    }
-
-    override fun onBindLayout(): Int {
-        return R.layout.activity_modify_nickname
-    }
-
-    override fun initView() {
-    }
-
-    override fun initData() {
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityModifyNicknameBinding {
+        return ActivityModifyNicknameBinding.inflate(inflater, parent, attachToParent)
     }
 }

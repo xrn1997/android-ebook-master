@@ -15,6 +15,9 @@ class MeApplication : BaseApplication() {
                 if (path == KeyCode.Login.LOGIN_PATH) {
                     return KeyCode.Me.TEST_LOGIN_PATH
                 }
+                if (path == KeyCode.Login.MODIFY_PATH) {
+                    return KeyCode.Me.TEST_LOGIN_PATH
+                }
                 return path
             }
         })

@@ -16,7 +16,6 @@ import com.ebook.find.mvvm.factory.FindViewModelFactory
 import com.ebook.find.mvvm.viewmodel.LibraryViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshFragment
-import com.xrn1997.common.util.ObservableListUtil.getListChangedCallback
 
 class MainFindFragment :
     BaseMvvmRefreshFragment<FragmentFindMainBinding, LibraryViewModel>() {

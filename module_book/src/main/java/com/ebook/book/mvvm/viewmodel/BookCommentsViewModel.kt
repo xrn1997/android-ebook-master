@@ -2,7 +2,7 @@ package com.ebook.book.mvvm.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.SPUtils
 import com.blankj.utilcode.util.StringUtils
 import com.ebook.api.dto.RespDTO
@@ -22,7 +22,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 class BookCommentsViewModel(application: Application, model: BookCommentsModel) :
     BaseRefreshViewModel<Comment, BookCommentsModel>(application, model) {
     @JvmField
-    val comments: ObservableField<String> = ObservableField()
+    val comments: MutableLiveData<String> = MutableLiveData()
 
     @JvmField
     var comment: Comment = Comment()

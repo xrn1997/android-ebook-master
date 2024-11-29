@@ -1,6 +1,8 @@
 package com.ebook.me
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.ebook.api.entity.Comment
 import com.ebook.common.event.KeyCode
@@ -13,36 +15,17 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.therouter.TheRouter.build
 import com.therouter.router.Route
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshActivity
-import com.xrn1997.common.util.ObservableListUtil.getListChangedCallback
 
 
 @Route(path = KeyCode.Me.COMMENT_PATH, params = ["needLogin", "true"])
-class MyCommentActivity :
-    BaseMvvmRefreshActivity<ActivityCommentBinding, CommentViewModel>() {
-    override fun onBindLayout(): Int {
-        return R.layout.activity_comment
-    }
-
-    override fun onBindViewModel(): Class<CommentViewModel> {
-        return CommentViewModel::class.java
-    }
-
-    override fun onBindViewModelFactory(): ViewModelProvider.Factory {
-        return MeViewModelFactory
-    }
-
-    override fun initViewObservable() {
-    }
-
-    override fun onBindVariableId(): Int {
-        return BR.viewModel
-    }
-
+class MyCommentActivity : BaseMvvmRefreshActivity<ActivityCommentBinding, CommentViewModel>() {
     override fun initView() {
-        val mCommentListAdapter = CommentListAdapter(this, mViewModel.mList)
-        mViewModel.mList.addOnListChangedCallback(getListChangedCallback(mCommentListAdapter))
+        val mCommentListAdapter = CommentListAdapter(this)
+        mViewModel.mList.observe(this) {
+            mCommentListAdapter.submitList(it)
+        }
         binding.viewMyCommentList.adapter = mCommentListAdapter
-        mCommentListAdapter.setOnItemClickListener { comment: Comment, position: Int ->
+        mCommentListAdapter.setOnItemClickListener { comment: Comment, _: Int ->
             val bundle = Bundle()
             bundle.putString("chapterUrl", comment.chapterUrl)
             bundle.putString("chapterName", comment.chapterName)
@@ -51,7 +34,7 @@ class MyCommentActivity :
                 .with(bundle)
                 .navigation(this@MyCommentActivity)
         }
-        mCommentListAdapter.setOnItemLongClickListener { comment: Comment, position: Int ->
+        mCommentListAdapter.setOnItemLongClickListener { comment: Comment, _: Int ->
             val deleteDialog = newInstance()
             deleteDialog.setOnClickListener { mViewModel.deleteComment(comment.id) }
             deleteDialog.show(supportFragmentManager, "deleteDialog")
@@ -62,9 +45,27 @@ class MyCommentActivity :
     override fun enableToolbar(): Boolean {
         return true
     }
+    override fun enableLoadMore(): Boolean {
+        return false
+    }
 
     override fun initData() {
         mViewModel.refreshData()
+    }
+    override fun onBindViewModel(): Class<CommentViewModel> {
+        return CommentViewModel::class.java
+    }
+
+    override fun onBindViewModelFactory(): ViewModelProvider.Factory {
+        return MeViewModelFactory
+    }
+
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityCommentBinding {
+        return ActivityCommentBinding.inflate(inflater, parent, attachToParent)
     }
 
     override fun getRefreshLayout(): RefreshLayout {
