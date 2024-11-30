@@ -9,6 +9,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.ebook.basebook.base.activity.BaseActivity;
@@ -55,6 +59,16 @@ public class ChoiceBookActivity extends BaseActivity<IChoiceBookPresenter> imple
 
     @Override
     protected void bindView() {
+        //状态栏兼容
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.book_choice_layout), new OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                var stateBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+                v.setPadding(stateBars.left, stateBars.top, stateBars.right, stateBars.bottom);
+                return insets;
+            }
+        });
         ivReturn = findViewById(R.id.iv_return);
         TextView tvTitle = findViewById(R.id.tv_title);
         tvTitle.setText(mPresenter.getTitle());
