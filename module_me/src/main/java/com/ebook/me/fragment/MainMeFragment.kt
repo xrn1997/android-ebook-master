@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.SPUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.ebook.api.config.API
 import com.ebook.common.event.KeyCode
 import com.ebook.common.event.RxBusTag
 import com.ebook.common.view.profilePhoto.CircleImageView
@@ -55,7 +54,7 @@ class MainMeFragment : BaseFragment<FragmentMeMainBinding>() {
     @Subscribe(thread = EventThread.MAIN_THREAD, tags = [Tag(RxBusTag.MODIFY_PROFILE_PICTURE)])
     fun setProfilePicture(path: String) {
         Glide.with(mActivity)
-            .load(API.URL_HOST_USER + "user/image/" + path)
+            .load(path)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .fitCenter()
             .dontAnimate()

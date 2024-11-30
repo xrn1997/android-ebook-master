@@ -13,10 +13,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.ebook.common.databinding.FragmentPhotoSelectBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.xrn1997.common.util.FileUtil
+import java.io.File
 
 class PhotoCutDialog : BottomSheetDialogFragment() {
     private var mOnClickListener: ((uri: Uri) -> Unit)? = null
-    private lateinit var mPhotoUri: Uri
+    private lateinit var mPhotoFile: File
 
     // 注册用于接收 activity 结果的启动器
     private lateinit var selectLauncher: ActivityResultLauncher<PickVisualMediaRequest>
@@ -24,8 +25,7 @@ class PhotoCutDialog : BottomSheetDialogFragment() {
     private lateinit var cropPhotoLauncher: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //todo,未来这个Uri应该作为参数传入
-        mPhotoUri = FileUtil.getPrivateFile(requireContext(), "profile.jpeg")
+        mPhotoFile = FileUtil.getPrivateFile(requireContext(), "profile.jpeg")
         selectLauncher =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
@@ -36,7 +36,7 @@ class PhotoCutDialog : BottomSheetDialogFragment() {
         takePhotoLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
-                    gotoClipActivity(mPhotoUri)
+                    gotoClipActivity(Uri.fromFile(mPhotoFile))
                 }
             }
 
@@ -65,7 +65,7 @@ class PhotoCutDialog : BottomSheetDialogFragment() {
             selectLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.btnTakePhoto.setOnClickListener {
-            takePhotoLauncher.launch(mPhotoUri)
+            takePhotoLauncher.launch(FileUtil.getUri(requireContext(), mPhotoFile))
         }
         binding.btnCancel.setOnClickListener { dismiss() }
         return binding.root

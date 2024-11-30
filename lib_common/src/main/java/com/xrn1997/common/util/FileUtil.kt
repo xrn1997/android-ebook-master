@@ -44,7 +44,7 @@ object FileUtil {
 
     /**
      * 根据文件路径获得文件数据
-     * @param path String
+     * @param path String 文件路径
      * @return ByteArray?
      */
     @JvmStatic
@@ -82,6 +82,7 @@ object FileUtil {
     /**
      * 根据Uri返回文件绝对路径
      * 兼容了file:///开头的 和 content://开头的情况
+     * 对于content的情况，仅支持外部共享目录
      * @param context Context
      * @param uri Uri
      * @return String?
@@ -108,20 +109,12 @@ object FileUtil {
                         filePath = cursor.getString(columnIndex)
                     }
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                        inputStream.bufferedReader().use { reader ->
-                            //todo android10以上的真实路径很难搞，需要另谋出路
-                        }
-                    }
-                } else {
-                    // 如果第一次查询没有结果，尝试查询非媒体类型的 Uri
-                    if (filePath.isNullOrEmpty()) {
-                        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-                            if (cursor.moveToFirst()) {
-                                val columnIndex = cursor.getColumnIndexOrThrow("_data")
-                                filePath = cursor.getString(columnIndex)
-                            }
+                // 如果第一次查询没有结果，尝试查询非媒体类型的 Uri
+                if (filePath.isNullOrEmpty()) {
+                    context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            val columnIndex = cursor.getColumnIndexOrThrow("_data")
+                            filePath = cursor.getString(columnIndex)
                         }
                     }
                 }
@@ -132,7 +125,7 @@ object FileUtil {
     }
 
     /**
-     * 检查文件夹是否存在
+     * 检查文件夹是否存在，注意权限
      * @param dirPath String
      * @return String
      */
@@ -146,7 +139,7 @@ object FileUtil {
     }
 
     /**
-     * 删除单个文件
+     * 删除单个文件，注意权限
      * @param filePath 被删除文件的文件名
      * @return 文件删除成功返回true,否则返回false
      */
@@ -159,7 +152,7 @@ object FileUtil {
     }
 
     /**
-     * 删除文件夹以及目录下的文件
+     * 删除文件夹以及目录下的文件，注意权限
      * @param filePath 被删除目录的文件路径
      * @return 目录删除成功返回true,否则返回false
      */
@@ -270,7 +263,7 @@ object FileUtil {
     }
 
     /**
-     * 获得图片文件的Uri
+     * 获得图片文件的Uri，共享Picture目录下
      * @param context Context
      * @param displayName String
      * @param directory String?
@@ -293,7 +286,7 @@ object FileUtil {
     }
 
     /**
-     * 获得视频文件的Uri
+     * 获得视频文件的Uri，共享Movie目录下
      * @param context Context
      * @param displayName String
      * @param directory String?
@@ -316,7 +309,7 @@ object FileUtil {
     }
 
     /**
-     * 获得音频文件的Uri
+     * 获得音频文件的Uri，共享Music目录下
      * @param context Context
      * @param displayName String
      * @param directory String?
@@ -345,7 +338,7 @@ object FileUtil {
         context: Context,
         fileName: String,
         useExternalStorage: Boolean = true
-    ): Uri {
+    ): File {
         // 根据 useExternalStorage 参数决定使用内部存储还是外部存储
         val fileDir = if (useExternalStorage) {
             File(context.getExternalFilesDir(null), "Shared")
@@ -364,6 +357,14 @@ object FileUtil {
             file.createNewFile()
         }
         // 通过 FileProvider 获取 content:// URI
+        return file
+    }
+
+    /**
+     * 获取Uri
+     * @param file 必须是[getPrivateFile]的返回值，之所以拆开是因为直接从Uri获取Path不方便。
+     */
+    fun getUri(context: Context, file: File): Uri {
         return FileProvider.getUriForFile(
             context,
             "${context.packageName}.provider.file",  // 与 AndroidManifest 中的 authorities 匹配

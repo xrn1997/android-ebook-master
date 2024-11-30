@@ -113,7 +113,7 @@ class ClipViewLayout @JvmOverloads constructor(
     }
 
     /**
-     * 初始化图片
+     * 初始化图片,注意,不是什么URI都行的，具体取决于[FileUtil.getRealPathFromUri]
      */
     fun setImageSrc(uri: Uri) {
         //需要等到imageView绘制完毕再初始化原图
