@@ -19,7 +19,11 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -129,6 +133,15 @@ public class ImportBookActivity extends BaseActivity<IImportBookPresenter> imple
         RecyclerView rcvBooks = findViewById(R.id.rcv_books);
         rcvBooks.setAdapter(importBookAdapter);
         rcvBooks.setLayoutManager(new LinearLayoutManager(this));
+        ViewCompat.setOnApplyWindowInsetsListener(llContent, new OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                var stateBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+                v.setPadding(stateBars.left, stateBars.top, stateBars.right, stateBars.bottom);
+                return insets;
+            }
+        });
     }
 
     @Override

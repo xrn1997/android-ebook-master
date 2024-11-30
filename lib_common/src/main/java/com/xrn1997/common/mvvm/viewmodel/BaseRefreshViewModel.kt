@@ -15,7 +15,7 @@ abstract class BaseRefreshViewModel<T, M : BaseModel>(
     model: M
 ) : BaseViewModel<M>(application, model) {
     @JvmField
-    val mList = MutableLiveData<List<T>>(listOf())
+    val mList = MutableLiveData<List<T>>()
 
     protected var defaultUIChangeRefreshLiveData: UIChangeRefreshLiveData? = null
     val mUIChangeRefreshLiveData: UIChangeRefreshLiveData

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ebook.basebook.base.manager.BitIntentDataManager
 import com.ebook.basebook.mvp.presenter.impl.BookDetailPresenterImpl
 import com.ebook.basebook.mvp.presenter.impl.ReadBookPresenterImpl
@@ -57,22 +58,15 @@ class MainBookFragment :
         mViewModel.mList.observe(this) {
             mBookListAdapter.submitList(it)
         }
-        binding.recview.adapter = mBookListAdapter
-        ibDownload.setOnClickListener {
-            downloadListPop.showAsDropDown(
-                ibDownload
-            )
-        }
+        binding.bookRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.bookRecyclerView.adapter = mBookListAdapter
+        ibDownload.setOnClickListener { downloadListPop.showAsDropDown(ibDownload) }
 
         ibAdd.setOnClickListener {
-            //点击更多
             startActivity(Intent(mActivity, ImportBookActivity::class.java))
         }
         mBookListAdapter.setOnItemClickListener { bookShelf: BookShelf, _: Int ->
-            val intent = Intent(
-                mActivity,
-                ReadBookActivity::class.java
-            )
+            val intent = Intent(mActivity, ReadBookActivity::class.java)
             intent.putExtra("from", ReadBookPresenterImpl.OPEN_FROM_APP)
             val key = System.currentTimeMillis().toString()
             intent.putExtra("data_key", key)
@@ -80,10 +74,7 @@ class MainBookFragment :
             startActivity(intent)
         }
         mBookListAdapter.setOnItemLongClickListener { bookShelf: BookShelf, _: Int ->
-            val intent = Intent(
-                mActivity,
-                BookDetailActivity::class.java
-            )
+            val intent = Intent(mActivity, BookDetailActivity::class.java)
             intent.putExtra("from", BookDetailPresenterImpl.FROM_BOOKSHELF)
             val key = System.currentTimeMillis().toString()
             intent.putExtra("data_key", key)
@@ -110,7 +101,7 @@ class MainBookFragment :
     }
 
     override fun getRefreshLayout(): RefreshLayout {
-        return binding.refviewBookList
+        return binding.smartRefreshBookList
     }
 
     override fun onDestroy() {

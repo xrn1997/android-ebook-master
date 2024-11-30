@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.SPUtils
 import com.ebook.api.entity.Comment
 import com.ebook.book.adapter.BookCommentsAdapter
@@ -41,6 +42,7 @@ class BookCommentsActivity :
         mViewModel.mList.observe(this) {
             mBookCommentsAdapter.submitList(it)
         }
+        binding.viewBookComments.layoutManager = LinearLayoutManager(this)
         binding.viewBookComments.adapter = mBookCommentsAdapter
         mViewModel.getMVoidSingleLiveEvent().observe(this) {
             hideSoftInput(this@BookCommentsActivity, editText)

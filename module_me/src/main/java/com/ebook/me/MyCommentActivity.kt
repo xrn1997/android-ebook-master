@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ebook.api.entity.Comment
 import com.ebook.common.event.KeyCode
 import com.ebook.common.view.DeleteDialog.Companion.newInstance
@@ -24,6 +25,7 @@ class MyCommentActivity : BaseMvvmRefreshActivity<ActivityCommentBinding, Commen
         mViewModel.mList.observe(this) {
             mCommentListAdapter.submitList(it)
         }
+        binding.viewMyCommentList.layoutManager = LinearLayoutManager(this)
         binding.viewMyCommentList.adapter = mCommentListAdapter
         mCommentListAdapter.setOnItemClickListener { comment: Comment, _: Int ->
             val bundle = Bundle()

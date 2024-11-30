@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 
 import com.ebook.basebook.base.IPresenter;
@@ -24,6 +25,7 @@ public abstract class BaseActivity<T extends IPresenter> extends RxAppCompatActi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         this.savedInstanceState = savedInstanceState;
         if (getIntent() != null) {

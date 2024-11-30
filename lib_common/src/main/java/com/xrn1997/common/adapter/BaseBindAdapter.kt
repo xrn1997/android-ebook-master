@@ -2,7 +2,6 @@ package com.xrn1997.common.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -32,17 +31,11 @@ abstract class BaseBindAdapter<T, V : ViewBinding>(
     }
 
     override fun onBindViewHolder(holder: BaseBindingViewHolder<V>, position: Int) {
-        holder.binding?.let { onBindItem(it, getItem(position), position) }
+        onBindItem(holder.binding, getItem(position), position)
     }
 
-    class BaseBindingViewHolder<V : ViewBinding>(view: View) : RecyclerView.ViewHolder(view) {
-        private var _binding: V? = null
-        val binding get() = _binding
-
-        constructor(binding: V) : this(binding.root) {
-            _binding = binding
-        }
-    }
+    class BaseBindingViewHolder<V : ViewBinding>(val binding: V) :
+        RecyclerView.ViewHolder(binding.root)
 
     /**
      * item监听

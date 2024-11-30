@@ -32,7 +32,8 @@ class BookListModel(application: Application) : BaseModel(application) {
                     }
                     e.onNext(bookShelves)
                 }
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
 }

@@ -6,8 +6,10 @@ import com.ebook.db.entity.BookShelf
 import com.xrn1997.common.event.SimpleObserver
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel
 
-class BookListViewModel(application: Application, model: BookListModel) :
-    BaseRefreshViewModel<BookShelf, BookListModel>(application, model) {
+class BookListViewModel(
+    application: Application,
+    model: BookListModel
+) : BaseRefreshViewModel<BookShelf, BookListModel>(application, model) {
     override fun refreshData() {
         mModel.getBookShelfList().subscribe(object : SimpleObserver<List<BookShelf>>() {
 
