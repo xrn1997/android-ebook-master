@@ -48,7 +48,7 @@ dependencies {
         exclude(group = "com.android.support")
     }
     implementation(libs.androidx.core.ktx)
-    implementation(project(":lib_common"))
+    implementation(libs.xrn1997.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

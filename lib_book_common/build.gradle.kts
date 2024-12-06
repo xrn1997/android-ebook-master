@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    api(project(":lib_common"))
+    api(libs.xrn1997.common)
     api(project(":lib_ebook_api"))
     api(project(":lib_ebook_db"))
     api(libs.androidx.legacy.support.v4)
