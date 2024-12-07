@@ -1,6 +1,7 @@
 package com.ebook.me.mvvm.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import com.blankj.utilcode.util.SPUtils
 import com.ebook.api.dto.RespDTO
@@ -39,10 +40,11 @@ class ModifyViewModel(application: Application, model: ModifyModel) :
     /**
      * 修改头像
      *
-     * @param path 图片路径
+     * @param uri 图片路径
      */
-    fun modifyProfilePhoto(path: String) {
-        mModel.modifyProfilePhoto(path).subscribe(object : SimpleObserver<RespDTO<String>>() {
+    fun modifyProfilePhoto(uri: Uri) {
+        mModel.modifyProfilePhoto(uri).doOnSubscribe(this)
+            .subscribe(object : SimpleObserver<RespDTO<String>>() {
             override fun onNext(stringRespDTO: RespDTO<String>) {
                 if (stringRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     showShort(getApplication<Application>().applicationContext, "头像修改成功")

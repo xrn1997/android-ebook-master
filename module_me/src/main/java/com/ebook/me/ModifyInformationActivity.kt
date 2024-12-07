@@ -23,7 +23,6 @@ import com.hwangjr.rxbus.thread.EventThread
 import com.therouter.TheRouter.build
 import com.therouter.router.Route
 import com.xrn1997.common.mvvm.view.BaseMvvmActivity
-import com.xrn1997.common.util.FileUtil.getRealPathFromUri
 
 
 @Route(path = KeyCode.Me.MODIFY_PATH, params = ["needLogin", "true"])
@@ -68,14 +67,7 @@ class ModifyInformationActivity :
      */
     private fun uploadHeadImage() {
         val photoCutDialog = newInstance()
-        photoCutDialog.setOnClickListener { uri ->
-                val cropImagePath = getRealPathFromUri(
-                    applicationContext, uri
-                )
-                if (cropImagePath != null) {
-                    mViewModel.modifyProfilePhoto(cropImagePath)
-                }
-        }
+        photoCutDialog.setOnClickListener { uri -> mViewModel.modifyProfilePhoto(uri) }
         photoCutDialog.show(supportFragmentManager, "photoDialog")
     }
 

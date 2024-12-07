@@ -19,7 +19,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.exifinterface.media.ExifInterface
 import com.ebook.common.R
-import com.xrn1997.common.util.FileUtil
 import java.io.IOException
 import kotlin.math.max
 import kotlin.math.min
@@ -113,7 +112,7 @@ class ClipViewLayout @JvmOverloads constructor(
     }
 
     /**
-     * 初始化图片,注意,不是什么URI都行的，具体取决于[FileUtil.getRealPathFromUri]
+     * 初始化图片
      */
     fun setImageSrc(uri: Uri) {
         //需要等到imageView绘制完毕再初始化原图
@@ -137,14 +136,11 @@ class ClipViewLayout @JvmOverloads constructor(
      */
     fun initSrcPic(uri: Uri) {
         Log.e("evan", "**********clip_view uri*******  $uri")
-        val path = FileUtil.getRealPathFromUri(context, uri) ?: return
-        Log.e("evan", "**********clip_view path*******  $path")
 
         //这里decode出720*1280 左右的照片,防止OOM
-        var bitmap = decodeSampledBitmap(path, 720, 1280)
-
+        var bitmap = decodeSampledBitmap(context, uri, 720, 1280) ?: return
         //竖屏拍照的照片，直接使用的话，会旋转90度，下面代码把角度旋转过来
-        val rotation = getExifOrientation(path) //查询旋转角度
+        val rotation = getExifOrientation(context, uri) //查询旋转角度
         val m = Matrix()
         m.setRotate(rotation.toFloat())
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, m, true)
@@ -353,54 +349,64 @@ class ClipViewLayout @JvmOverloads constructor(
         /**
          * 查询图片旋转角度
          */
-        fun getExifOrientation(filepath: String): Int {
+        fun getExifOrientation(context: Context, uri: Uri): Int {
             var degree = 0
-            var exif: ExifInterface? = null
             try {
-                exif = ExifInterface(filepath)
+                // 通过ContentResolver获取Uri对应的InputStream
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    ExifInterface(inputStream).let { exif ->
+                        val orientation = exif.getAttributeInt(
+                            ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_UNDEFINED
+                        )
+                        degree = when (orientation) {
+                            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                            else -> 0
+                        }
+                    }
+
+                }
             } catch (ex: IOException) {
                 Log.e(TAG, "getExifOrientation: ", ex)
-            }
-            if (exif != null) {
-                val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1)
-                if (orientation != -1) {
-                    degree = when (orientation) {
-                        ExifInterface.ORIENTATION_ROTATE_90 -> 90
-                        ExifInterface.ORIENTATION_ROTATE_180 -> 180
-                        ExifInterface.ORIENTATION_ROTATE_270 -> 270
-                        else -> 0
-                    }
-                }
             }
             return degree
         }
 
+
         /**
          * 图片等比例压缩
          *
-         * @param filePath  文件路径
+         * @param uri  文件路径
          * @param reqWidth  期望的宽
          * @param reqHeight 期望的高
          * @return bitmap
          */
         fun decodeSampledBitmap(
-            filePath: String?, reqWidth: Int,
+            context: Context,
+            uri: Uri,
+            reqWidth: Int,
             reqHeight: Int
-        ): Bitmap {
-            // First decode with inJustDecodeBounds=true to check dimensions
+        ): Bitmap? {
+            context.contentResolver.openFileDescriptor(uri, "r")?.use { fd ->
+                // 1. 设置inJustDecodeBounds=true，获取图像尺寸，并进行第一次解码
+                val options = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                BitmapFactory.decodeFileDescriptor(fd.fileDescriptor, null, options)
 
-            val options = BitmapFactory.Options()
-            options.inJustDecodeBounds = true
-            options.inPreferredConfig = Bitmap.Config.RGB_565
+                // 2. 计算合适的缩放比例，并重新设置解码参数
+                options.apply {
+                    inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
+                    inJustDecodeBounds = false // 现在解码为真正的Bitmap
+                    inPreferredConfig = Bitmap.Config.RGB_565 // 使用较低的内存配置
+                }
 
-            // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(
-                options, reqWidth, reqHeight
-            )
-
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false
-            return BitmapFactory.decodeFile(filePath, options)
+                // 3. 使用缩放后的配置重新解码图像并返回
+                return BitmapFactory.decodeFileDescriptor(fd.fileDescriptor, null, options)
+            }
+            return null // 如果无法打开文件描述符，返回null
         }
 
         /**
