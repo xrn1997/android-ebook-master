@@ -40,7 +40,8 @@ class LoginViewModel(application: Application, model: LoginModel) :
             return
         }
 
-        LoginModel.login(username, password).subscribe(object : Observer<RespDTO<LoginDTO>> {
+        LoginModel.login(username, password).doOnSubscribe(this)
+            .subscribe(object : Observer<RespDTO<LoginDTO>> {
             override fun onSubscribe(d: Disposable) {
                 postShowLoadingViewEvent(true)
             }

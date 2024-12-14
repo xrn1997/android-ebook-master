@@ -2,6 +2,7 @@ package com.ebook.find.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,8 @@ import com.ebook.basebook.mvp.view.impl.BookDetailActivity
 import com.ebook.common.callback.LibraryKindBookListDifferCallback
 import com.ebook.db.entity.LibraryKindBookList
 import com.ebook.db.entity.SearchBook
+import com.ebook.find.ChoiceBookActivity
 import com.ebook.find.databinding.ViewLibraryKindbookBinding
-import com.ebook.find.mvp.view.impl.ChoiceBookActivity
 import com.xrn1997.common.adapter.BaseBindAdapter
 
 class LibraryBookListAdapter(context: Context) :
@@ -33,7 +34,12 @@ class LibraryBookListAdapter(context: Context) :
         } else {
             binding.tvMore.visibility = View.VISIBLE
             binding.tvMore.setOnClickListener {
-                ChoiceBookActivity.startChoiceBookActivity(context, item.kindName, item.kindUrl)
+                val intent = Intent(context, ChoiceBookActivity::class.java)
+                val bundle = Bundle()
+                bundle.putString("url", item.kindUrl)
+                bundle.putString("title", item.kindName)
+                intent.putExtras(bundle)
+                context.startActivity(intent)
             }
         }
         libraryBookAdapter.setOnItemClickListener { searchBook: SearchBook?, _: Int? ->

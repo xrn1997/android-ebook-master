@@ -23,10 +23,10 @@ public class TagFlowLayout extends FlowLayout implements TagAdapter.OnDataChange
     private static final String KEY_CHOOSE_POS = "key_choose_pos";
     private static final String KEY_DEFAULT = "key_default";
     private TagAdapter mTagAdapter;
-    private boolean mAutoSelectEffect = true;
-    private int mSelectedMax = -1;//-1为不限制数量
+    private final boolean mAutoSelectEffect;
+    private final Set<Integer> mSelectedView = new HashSet<>();
     private MotionEvent mMotionEvent;
-    private Set<Integer> mSelectedView = new HashSet<Integer>();
+    private int mSelectedMax;//-1为不限制数量
     private OnSelectListener mOnSelectListener;
     private OnTagClickListener mOnTagClickListener;
 
@@ -82,20 +82,12 @@ public class TagFlowLayout extends FlowLayout implements TagAdapter.OnDataChange
     private void changeAdapter() {
         removeAllViews();
         TagAdapter adapter = mTagAdapter;
-        TagView tagViewContainer = null;
+        TagView tagViewContainer;
         HashSet preCheckedList = mTagAdapter.getPreCheckedList();
         for (int i = 0; i < adapter.getCount(); i++) {
             View tagView = adapter.getView(this, i, adapter.getItem(i));
 
             tagViewContainer = new TagView(getContext());
-//            ViewGroup.MarginLayoutParams clp = (ViewGroup.MarginLayoutParams) tagView.getLayoutParams();
-//            ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(clp);
-//            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-//            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//            lp.topMargin = clp.topMargin;
-//            lp.bottomMargin = clp.bottomMargin;
-//            lp.leftMargin = clp.leftMargin;
-//            lp.rightMargin = clp.rightMargin;
             tagView.setDuplicateParentStateEnabled(true);
             if (tagView.getLayoutParams() != null) {
                 tagViewContainer.setLayoutParams(tagView.getLayoutParams());
@@ -112,11 +104,6 @@ public class TagFlowLayout extends FlowLayout implements TagAdapter.OnDataChange
 
 
             if (preCheckedList.contains(i)) {
-                tagViewContainer.setChecked(true);
-            }
-
-            if (mTagAdapter.setSelected(i, adapter.getItem(i))) {
-                mSelectedView.add(i);
                 tagViewContainer.setChecked(true);
             }
         }
@@ -163,7 +150,7 @@ public class TagFlowLayout extends FlowLayout implements TagAdapter.OnDataChange
     }
 
     public Set<Integer> getSelectedList() {
-        return new HashSet<Integer>(mSelectedView);
+        return new HashSet<>(mSelectedView);
     }
 
     private void doSelect(TagView child, int position) {
@@ -189,7 +176,7 @@ public class TagFlowLayout extends FlowLayout implements TagAdapter.OnDataChange
                 mSelectedView.remove(position);
             }
             if (mOnSelectListener != null) {
-                mOnSelectListener.onSelected(new HashSet<Integer>(mSelectedView));
+                mOnSelectListener.onSelected(new HashSet<>(mSelectedView));
             }
         }
     }
@@ -211,21 +198,20 @@ public class TagFlowLayout extends FlowLayout implements TagAdapter.OnDataChange
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_DEFAULT, super.onSaveInstanceState());
 
-        String selectPos = "";
-        if (mSelectedView.size() > 0) {
+        StringBuilder selectPos = new StringBuilder();
+        if (!mSelectedView.isEmpty()) {
             for (int key : mSelectedView) {
-                selectPos += key + "|";
+                selectPos.append(key).append("|");
             }
-            selectPos = selectPos.substring(0, selectPos.length() - 1);
+            selectPos = new StringBuilder(selectPos.substring(0, selectPos.length() - 1));
         }
-        bundle.putString(KEY_CHOOSE_POS, selectPos);
+        bundle.putString(KEY_CHOOSE_POS, selectPos.toString());
         return bundle;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
+        if (state instanceof Bundle bundle) {
             String mSelectPos = bundle.getString(KEY_CHOOSE_POS);
             if (!TextUtils.isEmpty(mSelectPos)) {
                 String[] split = mSelectPos.split("\\|");

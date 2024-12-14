@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorSurface"
+    android:background="?attr/colorSurface"
     android:orientation="vertical">
 
     <EditText
@@ -45,7 +45,7 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="@string/get_verify_code"
-            android:textColor="?colorOnPrimary" />
+            android:textColor="?attr/colorOnPrimary" />
     </FrameLayout>
 
     <Button

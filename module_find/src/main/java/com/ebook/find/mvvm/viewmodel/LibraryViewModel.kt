@@ -24,6 +24,7 @@ class LibraryViewModel(application: Application, model: LibraryModel) :
         if (isFirst) {
             isFirst = false
             getLibraryData(mCache)
+                .doOnSubscribe(this)
                 .subscribe(object : SimpleObserver<Library>() {
                     override fun onNext(value: Library) {
                         value.kindBooks?.let {
@@ -52,6 +53,7 @@ class LibraryViewModel(application: Application, model: LibraryModel) :
         WebBookModelImpl.getInstance().getLibraryData(mCache)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe(this)
             .subscribe(object : SimpleObserver<Library>() {
                 override fun onNext(value: Library) {
                     //     Log.d(TAG, "refreshData onNext: " + value.getKindBooks().get(0).getKindName());

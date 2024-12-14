@@ -2,16 +2,17 @@ package com.ebook.find.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ebook.find.ChoiceBookActivity
+import com.ebook.find.SearchActivity
 import com.ebook.find.adapter.BookTypeShowAdapter
 import com.ebook.find.adapter.LibraryBookListAdapter
 import com.ebook.find.databinding.FragmentFindMainBinding
 import com.ebook.find.entity.BookType
-import com.ebook.find.mvp.view.impl.ChoiceBookActivity
-import com.ebook.find.mvp.view.impl.SearchActivity
 import com.ebook.find.mvvm.factory.FindViewModelFactory
 import com.ebook.find.mvvm.viewmodel.LibraryViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -30,9 +31,10 @@ class MainFindFragment :
         binding.lkbvKindbooklist.adapter = mLibraryKindBookAdapter
         binding.kindLl.adapter = mBookTypeShowAdapter
         mBookTypeShowAdapter.setOnItemClickListener { bookType: BookType, _: Int ->
-            ChoiceBookActivity.startChoiceBookActivity(
-                activity, bookType.bookType, bookType.url
-            )
+            val bundle = Bundle()
+            bundle.putString("url", bookType.url)
+            bundle.putString("title", bookType.bookType)
+            startActivity(ChoiceBookActivity::class.java, bundle)
         }
         binding.flSearch.setOnClickListener {
             //点击搜索
@@ -41,7 +43,7 @@ class MainFindFragment :
     }
 
     override fun initData() {
-        mViewModel.refreshData()
+        mRefreshLayout.autoRefresh()
     }
 
     override fun getRefreshLayout(): RefreshLayout {

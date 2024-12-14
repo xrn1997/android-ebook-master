@@ -36,7 +36,7 @@
             android:paddingStart="2dp"
             android:paddingEnd="2dp"
             android:singleLine="true"
-            android:textColor="@color/tv_btn_black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             app:minTextSize="10sp" />
 
@@ -50,7 +50,7 @@
             android:paddingStart="2dp"
             android:paddingEnd="2dp"
             android:singleLine="true"
-            android:textColor="@color/tv_btn_normal_black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             app:minTextSize="8sp" />
     </LinearLayout>

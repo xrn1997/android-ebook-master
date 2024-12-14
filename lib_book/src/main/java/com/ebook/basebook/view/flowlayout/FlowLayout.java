@@ -17,10 +17,10 @@ public class FlowLayout extends ViewGroup {
     private static final int CENTER = 0;
     private static final int RIGHT = 1;
 
-    protected List<List<View>> mAllViews = new ArrayList<List<View>>();
-    protected List<Integer> mLineHeight = new ArrayList<Integer>();
-    protected List<Integer> mLineWidth = new ArrayList<Integer>();
-    private int mGravity;
+    private final int mGravity;
+    protected List<List<View>> mAllViews = new ArrayList<>();
+    protected List<Integer> mLineHeight = new ArrayList<>();
+    protected List<Integer> mLineWidth = new ArrayList<>();
     private List<View> lineViews = new ArrayList<>();
 
     public FlowLayout(Context context, AttributeSet attrs, int defStyle) {
@@ -94,7 +94,6 @@ public class FlowLayout extends ViewGroup {
 
     }
 
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         mAllViews.clear();
@@ -125,7 +124,7 @@ public class FlowLayout extends ViewGroup {
 
                 lineWidth = 0;
                 lineHeight = childHeight + lp.topMargin + lp.bottomMargin;
-                lineViews = new ArrayList<View>();
+                lineViews = new ArrayList<>();
             }
             lineWidth += childWidth + lp.leftMargin + lp.rightMargin;
             lineHeight = Math.max(lineHeight, childHeight + lp.topMargin
@@ -149,17 +148,12 @@ public class FlowLayout extends ViewGroup {
 
             // set gravity
             int currentLineWidth = this.mLineWidth.get(i);
-            switch (this.mGravity) {
-                case LEFT:
-                    left = getPaddingLeft();
-                    break;
-                case CENTER:
-                    left = (width - currentLineWidth) / 2 + getPaddingLeft();
-                    break;
-                case RIGHT:
-                    left = width - currentLineWidth + getPaddingLeft();
-                    break;
-            }
+            left = switch (this.mGravity) {
+                case LEFT -> getPaddingLeft();
+                case CENTER -> (width - currentLineWidth) / 2 + getPaddingLeft();
+                case RIGHT -> width - currentLineWidth + getPaddingLeft();
+                default -> left;
+            };
 
             for (int j = 0; j < lineViews.size(); j++) {
                 View child = lineViews.get(j);

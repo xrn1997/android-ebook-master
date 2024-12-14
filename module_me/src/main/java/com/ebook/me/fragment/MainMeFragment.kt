@@ -106,10 +106,10 @@ class MainMeFragment : BaseFragment<FragmentMeMainBinding>() {
 
     override fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): FragmentMeMainBinding {
-        return FragmentMeMainBinding.inflate(inflater, container, attachToParent)
+        return FragmentMeMainBinding.inflate(inflater, parent, attachToParent)
     }
 
     companion object {

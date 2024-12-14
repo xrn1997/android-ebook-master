@@ -40,9 +40,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.view.impl.ChoiceBookActivity" />
+        <activity android:name=".ChoiceBookActivity" />
         <activity
-            android:name=".mvp.view.impl.SearchActivity"
+            android:name=".SearchActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:theme="@style/CAppTransparentTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />

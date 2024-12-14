@@ -65,10 +65,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initData() {}
     override fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): ActivityMainBinding {
-        return ActivityMainBinding.inflate(inflater, container, attachToParent)
+        return ActivityMainBinding.inflate(inflater, parent, attachToParent)
     }
 
     private fun switchContent(from: Fragment?, to: Fragment?, tag: String?) {

@@ -52,7 +52,7 @@ class MyCommentActivity : BaseMvvmRefreshActivity<ActivityCommentBinding, Commen
     }
 
     override fun initData() {
-        mViewModel.refreshData()
+        mRefreshLayout.autoRefresh()
     }
     override fun onBindViewModel(): Class<CommentViewModel> {
         return CommentViewModel::class.java

@@ -24,7 +24,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:singleLine="true"
-            android:textColor="@color/tv_btn_normal_black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="14sp" />
 
         <View
@@ -40,7 +40,7 @@
             android:background="@drawable/bg_ib_pre"
             android:padding="5dp"
             android:text="@string/more"
-            android:textColor="@color/tv_btn_normal_black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="14sp" />
     </LinearLayout>
 

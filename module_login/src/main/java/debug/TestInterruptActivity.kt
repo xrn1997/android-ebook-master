@@ -25,9 +25,9 @@ class TestInterruptActivity : BaseActivity<ActivityTestBinding>() {
 
     override fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): ActivityTestBinding {
-        return ActivityTestBinding.inflate(inflater, container, attachToParent)
+        return ActivityTestBinding.inflate(inflater, parent, attachToParent)
     }
 }

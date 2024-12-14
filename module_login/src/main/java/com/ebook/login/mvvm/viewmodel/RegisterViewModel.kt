@@ -35,6 +35,7 @@ class RegisterViewModel(application: Application, model: RegisterModel) :
             return
         }
         mModel.register(username, firstPwd)
+            .doOnSubscribe(this)
             .subscribe(object : Observer<RespDTO<LoginDTO>> {
                 override fun onSubscribe(d: Disposable) {
                 }

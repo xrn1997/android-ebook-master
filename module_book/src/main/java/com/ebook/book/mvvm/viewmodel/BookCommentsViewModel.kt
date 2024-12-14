@@ -27,6 +27,7 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
 
     override fun refreshData() {
         mModel.getChapterComments(comment.chapterUrl)
+            .doOnSubscribe(this)
             .subscribe(object : Observer<RespDTO<List<Comment>>> {
                 override fun onSubscribe(d: Disposable) {
                 }
@@ -69,7 +70,9 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
             user.id = SPUtils.getInstance().getLong(KeyCode.Login.SP_USER_ID)
             comment.user = user
             comment.comment = comments
-            mModel.addComment(comment).subscribe(object : Observer<RespDTO<Comment>> {
+            mModel.addComment(comment)
+                .doOnSubscribe(this)
+                .subscribe(object : Observer<RespDTO<Comment>> {
                 override fun onSubscribe(d: Disposable) {
                 }
 
@@ -94,7 +97,9 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
     }
 
     fun deleteComment(id: Long) {
-        mModel.deleteComment(id).subscribe(object : SimpleObserver<RespDTO<Int>>() {
+        mModel.deleteComment(id)
+            .doOnSubscribe(this)
+            .subscribe(object : SimpleObserver<RespDTO<Int>>() {
             override fun onNext(integerRespDTO: RespDTO<Int>) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     showShort(getApplication<Application>().applicationContext, "删除成功！")

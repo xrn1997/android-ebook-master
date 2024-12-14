@@ -18,7 +18,7 @@
             android:layout_height="0dp"
             android:layout_weight="12">
 
-            <com.scwang.smart.refresh.header.ClassicsHeader
+            <com.ebook.common.view.MyMaterialHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -60,6 +60,6 @@
             android:layout_weight="1"
             android:background="@drawable/btn_selector"
             android:text="@string/send"
-            android:textColor="?colorOnPrimary" />
+            android:textColor="?attr/colorOnPrimary" />
     </LinearLayout>
 </FrameLayout>

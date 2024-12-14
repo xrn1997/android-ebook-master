@@ -33,7 +33,7 @@ public interface WebBookModel {
     /**
      * 获取分类书籍
      */
-    Observable<List<SearchBook>> getKindBook(Context context, String url, int page);
+    Observable<List<SearchBook>> getKindBook(String url, int page);
 
     /**
      * 获取主页信息

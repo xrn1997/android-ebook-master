@@ -11,7 +11,9 @@ class BookListViewModel(
     model: BookListModel
 ) : BaseRefreshViewModel<BookShelf, BookListModel>(application, model) {
     override fun refreshData() {
-        mModel.getBookShelfList().subscribe(object : SimpleObserver<List<BookShelf>>() {
+        mModel.getBookShelfList()
+            .doOnSubscribe(this)
+            .subscribe(object : SimpleObserver<List<BookShelf>>() {
 
             override fun onNext(value: List<BookShelf>) {
                 if (value.isNotEmpty()) {

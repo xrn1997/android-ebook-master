@@ -58,7 +58,7 @@ public class TXTDownloadBookModelImpl extends MBaseModelImpl implements StationB
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
-    public Observable<List<SearchBook>> getKindBook(Context context, String url, int page) {
+    public Observable<List<SearchBook>> getKindBook(String url, int page) {
         int type = switch (url) {
             case Url.xh -> 1;
             case Url.xz -> 2;

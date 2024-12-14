@@ -85,7 +85,7 @@ class MainBookFragment :
     }
 
     override fun initData() {
-        mViewModel.refreshData()
+        mRefreshLayout.autoRefresh()
     }
 
     override fun onBindViewBinding(

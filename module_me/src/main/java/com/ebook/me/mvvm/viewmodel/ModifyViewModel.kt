@@ -20,7 +20,8 @@ class ModifyViewModel(application: Application, model: ModifyModel) :
      * 修改昵称
      */
     fun modifyNickname(name: String) {
-        mModel.modifyNickname(name).subscribe(object : SimpleObserver<RespDTO<Int>>() {
+        mModel.modifyNickname(name).doOnSubscribe(this)
+            .subscribe(object : SimpleObserver<RespDTO<Int>>() {
             override fun onNext(integerRespDTO: RespDTO<Int>) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     showShort(getApplication<Application>().applicationContext, "修改成功")

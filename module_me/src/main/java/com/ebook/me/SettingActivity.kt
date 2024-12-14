@@ -41,9 +41,9 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
     override fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): ActivitySettingBinding {
-        return ActivitySettingBinding.inflate(inflater, container, attachToParent)
+        return ActivitySettingBinding.inflate(inflater, parent, attachToParent)
     }
 }

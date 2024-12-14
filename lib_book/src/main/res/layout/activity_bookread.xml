@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.ebook.basebook.view.ImmerseView.layout.ImmerseFrameLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="#767676">
@@ -84,7 +84,7 @@
                         android:src="@drawable/selector_icon_more"
                         android:visibility="invisible" />
                 </LinearLayout>
-            </com.ebook.basebook.view.ImmerseView.layout.ImmerseFrameLayout>
+            </FrameLayout>
 
             <View
                 android:layout_width="match_parent"

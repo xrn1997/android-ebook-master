@@ -73,7 +73,7 @@ class BookCommentsActivity :
             comment.chapterName = bundle.getString("chapterName")
             comment.chapterUrl = bundle.getString("chapterUrl")
             mViewModel.comment = comment
-            mViewModel.refreshData()
+            mRefreshLayout.autoRefresh()
         }
     }
 

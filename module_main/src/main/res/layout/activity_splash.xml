@@ -26,7 +26,7 @@
             android:paddingEnd="12dp"
             android:paddingBottom="4dp"
             android:text="@string/skip"
-            android:textColor="?colorOnPrimaryContainer"
+            android:textColor="?attr/colorOnPrimaryContainer"
             android:textSize="11sp"
             tools:ignore="SmallSp" />
 

@@ -57,10 +57,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     override fun onBindViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         attachToParent: Boolean
     ): ActivitySplashBinding {
-        return ActivitySplashBinding.inflate(inflater, container, attachToParent)
+        return ActivitySplashBinding.inflate(inflater, parent, attachToParent)
     }
 
     private fun startMainActivity() {

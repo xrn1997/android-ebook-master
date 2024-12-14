@@ -16,7 +16,9 @@ import io.reactivex.rxjava3.disposables.Disposable
 class CommentViewModel(application: Application, model: CommentModel) :
     BaseRefreshViewModel<Comment, CommentModel>(application, model) {
     override fun refreshData() {
-        mModel.getUserComments().subscribe(object : Observer<RespDTO<List<Comment>>> {
+        mModel.getUserComments()
+            .doOnSubscribe(this)
+            .subscribe(object : Observer<RespDTO<List<Comment>>> {
             override fun onSubscribe(d: Disposable) {
             }
 
@@ -47,7 +49,8 @@ class CommentViewModel(application: Application, model: CommentModel) :
     }
 
     fun deleteComment(id: Long) {
-        mModel.deleteComment(id).subscribe(object : SimpleObserver<RespDTO<Int>>() {
+        mModel.deleteComment(id).doOnSubscribe(this)
+            .subscribe(object : SimpleObserver<RespDTO<Int>>() {
             override fun onNext(integerRespDTO: RespDTO<Int>) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
                     showShort(getApplication<Application>().applicationContext, "删除成功！")

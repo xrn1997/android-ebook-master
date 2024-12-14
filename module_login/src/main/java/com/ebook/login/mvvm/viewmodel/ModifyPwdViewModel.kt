@@ -70,6 +70,7 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
             return
         }
         mModel.modifyPwd(username, firstPwd)
+            .doOnSubscribe(this)
             .subscribe(object : Observer<RespDTO<Int>> {
                 override fun onSubscribe(d: Disposable) {
                 }
