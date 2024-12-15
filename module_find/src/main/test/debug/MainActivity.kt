@@ -1,8 +1,9 @@
-package com.ebook.find
+package debug
 
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.ebook.find.R
 import com.ebook.find.databinding.ActivityMainBinding
 import com.ebook.find.fragment.MainFindFragment
 import com.xrn1997.common.mvvm.view.BaseActivity

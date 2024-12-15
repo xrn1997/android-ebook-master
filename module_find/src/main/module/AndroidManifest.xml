@@ -33,7 +33,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Common">
         <activity
-            android:name="com.ebook.find.MainActivity"
+            android:name="debug.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
