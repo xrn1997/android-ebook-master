@@ -17,13 +17,13 @@ class AndroidComponentConventionPlugin : Plugin<Project> {
                 }
             }
             extensions.configure<TestedExtension> {
-                sourceSets.named("main") {
-                    jniLibs.srcDirs("src/main/jniLibs")
+                sourceSets.getByName("main") {
+                    jniLibs.srcDirs("jniLibs")
                     if (isModule) {
                         manifest.srcFile("src/main/module/AndroidManifest.xml")
+                        java.srcDirs("src/main/test")
                     } else {
                         manifest.srcFile("src/main/AndroidManifest.xml")
-                        java.exclude("debug/**")
                     }
                 }
             }
