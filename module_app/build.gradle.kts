@@ -7,6 +7,8 @@ android {
     namespace = "com.ebook"
     defaultConfig {
         applicationId = "com.ebook"
+        versionCode = 1
+        versionName = "1.1.7alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
