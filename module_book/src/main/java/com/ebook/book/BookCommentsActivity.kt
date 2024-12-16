@@ -18,7 +18,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.therouter.router.Route
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshActivity
 
-@Route(path = KeyCode.Book.COMMENT_PATH)
+@Route(path = KeyCode.Book.COMMENT_PATH, params = ["needLogin", "true"])
 class BookCommentsActivity :
     BaseMvvmRefreshActivity<ActivityBookCommentsBinding, BookCommentsViewModel>() {
     private lateinit var editText: EditText

@@ -75,6 +75,7 @@ public class DownloadListPop extends PopupWindow {
         });
         tvDownload.setOnClickListener(v -> {
             if (tvDownload.getText().equals("开始下载")) {
+                //todo 下一半暂停，然后重启应用，没有开启download服务，故这里无效。
                 RxBus.get().post(RxBusTag.START_DOWNLOAD, new Object());
             } else {
                 RxBus.get().post(RxBusTag.PAUSE_DOWNLOAD, new Object());
@@ -173,7 +174,13 @@ public class DownloadListPop extends PopupWindow {
         tvNone.setVisibility(View.GONE);
         llDownload.setVisibility(View.VISIBLE);
         tvDownload.setText("暂停下载");
-        Glide.with(mContext).load(downloadChapter.coverUrl).dontAnimate().diskCacheStrategy(DiskCacheStrategy.RESOURCE).centerCrop().placeholder(R.drawable.img_cover_default).into(ivCover);
+        Glide.with(mContext)
+                .load(downloadChapter.coverUrl)
+                .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .centerCrop()
+                .placeholder(R.drawable.img_cover_default)
+                .into(ivCover);
         tvName.setText(downloadChapter.bookName);
         tvChapterName.setText(downloadChapter.durChapterName);
     }

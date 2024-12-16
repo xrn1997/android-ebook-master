@@ -52,7 +52,6 @@ class MainBookFragment :
 
     override fun initView() {
         downloadListPop = DownloadListPop(mActivity)
-        val ibAdd = binding.ibAdd
         ibDownload = binding.ibDownload
         val mBookListAdapter = BookListAdapter(mActivity)
         mViewModel.mList.observe(this) {
@@ -62,7 +61,7 @@ class MainBookFragment :
         binding.bookRecyclerView.adapter = mBookListAdapter
         ibDownload.setOnClickListener { downloadListPop.showAsDropDown(ibDownload) }
 
-        ibAdd.setOnClickListener {
+        binding.ibAdd.setOnClickListener {
             startActivity(Intent(mActivity, ImportBookActivity::class.java))
         }
         mBookListAdapter.setOnItemClickListener { bookShelf: BookShelf, _: Int ->

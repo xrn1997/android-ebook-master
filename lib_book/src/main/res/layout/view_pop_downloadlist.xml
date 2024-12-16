@@ -7,17 +7,19 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@drawable/bg_search"
-        android:paddingLeft="9.5dp"
+        android:paddingStart="9.5dp"
         android:paddingTop="3.5dp"
-        android:paddingRight="10.5dp"
+        android:paddingEnd="10.5dp"
         android:paddingBottom="16.5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?attr/colorSurface"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingRight="10dp">
+            android:paddingStart="0dp"
+            android:paddingEnd="10dp">
 
             <LinearLayout
                 android:id="@+id/ll_download"
@@ -37,40 +39,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="7dp" />
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
 
                     <TextView
                         android:id="@+id/tv_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="2dp"
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:textColor="@color/tv_btn_black"
                         android:textSize="13sp" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="2" />
-
                     <TextView
                         android:id="@+id/tv_chapter_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:textColor="@color/tv_btn_normal_black"
                         android:textSize="11sp" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="3" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -84,27 +76,25 @@
                 android:layout_width="70dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/selector_bg_download"
+                android:layout_marginEnd="8dp"
+                android:background="?colorPrimary"
                 android:clickable="true"
                 android:gravity="center"
                 android:text="开始下载"
-                android:textColor="#ffffff"
+                android:textColor="?attr/colorOnPrimary"
                 android:textSize="12sp" />
-
-            <View
-                android:layout_width="5dp"
-                android:layout_height="0dp" />
 
             <TextView
                 android:id="@+id/tv_cancel"
                 android:layout_width="70dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/selector_bg_download_cancel"
+                android:layout_marginEnd="2dp"
+                android:background="?attr/colorPrimaryContainer"
                 android:clickable="true"
                 android:gravity="center"
                 android:text="取消下载"
-                android:textColor="#767676"
+                android:textColor="?attr/colorOnPrimaryContainer"
                 android:textSize="12sp" />
 
             <View
@@ -117,11 +107,11 @@
             android:id="@+id/tv_none"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
+            android:background="?attr/colorSurfaceContainer"
             android:clickable="true"
             android:gravity="center"
             android:text="暂无任务"
-            android:textColor="@color/tv_btn_black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="14sp"
             android:visibility="gone" />
 
@@ -129,6 +119,6 @@
             android:layout_width="match_parent"
             android:layout_height="0.7dp"
             android:layout_gravity="bottom"
-            android:background="#c1c1c1" />
+            android:background="?attr/colorSurfaceContainer" />
     </FrameLayout>
 </FrameLayout>

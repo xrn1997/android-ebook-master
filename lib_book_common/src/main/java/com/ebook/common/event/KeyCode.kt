@@ -36,6 +36,8 @@ interface KeyCode {
         companion object {
             private const val BASE_PATH = "/ebook/book/"
             const val COMMENT_PATH = BASE_PATH + "comment"
+
+            const val TEST_LOGIN_PATH = BASE_PATH + "test_login"
         }
     }
 
