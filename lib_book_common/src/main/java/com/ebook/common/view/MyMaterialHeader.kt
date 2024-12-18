@@ -2,8 +2,8 @@ package com.ebook.common.view
 
 import android.content.Context
 import android.util.AttributeSet
-import com.ebook.common.util.getThemeColor
 import com.scwang.smart.refresh.header.MaterialHeader
+import com.xrn1997.common.util.getThemeColor
 
 /**
  * 颜色模式跟随系统

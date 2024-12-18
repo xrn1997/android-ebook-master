@@ -21,6 +21,7 @@ import com.hwangjr.rxbus.annotation.Tag
 import com.hwangjr.rxbus.thread.EventThread
 import com.therouter.TheRouter.build
 import com.xrn1997.common.mvvm.view.BaseFragment
+import com.xrn1997.common.util.getThemeColor
 
 class MainMeFragment : BaseFragment<FragmentMeMainBinding>() {
     private lateinit var mButton: Button
@@ -50,6 +51,36 @@ class MainMeFragment : BaseFragment<FragmentMeMainBinding>() {
         set(toolBarTitle) {
             super.toolBarTitle = toolBarTitle
         }
+
+    override fun initView() {
+        mButton = binding.btnLogin
+        mCircleImageView = binding.viewUserImage
+        mTextView = binding.viewUserName
+        binding.viewMyComment.setOnClickSettingBarViewListener {
+            build(KeyCode.Me.COMMENT_PATH).navigation(activity)
+        }
+        binding.viewMyInform.setOnClickSettingBarViewListener {
+            build(KeyCode.Me.MODIFY_PATH).navigation(activity)
+        }
+        mButton.setOnClickListener {
+            build(KeyCode.Login.LOGIN_PATH).navigation()
+        }
+        binding.viewSetting.setOnClickSettingBarViewListener {
+            build(KeyCode.Me.SETTING_PATH).navigation(activity)
+        }
+        context?.let {
+            mToolbarView?.setBackgroundColor(it.getThemeColor(com.google.android.material.R.attr.colorSurface))
+            mToolbarView?.setToolbarTitleColor(it.getThemeColor(com.google.android.material.R.attr.colorOnSurface))
+        }
+    }
+
+    override fun onBindViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentMeMainBinding {
+        return FragmentMeMainBinding.inflate(inflater, parent, attachToParent)
+    }
 
     @Subscribe(thread = EventThread.MAIN_THREAD, tags = [Tag(RxBusTag.MODIFY_PROFILE_PICTURE)])
     fun setProfilePicture(path: String) {
@@ -84,32 +115,6 @@ class MainMeFragment : BaseFragment<FragmentMeMainBinding>() {
             setProfilePicture(SPUtils.getInstance().getString(KeyCode.Login.SP_IMAGE))
             mTextView.text = SPUtils.getInstance().getString(KeyCode.Login.SP_NICKNAME)
         }
-    }
-
-    override fun initView() {
-        mButton = binding.btnLogin
-        mCircleImageView = binding.viewUserImage
-        mTextView = binding.viewUserName
-        binding.viewMyComment.setOnClickSettingBarViewListener {
-            build(KeyCode.Me.COMMENT_PATH).navigation(activity)
-        }
-        binding.viewMyInform.setOnClickSettingBarViewListener {
-            build(KeyCode.Me.MODIFY_PATH).navigation(activity)
-        }
-        mButton.setOnClickListener {
-            build(KeyCode.Login.LOGIN_PATH).navigation()
-        }
-        binding.viewSetting.setOnClickSettingBarViewListener {
-            build(KeyCode.Me.SETTING_PATH).navigation(activity)
-        }
-    }
-
-    override fun onBindViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        attachToParent: Boolean
-    ): FragmentMeMainBinding {
-        return FragmentMeMainBinding.inflate(inflater, parent, attachToParent)
     }
 
     companion object {

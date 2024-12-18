@@ -17,6 +17,7 @@ import com.ebook.find.mvvm.factory.FindViewModelFactory
 import com.ebook.find.mvvm.viewmodel.LibraryViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshFragment
+import com.xrn1997.common.util.getThemeColor
 
 class MainFindFragment :
     BaseMvvmRefreshFragment<FragmentFindMainBinding, LibraryViewModel>() {
@@ -39,6 +40,11 @@ class MainFindFragment :
         binding.flSearch.setOnClickListener {
             //点击搜索
             startActivity(Intent(activity, SearchActivity::class.java))
+        }
+        context?.let {
+            //todo fragment的toolbar还存在问题。
+            mToolbarView?.setBackgroundColor(it.getThemeColor(com.google.android.material.R.attr.colorSurface))
+            mToolbarView?.setToolbarTitleColor(it.getThemeColor(com.google.android.material.R.attr.colorOnSurface))
         }
     }
 
