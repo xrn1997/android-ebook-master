@@ -44,7 +44,7 @@ class BookCommentsActivity :
         }
         binding.viewBookComments.layoutManager = LinearLayoutManager(this)
         binding.viewBookComments.adapter = mBookCommentsAdapter
-        mViewModel.getMVoidSingleLiveEvent().observe(this) {
+        mViewModel.mVoidSingleLiveEvent.observe(this) {
             hideSoftInput(this@BookCommentsActivity, editText)
         }
         mBookCommentsAdapter.setOnItemLongClickListener { comment: Comment, _: Int ->

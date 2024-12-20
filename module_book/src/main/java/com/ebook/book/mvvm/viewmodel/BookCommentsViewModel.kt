@@ -23,7 +23,7 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
 
     @JvmField
     var comment: Comment = Comment()
-    private var mVoidSingleLiveEvent: SingleLiveEvent<Void>? = null
+    val mVoidSingleLiveEvent by lazy { SingleLiveEvent<Unit>() }
 
     override fun refreshData() {
         mModel.getChapterComments(comment.chapterUrl)
@@ -78,7 +78,7 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
 
                 override fun onNext(commentRespDTO: RespDTO<Comment>) {
                     if (commentRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                        getMVoidSingleLiveEvent().call()
+                        mVoidSingleLiveEvent.call()
                         refreshData()
                     } else {
                         Log.e(TAG, "error: " + commentRespDTO.error)
@@ -112,10 +112,6 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
             override fun onError(e: Throwable) {
             }
         })
-    }
-
-    fun getMVoidSingleLiveEvent(): SingleLiveEvent<Void> {
-        return createLiveData(mVoidSingleLiveEvent).also { mVoidSingleLiveEvent = it }
     }
 
     companion object {

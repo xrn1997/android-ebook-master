@@ -31,8 +31,8 @@ class SearchViewModel(
         private set
     private var durSearchKey: String = ""
     var isInput = false
-    val successEvent: SingleLiveEvent<List<SearchHistory>> = SingleLiveEvent()
-    val addBookShelfFailedEvent: SingleLiveEvent<Int> = SingleLiveEvent()
+    val successEvent by lazy { SingleLiveEvent<List<SearchHistory>>() }
+    val addBookShelfFailedEvent by lazy { SingleLiveEvent<Int>() }
 
     init {
         Observable.create { e: ObservableEmitter<List<BookShelf>> ->

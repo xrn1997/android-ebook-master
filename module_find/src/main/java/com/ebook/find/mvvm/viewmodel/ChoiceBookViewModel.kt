@@ -29,7 +29,7 @@ class ChoiceBookViewModel(
     var page: Int = 1
         private set
     val bookShelves: MutableList<BookShelf> = ArrayList() //用来比对搜索的书籍是否已经添加进书架
-    val addBookShelfFailedEvent: SingleLiveEvent<Int> = SingleLiveEvent()
+    val addBookShelfFailedEvent by lazy { SingleLiveEvent<Int>() }
 
     init {
         Observable.create { e: ObservableEmitter<List<BookShelf>> ->

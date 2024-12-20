@@ -9,6 +9,7 @@ import com.ebook.login.mvvm.factory.LoginViewModelFactory
 import com.ebook.login.mvvm.viewmodel.RegisterViewModel
 import com.therouter.router.Route
 import com.xrn1997.common.mvvm.view.BaseMvvmActivity
+import com.xrn1997.common.util.ToastUtil
 
 @Route(path = KeyCode.Login.REGISTER_PATH)
 class RegisterActivity : BaseMvvmActivity<ActivityRegisterBinding, RegisterViewModel>() {
@@ -19,9 +20,13 @@ class RegisterActivity : BaseMvvmActivity<ActivityRegisterBinding, RegisterViewM
             val password2 = binding.idEtReg2ndPwd.text.toString()
             mViewModel.register(username, password1, password2)
         }
+        mViewModel.mToastLiveEvent.observe(this) { text ->
+            ToastUtil.showShort(this, text)
+        }
     }
 
-    override fun initData() {}
+    override fun initData() {
+    }
 
     override fun onBindViewModel(): Class<RegisterViewModel> {
         return RegisterViewModel::class.java

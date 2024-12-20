@@ -10,6 +10,7 @@ import com.ebook.login.mvvm.factory.LoginViewModelFactory
 import com.ebook.login.mvvm.viewmodel.ModifyPwdViewModel
 import com.therouter.router.Route
 import com.xrn1997.common.mvvm.view.BaseMvvmActivity
+import com.xrn1997.common.util.ToastUtil
 import kotlin.random.Random
 
 @Route(path = KeyCode.Login.MODIFY_PATH)
@@ -35,6 +36,9 @@ class VerifyUserActivity : BaseMvvmActivity<ActivityVerifyUserBinding, ModifyPwd
             val username = binding.idEtFgtUsername.text.toString()
             val verifyCode = binding.idEtFgtVerifyCode.text.toString()
             mViewModel.verify(username, verifyCode)
+        }
+        mViewModel.mToastLiveEvent.observe(this) { text ->
+            ToastUtil.showShort(this, text)
         }
     }
 

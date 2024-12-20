@@ -29,18 +29,18 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
     var username: String? = null
     @JvmField
     var mVerifyCode: String? = null // 验证码
-    private lateinit var mVoidSingleLiveEvent: SingleLiveEvent<Unit>
+    val mToastLiveEvent by lazy { SingleLiveEvent<String>() }
 
     fun verify(username: String, verifyCode: String) {
         if (TextUtils.isEmpty(username)) { //用户名为空
-            showShort(getApplication<Application>().applicationContext, "手机号不能为空")
+            mToastLiveEvent.setValue("手机号不能为空")
             return
         } else if (TextUtils.getTrimmedLength(username) < 11) { // 手机号码不足11位
-            showShort(getApplication<Application>().applicationContext, "请输入正确的手机号")
+            mToastLiveEvent.setValue("请输入正确的手机号")
             return
         }
         if (!TextUtils.equals(verifyCode, mVerifyCode)) {
-            showShort(getApplication<Application>().applicationContext, "请输入正确的验证码")
+            mToastLiveEvent.setValue("请输入正确的验证码")
             return
         }
         postFinishActivityEvent()
@@ -94,22 +94,12 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
                 }
 
                 override fun onError(e: Throwable) {
-                    getMVoidSingleLiveEvent().call()
                 }
 
                 override fun onComplete() {
-                    //   Log.d(TAG, "修改密码onComplete: start");
-                    getMVoidSingleLiveEvent().call()
                     postFinishActivityEvent()
                 }
             })
-    }
-
-    private fun getMVoidSingleLiveEvent(): SingleLiveEvent<Unit> {
-        // Log.d(TAG, "getMVoidSingleLiveEvent: start");
-        mVoidSingleLiveEvent = createLiveData(mVoidSingleLiveEvent)
-        // Log.d(TAG, "getMVoidSingleLiveEvent: end");
-        return mVoidSingleLiveEvent
     }
 
     companion object {
