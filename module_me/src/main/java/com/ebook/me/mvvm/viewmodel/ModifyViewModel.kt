@@ -12,7 +12,6 @@ import com.hwangjr.rxbus.RxBus
 import com.xrn1997.common.event.SimpleObserver
 import com.xrn1997.common.http.ExceptionHandler
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
-import com.xrn1997.common.util.ToastUtil.showShort
 
 class ModifyViewModel(application: Application, model: ModifyModel) :
     BaseViewModel<ModifyModel>(application, model) {
@@ -24,7 +23,7 @@ class ModifyViewModel(application: Application, model: ModifyModel) :
             .subscribe(object : SimpleObserver<RespDTO<Int>>() {
             override fun onNext(integerRespDTO: RespDTO<Int>) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    showShort(getApplication<Application>().applicationContext, "修改成功")
+                    mToastLiveEvent.setValue("修改成功")
                     SPUtils.getInstance().put(KeyCode.Login.SP_NICKNAME, name)
                     RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME, Any())
                     postFinishActivityEvent()
@@ -48,7 +47,7 @@ class ModifyViewModel(application: Application, model: ModifyModel) :
             .subscribe(object : SimpleObserver<RespDTO<String>>() {
             override fun onNext(stringRespDTO: RespDTO<String>) {
                 if (stringRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    showShort(getApplication<Application>().applicationContext, "头像修改成功")
+                    mToastLiveEvent.setValue("头像修改成功")
                     val url = stringRespDTO.data
                     SPUtils.getInstance().put(KeyCode.Login.SP_IMAGE, url)
                     Log.e(TAG, "url: $url")

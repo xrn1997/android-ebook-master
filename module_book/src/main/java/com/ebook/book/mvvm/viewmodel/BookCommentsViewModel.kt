@@ -14,7 +14,6 @@ import com.xrn1997.common.event.SimpleObserver
 import com.xrn1997.common.event.SingleLiveEvent
 import com.xrn1997.common.http.ExceptionHandler
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel
-import com.xrn1997.common.util.ToastUtil.showShort
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 
@@ -92,7 +91,7 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
                 }
             })
         } else {
-            showShort(getApplication<Application>().applicationContext, "不能为空哦！")
+            mToastLiveEvent.setValue("不能为空哦！")
         }
     }
 
@@ -102,7 +101,7 @@ class BookCommentsViewModel(application: Application, model: BookCommentsModel) 
             .subscribe(object : SimpleObserver<RespDTO<Int>>() {
             override fun onNext(integerRespDTO: RespDTO<Int>) {
                 if (integerRespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                    showShort(getApplication<Application>().applicationContext, "删除成功！")
+                    mToastLiveEvent.setValue("删除成功！")
                     refreshData()
                 } else {
                     Log.e(TAG, "error: " + integerRespDTO.error)

@@ -12,10 +12,8 @@ import com.ebook.login.ModifyPwdActivity
 import com.ebook.login.mvvm.model.ModifyPwdModel
 import com.hwangjr.rxbus.RxBus
 import com.therouter.TheRouter.build
-import com.xrn1997.common.event.SingleLiveEvent
 import com.xrn1997.common.http.ExceptionHandler
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
-import com.xrn1997.common.util.ToastUtil.showShort
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 
@@ -29,7 +27,6 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
     var username: String? = null
     @JvmField
     var mVerifyCode: String? = null // 验证码
-    val mToastLiveEvent by lazy { SingleLiveEvent<String>() }
 
     fun verify(username: String, verifyCode: String) {
         if (TextUtils.isEmpty(username)) { //用户名为空
@@ -56,11 +53,11 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
 
     fun modify(firstPwd: String, secondPwd: String) {
         if (firstPwd.isEmpty() || secondPwd.isEmpty()) {
-            showShort(getApplication<Application>().applicationContext, "密码未填写完整")
+            mToastLiveEvent.setValue("密码未填写完整")
             return
         }
         if (firstPwd != secondPwd) { //两次密码不一致
-            showShort(getApplication<Application>().applicationContext, "两次密码不一致")
+            mToastLiveEvent.setValue("两次密码不一致")
             return
         }
         Log.d(TAG, "modify: username: ${username},password: $firstPwd")
@@ -78,7 +75,7 @@ class ModifyPwdViewModel(application: Application, model: ModifyPwdModel) :
                 override fun onNext(loginDTORespDTO: RespDTO<Int>) {
                     //  Log.d(TAG, "修改密码onNext: start");
                     if (loginDTORespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                        showShort(getApplication<Application>().applicationContext, "修改成功")
+                        mToastLiveEvent.setValue("修改成功")
                         SPUtils.getInstance().clear()
                         RxBus.get().post(RxBusTag.SET_PROFILE_PICTURE_AND_NICKNAME)
                         val bundle = Bundle()

@@ -16,7 +16,6 @@ import com.therouter.TheRouter.build
 import com.xrn1997.common.http.ExceptionHandler
 import com.xrn1997.common.manager.RetrofitManager
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
-import com.xrn1997.common.util.ToastUtil.showShort
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 
@@ -27,16 +26,16 @@ class LoginViewModel(application: Application, model: LoginModel) :
 
     fun login(username: String, password: String) {
         if (TextUtils.isEmpty(username)) { //用户名为空
-            showShort(getApplication<Application>().applicationContext, "用户名不能为空")
+            mToastLiveEvent.setValue("用户名不能为空")
             //  Log.d(TAG, "login: " + username);
             return
         }
         if (username.length < 11) { // 手机号码不足11位
-            showShort(getApplication<Application>().applicationContext, "请输入正确的手机号")
+            mToastLiveEvent.setValue("请输入正确的手机号")
             return
         }
         if (TextUtils.isEmpty(password)) { //密码为空
-            showShort(getApplication<Application>().applicationContext, "密码不能为空")
+            mToastLiveEvent.setValue("密码不能为空")
             return
         }
 
@@ -97,7 +96,7 @@ class LoginViewModel(application: Application, model: LoginModel) :
             postShowLoadingViewEvent(false)
             build(path).with(bundle).navigation()
             postFinishActivityEvent()
-            showShort(getApplication<Application>().applicationContext, "登录成功")
+            mToastLiveEvent.setValue("登录成功")
         }
     }
 

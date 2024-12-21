@@ -7,14 +7,11 @@ import com.ebook.api.dto.RespDTO
 import com.ebook.api.entity.LoginDTO
 import com.ebook.login.mvvm.model.RegisterModel
 import com.xrn1997.common.event.SimpleObserver
-import com.xrn1997.common.event.SingleLiveEvent
 import com.xrn1997.common.http.ExceptionHandler
 import com.xrn1997.common.mvvm.viewmodel.BaseViewModel
-import com.xrn1997.common.util.ToastUtil.showShort
 
 class RegisterViewModel(application: Application, model: RegisterModel) :
     BaseViewModel<RegisterModel>(application, model) {
-    val mToastLiveEvent by lazy { SingleLiveEvent<String>() }
 
     fun register(username: String, firstPwd: String, secondPwd: String) {
         if (TextUtils.isEmpty(username)) { //用户名为空
@@ -39,7 +36,7 @@ class RegisterViewModel(application: Application, model: RegisterModel) :
             .subscribe(object : SimpleObserver<RespDTO<LoginDTO>>() {
                 override fun onNext(loginDTORespDTO: RespDTO<LoginDTO>) {
                     if (loginDTORespDTO.code == ExceptionHandler.AppError.SUCCESS) {
-                        showShort(getApplication<Application>().applicationContext, "注册成功")
+                        mToastLiveEvent.setValue("注册成功")
                         postShowLoadingViewEvent(false)
                         postFinishActivityEvent()
                     } else {
