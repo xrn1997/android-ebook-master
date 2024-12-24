@@ -2,8 +2,7 @@ package com.ebook.find.mvvm.viewmodel
 
 import android.app.Application
 import android.util.Log
-import com.ebook.basebook.mvp.model.impl.WebBookModelImpl
-import com.ebook.basebook.utils.NetworkUtil
+import com.ebook.common.analyze.impl.WebBookModelImpl
 import com.ebook.common.event.RxBusTag
 import com.ebook.db.ObjectBoxManager.bookShelfBox
 import com.ebook.db.entity.BookShelf
@@ -32,7 +31,6 @@ class SearchViewModel(
     private var durSearchKey: String = ""
     var isInput = false
     val successEvent by lazy { SingleLiveEvent<List<SearchHistory>>() }
-    val addBookShelfFailedEvent by lazy { SingleLiveEvent<Int>() }
 
     init {
         Observable.create { e: ObservableEmitter<List<BookShelf>> ->
@@ -128,7 +126,7 @@ class SearchViewModel(
     }
 
     private fun searchBook(content: String) {
-        WebBookModelImpl.getInstance().searchBook(content, page)
+        WebBookModelImpl.searchBook(content, page)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .doOnSubscribe(this)
@@ -171,13 +169,13 @@ class SearchViewModel(
         bookShelfResult.durChapter = 0
         bookShelfResult.durChapterPage = 0
         bookShelfResult.tag = searchBook.tag
-        WebBookModelImpl.getInstance().getBookInfo(bookShelfResult)
+        WebBookModelImpl.getBookInfo(bookShelfResult)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe(this)
             .flatMap { fetchedBookShelf ->
                 // 获取章节列表
-                WebBookModelImpl.getInstance().getChapterList(fetchedBookShelf)
+                WebBookModelImpl.getChapterList(fetchedBookShelf)
             }
             .subscribe(object : SimpleObserver<WebChapter<BookShelf>>() {
                 override fun onNext(bookShelfWebChapter: WebChapter<BookShelf>) {
@@ -186,7 +184,7 @@ class SearchViewModel(
                 }
 
                 override fun onError(e: Throwable) {
-                    addBookShelfFailedEvent.setValue(NetworkUtil.ERROR_CODE_OUTTIME)
+                    mToastLiveEvent.setValue(e.message ?: "网络请求超时")
                     postShowLoadingViewEvent(false)
                 }
             })
@@ -202,7 +200,7 @@ class SearchViewModel(
                 }
 
                 override fun onError(e: Throwable) {
-                    addBookShelfFailedEvent.setValue(NetworkUtil.ERROR_CODE_OUTTIME)
+                    mToastLiveEvent.setValue(e.message ?: "网络请求超时")
                 }
             })
     }

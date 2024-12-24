@@ -1,9 +1,9 @@
 package com.ebook.find.mvvm.model
 
 import android.app.Application
-import com.ebook.basebook.cache.ACache
-import com.ebook.basebook.constant.Url
-import com.ebook.basebook.mvp.model.impl.WebBookModelImpl
+import com.ebook.api.cache.ACache
+import com.ebook.api.config.Url
+import com.ebook.common.analyze.impl.WebBookModelImpl
 import com.ebook.db.ObjectBoxManager.bookShelfBox
 import com.ebook.db.entity.BookShelf
 import com.ebook.db.entity.BookShelf_
@@ -41,7 +41,7 @@ class LibraryModel(application: Application) : BaseModel(application) {
                 e.onNext(cache)
                 e.onComplete()
             }.flatMap { s: String ->
-                WebBookModelImpl.getInstance().analyzeLibraryData(s)
+                WebBookModelImpl.analyzeLibraryData(s)
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.xrn1997.android.component)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
 }
 android {
@@ -25,6 +26,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        compose = true
         viewBinding = true
     }
     compileOptions {
@@ -37,8 +39,7 @@ android {
 }
 dependencies {
     implementation(fileTree("libs") { include("*.jar") })
-    api(project(":lib_book_common"))
-    implementation(project(":lib_book"))
+    implementation(project(":lib_book_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.router.apt)

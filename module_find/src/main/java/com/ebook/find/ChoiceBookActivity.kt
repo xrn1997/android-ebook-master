@@ -1,18 +1,15 @@
 package com.ebook.find
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ebook.basebook.mvp.presenter.impl.BookDetailPresenterImpl
-import com.ebook.basebook.mvp.view.impl.BookDetailActivity
-import com.ebook.basebook.utils.NetworkUtil
+import com.ebook.common.event.FROM_SEARCH
+import com.ebook.common.event.KeyCode
 import com.ebook.common.event.RxBusTag
 import com.ebook.db.entity.BookShelf
 import com.ebook.db.entity.SearchBook
@@ -25,6 +22,7 @@ import com.hwangjr.rxbus.annotation.Subscribe
 import com.hwangjr.rxbus.annotation.Tag
 import com.hwangjr.rxbus.thread.EventThread
 import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.therouter.TheRouter
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshActivity
 
 class ChoiceBookActivity :
@@ -60,10 +58,10 @@ class ChoiceBookActivity :
             }
 
             override fun clickItem(animView: View, position: Int, searchBook: SearchBook) {
-                val intent = Intent(this@ChoiceBookActivity, BookDetailActivity::class.java)
-                intent.putExtra("from", BookDetailPresenterImpl.FROM_SEARCH)
-                intent.putExtra("data", searchBook)
-                startActivity(intent)
+                TheRouter.build(KeyCode.Book.DETAIL_PATH)
+                    .withInt("from", FROM_SEARCH)
+                    .withObject("data", searchBook)
+                    .navigation(this@ChoiceBookActivity)
             }
         })
     }
@@ -73,10 +71,7 @@ class ChoiceBookActivity :
         val bundle = this.intent.extras
         if (bundle != null) {
             tvTitle.text = bundle.getString("title")
-            mViewModel.url = bundle.getString("url")
-        }
-        mViewModel.addBookShelfFailedEvent.observe(this) { code ->
-            Toast.makeText(this, NetworkUtil.getErrorTip(code), Toast.LENGTH_SHORT).show()
+            mViewModel.url = bundle.getString("url", "")
         }
         mViewModel.mList.observe(this) {
             searchBookAdapter.submitList(it)

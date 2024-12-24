@@ -2,8 +2,8 @@ package com.ebook.find.mvvm.viewmodel
 
 import android.app.Application
 import android.util.Log
-import com.ebook.basebook.cache.ACache
-import com.ebook.basebook.mvp.model.impl.WebBookModelImpl
+import com.ebook.api.cache.ACache
+import com.ebook.common.analyze.impl.WebBookModelImpl
 import com.ebook.db.entity.Library
 import com.ebook.db.entity.LibraryKindBookList
 import com.ebook.find.mvvm.model.LibraryModel
@@ -50,7 +50,7 @@ class LibraryViewModel(application: Application, model: LibraryModel) :
 
     private fun getLibraryNewData() {
         //   Log.d(TAG, "getLibraryNewData: start");
-        WebBookModelImpl.getInstance().getLibraryData(mCache)
+        WebBookModelImpl.getLibraryData(mCache)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe(this)

@@ -19,9 +19,9 @@ class BookListAdapter(context: Context) :
             .load(item.bookInfo.target.coverUrl)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .dontAnimate()
-            .placeholder(com.ebook.basebook.R.drawable.img_cover_default)
-            .error(com.ebook.basebook.R.drawable.img_cover_default)
-            .fallback(com.ebook.basebook.R.drawable.img_cover_default)
+            .placeholder(com.ebook.common.R.drawable.img_cover_default)
+            .error(com.ebook.common.R.drawable.img_cover_default)
+            .fallback(com.ebook.common.R.drawable.img_cover_default)
             .fitCenter()
             .into(binding.ivCover)
         binding.txtBookName.text = item.bookInfo.target.name

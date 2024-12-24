@@ -2,8 +2,7 @@ package com.ebook.find.mvvm.viewmodel
 
 import android.app.Application
 import android.util.Log
-import com.ebook.basebook.mvp.model.impl.WebBookModelImpl
-import com.ebook.basebook.utils.NetworkUtil
+import com.ebook.common.analyze.impl.WebBookModelImpl
 import com.ebook.common.event.RxBusTag
 import com.ebook.db.ObjectBoxManager.bookShelfBox
 import com.ebook.db.entity.BookShelf
@@ -13,7 +12,6 @@ import com.ebook.db.entity.WebChapter
 import com.ebook.find.mvvm.model.SearchModel
 import com.hwangjr.rxbus.RxBus
 import com.xrn1997.common.event.SimpleObserver
-import com.xrn1997.common.event.SingleLiveEvent
 import com.xrn1997.common.mvvm.viewmodel.BaseRefreshViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -24,12 +22,11 @@ class ChoiceBookViewModel(
     application: Application,
     model: SearchModel
 ) : BaseRefreshViewModel<SearchBook, SearchModel>(application, model) {
-    var url: String? = null
+    var url: String = ""
 
     var page: Int = 1
         private set
     val bookShelves: MutableList<BookShelf> = ArrayList() //用来比对搜索的书籍是否已经添加进书架
-    val addBookShelfFailedEvent by lazy { SingleLiveEvent<Int>() }
 
     init {
         Observable.create { e: ObservableEmitter<List<BookShelf>> ->
@@ -59,7 +56,10 @@ class ChoiceBookViewModel(
     }
 
     private fun searchBook() {
-        WebBookModelImpl.getInstance().getKindBook(url, page)
+        if (url.isEmpty()) {
+            return
+        }
+        WebBookModelImpl.getKindBook(url, page)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe(this)
@@ -103,13 +103,13 @@ class ChoiceBookViewModel(
             durChapterPage = 0
             tag = searchBook.tag
         }
-        WebBookModelImpl.getInstance().getBookInfo(bookShelfResult)
+        WebBookModelImpl.getBookInfo(bookShelfResult)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe(this)
             .flatMap { fetchedBookShelf ->
                 // 获取章节列表
-                WebBookModelImpl.getInstance().getChapterList(fetchedBookShelf)
+                WebBookModelImpl.getChapterList(fetchedBookShelf)
             }
             .subscribe(object : SimpleObserver<WebChapter<BookShelf>>() {
                 override fun onNext(bookShelfWebChapter: WebChapter<BookShelf>) {
@@ -119,7 +119,7 @@ class ChoiceBookViewModel(
                 }
 
                 override fun onError(e: Throwable) {
-                    addBookShelfFailedEvent.setValue(NetworkUtil.ERROR_CODE_OUTTIME)
+                    mToastLiveEvent.setValue(e.message ?: "网络请求超时")
                     postShowLoadingViewEvent(false)
                 }
             })
@@ -147,7 +147,7 @@ class ChoiceBookViewModel(
                 }
 
                 override fun onError(e: Throwable) {
-                    addBookShelfFailedEvent.setValue(NetworkUtil.ERROR_CODE_OUTTIME)
+                    mToastLiveEvent.setValue(e.message ?: "网络请求超时")
                 }
             })
     }

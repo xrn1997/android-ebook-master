@@ -3,8 +3,8 @@ package com.ebook.find.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.ebook.basebook.view.flowlayout.FlowLayout
-import com.ebook.basebook.view.flowlayout.TagAdapter
+import com.ebook.common.view.flowlayout.FlowLayout
+import com.ebook.common.view.flowlayout.TagAdapter
 import com.ebook.db.entity.SearchHistory
 import com.ebook.find.R
 

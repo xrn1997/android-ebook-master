@@ -138,7 +138,7 @@
                     android:textSize="16sp" />
             </LinearLayout>
 
-            <com.ebook.basebook.view.flowlayout.TagFlowLayout
+            <com.ebook.common.view.flowlayout.TagFlowLayout
                 android:id="@+id/tfl_search_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

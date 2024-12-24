@@ -25,9 +25,9 @@ class LibraryBookAdapter(context: Context) :
             .load(item.coverUrl)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .dontAnimate()
-            .placeholder(com.ebook.basebook.R.drawable.img_cover_default)
-            .error(com.ebook.basebook.R.drawable.img_cover_default)
-            .fallback(com.ebook.basebook.R.drawable.img_cover_default)
+            .placeholder(com.ebook.common.R.drawable.img_cover_default)
+            .error(com.ebook.common.R.drawable.img_cover_default)
+            .fallback(com.ebook.common.R.drawable.img_cover_default)
             .fitCenter()
             .into(binding.ivCover)
         binding.tvName.text = item.name

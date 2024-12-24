@@ -1,7 +1,6 @@
 package com.ebook.find
 
 import android.animation.Animator
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -23,17 +22,15 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
-import com.ebook.basebook.mvp.presenter.impl.BookDetailPresenterImpl
-import com.ebook.basebook.mvp.view.impl.BookDetailActivity
-import com.ebook.basebook.utils.NetworkUtil
-import com.ebook.basebook.view.flowlayout.TagFlowLayout
+import com.ebook.common.event.FROM_SEARCH
+import com.ebook.common.event.KeyCode
 import com.ebook.common.event.RxBusTag
+import com.ebook.common.view.flowlayout.TagFlowLayout
 import com.ebook.db.entity.BookShelf
 import com.ebook.db.entity.SearchBook
 import com.ebook.db.entity.SearchHistory
@@ -47,6 +44,7 @@ import com.hwangjr.rxbus.annotation.Subscribe
 import com.hwangjr.rxbus.annotation.Tag
 import com.hwangjr.rxbus.thread.EventThread
 import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.therouter.TheRouter
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshActivity
 import tyrantgit.explosionfield.ExplosionField
 import kotlin.math.abs
@@ -91,13 +89,10 @@ class SearchActivity : BaseMvvmRefreshActivity<ActivitySearchBinding, SearchView
             }
 
             override fun clickItem(animView: View, position: Int, searchBook: SearchBook) {
-                val intent = Intent(
-                    this@SearchActivity,
-                    BookDetailActivity::class.java
-                )
-                intent.putExtra("from", BookDetailPresenterImpl.FROM_SEARCH)
-                intent.putExtra("data", searchBook)
-                startActivity(intent)
+                TheRouter.build(KeyCode.Book.DETAIL_PATH)
+                    .withInt("from", FROM_SEARCH)
+                    .withObject("data", searchBook)
+                    .navigation(this@SearchActivity)
             }
         })
 
@@ -153,9 +148,6 @@ class SearchActivity : BaseMvvmRefreshActivity<ActivitySearchBinding, SearchView
         }
         mViewModel.mList.observe(this) {
             searchBookAdapter.submitList(it)
-        }
-        mViewModel.addBookShelfFailedEvent.observe(this) { code ->
-            Toast.makeText(this, NetworkUtil.getErrorTip(code), Toast.LENGTH_SHORT).show()
         }
     }
 

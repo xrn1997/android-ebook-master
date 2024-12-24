@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.blankj.utilcode.util.ActivityUtils
-import com.ebook.basebook.mvp.presenter.impl.BookDetailPresenterImpl
-import com.ebook.basebook.mvp.view.impl.BookDetailActivity
 import com.ebook.common.callback.LibraryKindBookListDifferCallback
+import com.ebook.common.event.FROM_SEARCH
+import com.ebook.common.event.KeyCode
 import com.ebook.db.entity.LibraryKindBookList
 import com.ebook.db.entity.SearchBook
 import com.ebook.find.ChoiceBookActivity
 import com.ebook.find.databinding.ViewLibraryKindbookBinding
+import com.therouter.TheRouter
 import com.xrn1997.common.adapter.BaseBindAdapter
 
 class LibraryBookListAdapter(context: Context) :
@@ -42,11 +42,11 @@ class LibraryBookListAdapter(context: Context) :
                 context.startActivity(intent)
             }
         }
-        libraryBookAdapter.setOnItemClickListener { searchBook: SearchBook?, _: Int? ->
-            val intent = Intent(context, BookDetailActivity::class.java)
-            intent.putExtra("from", BookDetailPresenterImpl.FROM_SEARCH)
-            intent.putExtra("data", searchBook)
-            ActivityUtils.startActivity(intent)
+        libraryBookAdapter.setOnItemClickListener { searchBook: SearchBook, _: Int ->
+            TheRouter.build(KeyCode.Book.DETAIL_PATH)
+                .withInt("from", FROM_SEARCH)
+                .withObject("data", searchBook)
+                .navigation()
         }
         binding.rvBooklist.adapter = libraryBookAdapter
     }

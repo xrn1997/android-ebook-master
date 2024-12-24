@@ -46,7 +46,7 @@ data class BookContent(
 
     @JvmField
     @Transient
-    var lineContent: List<String> = ArrayList(),
+    var lineContent: ArrayList<String> = ArrayList(),
 
     @JvmField
     @Transient

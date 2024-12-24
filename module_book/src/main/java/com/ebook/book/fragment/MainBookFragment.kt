@@ -7,19 +7,19 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ebook.basebook.base.manager.BitIntentDataManager
-import com.ebook.basebook.mvp.presenter.impl.BookDetailPresenterImpl
-import com.ebook.basebook.mvp.presenter.impl.ReadBookPresenterImpl
-import com.ebook.basebook.mvp.view.impl.BookDetailActivity
-import com.ebook.basebook.mvp.view.impl.ImportBookActivity
-import com.ebook.basebook.mvp.view.impl.ReadBookActivity
-import com.ebook.basebook.view.popupwindow.DownloadListPop
+import com.ebook.book.ImportBookActivity
+import com.ebook.book.ReadBookActivity
 import com.ebook.book.adapter.BookListAdapter
 import com.ebook.book.databinding.FragmentBookMainBinding
 import com.ebook.book.mvvm.factory.BookViewModelFactory
 import com.ebook.book.mvvm.viewmodel.BookListViewModel
+import com.ebook.book.mvvm.viewmodel.BookReadViewModel.Companion.OPEN_FROM_APP
 import com.ebook.book.service.DownloadService
+import com.ebook.common.event.FROM_BOOKSHELF
+import com.ebook.common.event.KeyCode
 import com.ebook.common.event.RxBusTag
+import com.ebook.common.manager.BitIntentDataManager
+import com.ebook.common.view.popupwindow.DownloadListPop
 import com.ebook.db.entity.BookShelf
 import com.ebook.db.entity.DownloadChapterList
 import com.hwangjr.rxbus.RxBus
@@ -27,6 +27,7 @@ import com.hwangjr.rxbus.annotation.Subscribe
 import com.hwangjr.rxbus.annotation.Tag
 import com.hwangjr.rxbus.thread.EventThread
 import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.therouter.TheRouter
 import com.xrn1997.common.mvvm.view.BaseMvvmRefreshFragment
 import java.util.Timer
 import java.util.TimerTask
@@ -66,19 +67,19 @@ class MainBookFragment :
         }
         mBookListAdapter.setOnItemClickListener { bookShelf: BookShelf, _: Int ->
             val intent = Intent(mActivity, ReadBookActivity::class.java)
-            intent.putExtra("from", ReadBookPresenterImpl.OPEN_FROM_APP)
+            intent.putExtra("from", OPEN_FROM_APP)
             val key = System.currentTimeMillis().toString()
             intent.putExtra("data_key", key)
             BitIntentDataManager.getInstance().putData(key, bookShelf.clone())
             startActivity(intent)
         }
         mBookListAdapter.setOnItemLongClickListener { bookShelf: BookShelf, _: Int ->
-            val intent = Intent(mActivity, BookDetailActivity::class.java)
-            intent.putExtra("from", BookDetailPresenterImpl.FROM_BOOKSHELF)
             val key = System.currentTimeMillis().toString()
-            intent.putExtra("data_key", key)
             BitIntentDataManager.getInstance().putData(key, bookShelf)
-            startActivity(intent)
+            TheRouter.build(KeyCode.Book.DETAIL_PATH)
+                .withInt("from", FROM_BOOKSHELF)
+                .withString("data_key", key)
+                .navigation()
             true
         }
     }

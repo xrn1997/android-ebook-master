@@ -30,7 +30,7 @@ android {
 }
 val isModule = project.findProperty("isModule").toString().toBoolean()
 dependencies {
-    api(project(":lib_book"))
+    implementation(project(":lib_book_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     if (!isModule) {

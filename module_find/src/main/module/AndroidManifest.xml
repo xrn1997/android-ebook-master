@@ -46,6 +46,7 @@
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:theme="@style/CAppTransparentTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name="debug.TestDetailActivity" />
     </application>
 
 </manifest>

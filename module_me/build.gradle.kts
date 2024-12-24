@@ -38,7 +38,7 @@ android {
     }
 }
 dependencies {
-    api(project(":lib_book_common"))
+    implementation(project(":lib_book_common"))
     ksp(libs.dagger.compiler)
     implementation(libs.router)
     ksp(libs.router.apt)

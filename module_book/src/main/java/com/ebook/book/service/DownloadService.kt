@@ -14,9 +14,9 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import com.ebook.basebook.mvp.model.impl.WebBookModelImpl
 import com.ebook.book.R
 import com.ebook.book.fragment.MainBookFragment
+import com.ebook.common.analyze.impl.WebBookModelImpl
 import com.ebook.common.event.RxBusTag
 import com.ebook.db.ObjectBoxManager.bookContentBox
 import com.ebook.db.ObjectBoxManager.bookShelfBox
@@ -193,7 +193,7 @@ class DownloadService : Service() {
                 .flatMap(Function<BookContent, ObservableSource<BookContent>> { bookContent: BookContent ->
                     if (bookContent.durChapterUrl.isEmpty()) {
                         //章节内容不存在
-                        return@Function WebBookModelImpl.getInstance()
+                        return@Function WebBookModelImpl
                             .getBookContent(context, data.durChapterUrl, data.durChapterIndex)
                             .map<BookContent> { bookContent1: BookContent ->
                                 downloadChapterBox.remove(data)

@@ -35,7 +35,7 @@ android {
     }
 }
 dependencies {
-    api(project(":lib_book_common"))
+    implementation(project(":lib_book_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.router.apt)

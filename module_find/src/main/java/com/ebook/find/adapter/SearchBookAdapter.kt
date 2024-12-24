@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.ebook.basebook.R
+import com.ebook.common.R
 import com.ebook.common.callback.SearchBookDifferCallback
 import com.ebook.db.entity.SearchBook
 import com.ebook.find.databinding.AdapterSearchbookItemBinding

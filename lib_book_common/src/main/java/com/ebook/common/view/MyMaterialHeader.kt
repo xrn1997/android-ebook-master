@@ -10,7 +10,7 @@ import com.xrn1997.common.util.getThemeColor
  */
 class MyMaterialHeader(context: Context, attrs: AttributeSet?) : MaterialHeader(context, attrs) {
     init {
-        val color = context.getThemeColor(com.google.android.material.R.attr.colorSurface)
+        val color = context.getThemeColor(com.google.android.material.R.attr.colorSurfaceVariant)
         setProgressBackgroundColorSchemeColor(color)
     }
 }
